@@ -1,5 +1,7 @@
 package com.travel721;
 
+import android.provider.ContactsContract;
+
 public class EventCard {
     private String eventImgURL;
     private String eventName;
@@ -38,4 +40,13 @@ public class EventCard {
         this.eventName = eventName;
     }
 
+    public EventCard setEventNameBuilder(String eventName){
+        this.eventLocation = eventName;
+        return this;
+    }
+    public EventCard setPhotoBuilder(String ImgURL){
+        this.eventImgURL = ImgURL;
+        return this;
+
+    }
 }
