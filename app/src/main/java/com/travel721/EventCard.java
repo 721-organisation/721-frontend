@@ -41,7 +41,7 @@ public class EventCard {
     }
 
     public EventCard setEventNameBuilder(String eventName){
-        this.eventLocation = eventName;
+        this.eventName = eventName;
         return this;
     }
     public EventCard setPhotoBuilder(String ImgURL){
