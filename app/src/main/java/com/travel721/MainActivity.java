@@ -2,14 +2,12 @@ package com.travel721;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,16 +15,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.transition.Slide;
 import androidx.transition.Transition;
-
 
 import java.util.ArrayList;
 
@@ -38,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public RelativeLayout parentView;
     private Context context;
     private ArrayList<EventCard> eventArrayList;
-
+    private View topCard;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
                     RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             containerView.setLayoutParams(layoutParams);
             containerView.setTag(i);
+            containerView.setId(i);
+            topCard = parentView.findViewWithTag(parentView.getChildCount());
 
             // Unpack event data
             TextView eventTitle = containerView.findViewById(R.id.eventTitle);
@@ -87,11 +85,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(Bitmap result) {
                     super.onPostExecute(result);
-                    //finalContainerView.setAlpha(0f);
-                    //finalContainerView.animate().alpha(1f).setDuration(1000);
+
                     ObjectAnimator animation = ObjectAnimator.ofFloat(finalContainerView, "translationY", Resources.getSystem().getDisplayMetrics().heightPixels, 0);
                     animation.setInterpolator(new AccelerateDecelerateInterpolator());
-                    animation.setDuration(500);
+                    animation.setDuration(200);
                     animation.start();
                     parentView.addView(finalContainerView);
                     try {
@@ -102,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }.execute(eventArrayList.get(i).getEventImgURL());
 
-
             relativeLayoutContainer.setOnTouchListener(new MovingCardListener(finalContainerView));
 
         }
@@ -110,11 +106,57 @@ public class MainActivity extends AppCompatActivity {
 
     private void getArrayData() {
         EventCard popTarts = new EventCard("https://foundrysu.com/asset/Event/6005/logo-transparent.png", "Pop Tarts", "Foundry, Studio & Fusion", "01/01/1970");
-        EventCard soulJam = new EventCard("https://630427f7704d93fc82a1-a98418e8880457b4440872c557a55550.ssl.cf3.rackcdn.com/brands/souljam_3.jpg","SoulJam", "Foundry, Studio & Fusion","01/01/1970");
-        EventCard applebum = new EventCard("https://mixmag.net/assets/uploads/images/_facebook/Applebum-DJs.jpg", "AppleBum","CODE Sheffield","01/01/1970");
+        EventCard soulJam = new EventCard("https://630427f7704d93fc82a1-a98418e8880457b4440872c557a55550.ssl.cf3.rackcdn.com/brands/souljam_3.jpg", "SoulJam", "Foundry, Studio & Fusion", "01/01/1970");
+        EventCard applebum = new EventCard("https://mixmag.net/assets/uploads/images/_facebook/Applebum-DJs.jpg", "AppleBum", "CODE Sheffield", "01/01/1970");
         eventArrayList.add(popTarts);
         eventArrayList.add(soulJam);
         eventArrayList.add(applebum);
+    }
+
+    public void likesTopCard(View view) {
+        final View view1 = view;
+        view.setClickable(false);
+//        parentView.removeView(parentView.findViewById(parentView.getChildCount()-2));
+        if(parentView.getChildCount() > 2 && parentView.getChildAt(parentView.getChildCount()-1) instanceof CardView) {
+            // Use this to get info!
+            View card = parentView.getChildAt(parentView.getChildCount()-1);
+            ObjectAnimator animation = ObjectAnimator.ofFloat(card, "translationX", 0, Resources.getSystem().getDisplayMetrics().widthPixels);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setDuration(200);
+            animation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    parentView.removeViewAt(parentView.getChildCount() - 1);
+                    view1.setClickable(true);
+                }
+            });
+            animation.start();
+
+        }
+    }
+
+    public void dislikesTopCard(View view) {
+        final View view1 = view;
+        view.setClickable(false);
+//        parentView.removeView(parentView.findViewById(parentView.getChildCount()-2));
+        if(parentView.getChildCount() > 2 && parentView.getChildAt(parentView.getChildCount()-1) instanceof CardView) {
+            // Use this to get info!
+            View card = parentView.getChildAt(parentView.getChildCount()-1);
+            ObjectAnimator animation = ObjectAnimator.ofFloat(card, "translationX", 0, -Resources.getSystem().getDisplayMetrics().widthPixels);
+            animation.setInterpolator(new AccelerateDecelerateInterpolator());
+            animation.setDuration(200);
+            animation.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    parentView.removeViewAt(parentView.getChildCount() - 1);
+                    view1.setClickable(true);
+                }
+            });
+            animation.start();
+
+        }
     }
 
     class MovingCardListener implements View.OnTouchListener {
@@ -183,9 +225,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (Likes == 0) {
-                        ObjectAnimator animationX = ObjectAnimator.ofFloat(finalContainerView, "translationX",  0);
-                        ObjectAnimator animationR = ObjectAnimator.ofFloat(finalContainerView, "rotation",  0);
-                        ObjectAnimator animationY = ObjectAnimator.ofFloat(finalContainerView, "translationY",  0);
+                        ObjectAnimator animationX = ObjectAnimator.ofFloat(finalContainerView, "translationX", 0);
+                        ObjectAnimator animationR = ObjectAnimator.ofFloat(finalContainerView, "rotation", 0);
+                        ObjectAnimator animationY = ObjectAnimator.ofFloat(finalContainerView, "translationY", 0);
                         animationX.setInterpolator(new AccelerateDecelerateInterpolator());
                         animationR.setInterpolator(new AccelerateDecelerateInterpolator());
                         animationY.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -195,12 +237,14 @@ public class MainActivity extends AppCompatActivity {
                         animationX.start();
                         animationR.start();
                         animationY.start();
+                        topCard = parentView.getChildAt(parentView.getChildCount());
                     } else if (Likes == 1) {
                         finalContainerView.animate().alpha(0f).setDuration(200).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
                                 parentView.removeView(finalContainerView);
+                                topCard = parentView.getChildAt(parentView.getChildCount());
                             }
                         });
                     } else if (Likes == 2) {
@@ -209,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
                                 parentView.removeView(finalContainerView);
+                                topCard = parentView.getChildAt(parentView.getChildCount());
                             }
                         });
                     }
