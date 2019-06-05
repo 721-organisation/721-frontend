@@ -5,7 +5,7 @@ public class EventCard {
     private String eventName;
     private String eventLocation;
 
-    private EventCard(){};
+    private EventCard(){}
 
     public EventCard(String eventImgURL, String eventName, String eventLocation, String eventDate) {
         this.eventImgURL = eventImgURL;

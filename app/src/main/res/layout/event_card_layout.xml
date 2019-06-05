@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="This is an event"
+                android:text="@string/event_title_placeholder"
                 android:textSize="36sp" />
 
             <TextView
@@ -41,21 +41,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Line 1" />
+                android:text="@string/event_line_one" />
 
             <TextView
                 android:id="@+id/eventLine2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Line 2" />
+                android:text="@string/event_line_one" />
 
             <TextView
                 android:id="@+id/eventLine3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="@string/event_line_one" />
         </LinearLayout>
 
 
