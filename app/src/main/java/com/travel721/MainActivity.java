@@ -109,9 +109,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getArrayData() {
-        eventArrayList.add(new EventCard().setEventNameBuilder("SoulJam").setPhotoBuilder("https://www.plantnet.com.au/wp-content/uploads/plantnet-category-blueberries.jpg"));
-        eventArrayList.add(new EventCard().setEventNameBuilder("SoulJam").setPhotoBuilder("https://static.wixstatic.com/media/365e99_13a928d25d764e50ade790b527026509~mv2_d_4533_1613_s_2.png/v1/fill/w_393,h_140,al_c,q_80,usm_0.66_1.00_0.01/sj_logo.webp"));
-        eventArrayList.add(new EventCard().setEventNameBuilder("SoulJam").setPhotoBuilder("https://www.gstatic.com/devrel-devsite/va102c01c814e4ead6c193f728a0d2922d54f825147aa20062195823f08abef76/android/images/lockup.svg"));
+        EventCard popTarts = new EventCard("https://foundrysu.com/asset/Event/6005/logo-transparent.png", "Pop Tarts", "Foundry, Studio & Fusion", "01/01/1970");
+        EventCard soulJam = new EventCard("https://630427f7704d93fc82a1-a98418e8880457b4440872c557a55550.ssl.cf3.rackcdn.com/brands/souljam_3.jpg","SoulJam", "Foundry, Studio & Fusion","01/01/1970");
+        EventCard applebum = new EventCard("https://mixmag.net/assets/uploads/images/_facebook/Applebum-DJs.jpg", "AppleBum","CODE Sheffield","01/01/1970");
+        eventArrayList.add(popTarts);
+        eventArrayList.add(soulJam);
+        eventArrayList.add(applebum);
     }
 
     class MovingCardListener implements View.OnTouchListener {
@@ -217,5 +220,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
