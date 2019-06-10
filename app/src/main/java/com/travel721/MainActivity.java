@@ -13,12 +13,24 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -27,19 +39,14 @@ public class MainActivity extends AppCompatActivity {
     private int windowWidth;
     private int windowHeight;
     private int screenCenter;
-    private int x_cord;
-    private int y_cord;
-    private int x;
-    private int y;
+
     private int Likes = 0;
-    private RelativeLayout parentRelativeLayout;
+    private FrameLayout parentRelativeLayout;
     private ArrayList<EventCard> eventArrayList;
 
-    @SuppressLint({"ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
         getSupportActionBar().hide(); //hide the title bar
         setContentView(R.layout.activity_main);
@@ -124,10 +131,10 @@ public class MainActivity extends AppCompatActivity {
     public void likesTopCard(View view) {
         final View view1 = view;
         view.setClickable(false);
-        if (parentRelativeLayout.getChildCount() > 2 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
+        if (parentRelativeLayout.getChildCount() > 0 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
             // Use this to get info!
             View card = parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1);
-            ObjectAnimator animation = ObjectAnimator.ofFloat(card, "translationX", 0,windowWidth);
+            ObjectAnimator animation = ObjectAnimator.ofFloat(card, "translationX", 0, windowWidth);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setDuration(200);
             animation.addListener(new AnimatorListenerAdapter() {
@@ -146,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     public void dislikesTopCard(View view) {
         final View view1 = view;
         view.setClickable(false);
-        if (parentRelativeLayout.getChildCount() > 2 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
+        if (parentRelativeLayout.getChildCount() > 0 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
             // Use this to get info!
             View card = parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1);
             ObjectAnimator animation = ObjectAnimator.ofFloat(card, "translationX", 0, -windowWidth);
@@ -166,7 +173,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class MovingCardListener implements View.OnTouchListener {
-
+        private int x_cord;
+        private int y_cord;
+        private int x;
+        private int y;
         private View finalContainerView;
 
         MovingCardListener(View finalContainerView) {
@@ -175,31 +185,25 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-
             x_cord = (int) event.getRawX();
             y_cord = (int) event.getRawY();
-
-
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-
                     x = (int) event.getX();
                     y = (int) event.getY();
-
-
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    // smoother animation.
 
                     x_cord = (int) event.getRawX();
-                    // smoother animation.
                     y_cord = (int) event.getRawY();
-
                     finalContainerView.setX(x_cord - x);
-                    finalContainerView.setY(y_cord - y);
 
+                    if (y_cord > y) {
+                        finalContainerView.setY(y_cord - y);
+                    }
 
                     if (x_cord >= screenCenter) {
-                        finalContainerView.setRotation((float) ((x_cord - screenCenter) * (Math.PI / 32)));
                         if (x_cord > (screenCenter + (screenCenter / 2))) {
                             if (x_cord > (windowWidth - (screenCenter / 4))) {
                                 Likes = 2;
@@ -210,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
                             Likes = 0;
                         }
                     } else {
-                        // rotate image while moving
-                        finalContainerView.setRotation((float) ((x_cord - screenCenter) * (Math.PI / 32)));
                         if (x_cord < (screenCenter / 2)) {
                             if (x_cord < screenCenter / 4) {
                                 Likes = 1;
@@ -225,23 +227,16 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case MotionEvent.ACTION_UP:
-
                     x_cord = (int) event.getRawX();
                     y_cord = (int) event.getRawY();
-
-
                     if (Likes == 0) {
                         ObjectAnimator animationX = ObjectAnimator.ofFloat(finalContainerView, "translationX", 0);
-                        ObjectAnimator animationR = ObjectAnimator.ofFloat(finalContainerView, "rotation", 0);
                         ObjectAnimator animationY = ObjectAnimator.ofFloat(finalContainerView, "translationY", 0);
                         animationX.setInterpolator(new AccelerateDecelerateInterpolator());
-                        animationR.setInterpolator(new AccelerateDecelerateInterpolator());
                         animationY.setInterpolator(new AccelerateDecelerateInterpolator());
                         animationX.setDuration(500);
-                        animationR.setDuration(500);
                         animationY.setDuration(500);
                         animationX.start();
-                        animationR.start();
                         animationY.start();
                     } else if (Likes == 1) {
                         finalContainerView.animate().alpha(0f).setDuration(200).setListener(new AnimatorListenerAdapter() {
@@ -260,6 +255,48 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    if (1.5 * y < y_cord) {
+                        Toast.makeText(getBaseContext(), "More Info", Toast.LENGTH_LONG).show();
+                        LayoutInflater layoutInflater =
+                                (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                        // Initialise with the Loading Card
+                        View moreInfoView = layoutInflater.inflate(R.layout.event_more_info_card, null);
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
+                        final View containerView = layoutInflater.inflate(R.layout.event_more_info_card, null);
+                        containerView.setLayoutParams(layoutParams);
+                        containerView.setTag(parentRelativeLayout.getChildCount() + 1);
+                        containerView.setId(parentRelativeLayout.getChildCount() + 1);
+                        // Slide in from bottom animation
+                        containerView.setY(-windowHeight);
+                        containerView.animate()
+                                .translationY(0)
+                                .setInterpolator(new AccelerateDecelerateInterpolator())
+                                .setDuration(200).setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+//                                initMap();
+                                MapView mmap = findViewById(R.id.mapView);
+                                mmap.onCreate(null);
+                                mmap.getMapAsync(new OnMapReadyCallback() {
+                                    @Override
+                                    public void onMapReady(GoogleMap googleMap) {
+                                        GoogleMap mMap = googleMap;
+
+                                        // Add a marker in Sydney and move the camera
+                                        LatLng sydney = new LatLng(53.385260, -1.469127);
+                                        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                                    }
+                                });
+
+                            }
+                        }).start();
+                        parentRelativeLayout.addView(containerView);
+                        containerView.setOnTouchListener(new SwipeUpToDismissCardTouchController(containerView, parentRelativeLayout, windowHeight));
+                    }
                     break;
                 default:
                     break;
@@ -267,5 +304,4 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
-
 }
