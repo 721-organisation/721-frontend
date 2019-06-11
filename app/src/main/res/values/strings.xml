@@ -4,4 +4,5 @@
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
     <string name="title_activity_maps">Map</string>
+    <string name="swipe_up_to_dismiss">Swipe up to dismiss</string>
 </resources>

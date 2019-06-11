@@ -1,16 +1,18 @@
 package com.travel721;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class EventCard {
     private String eventImgURL;
     private String eventName;
-    private String eventLocation;
+    private LatLng eventLocation;
 
     private EventCard(){}
 
-    public EventCard(String eventImgURL, String eventName, String eventLocation, String eventDate) {
+    public EventCard(String eventImgURL, String eventName, double lat, double lng, String eventDate) {
         this.eventImgURL = eventImgURL;
         this.eventName = eventName;
-        this.eventLocation = eventLocation;
+        this.eventLocation = new LatLng(lat,lng);
         this.eventDate = eventDate;
     }
 
@@ -22,12 +24,12 @@ public class EventCard {
         this.eventImgURL = eventImgURL;
     }
 
-    public String getEventLocation() {
+    public LatLng getEventLocation() {
         return eventLocation;
     }
 
-    public void setEventLocation(String eventLocation) {
-        this.eventLocation = eventLocation;
+    public void setEventLocation(float lat, float lng) {
+        this.eventLocation = new LatLng(lat,lng);
     }
 
     public String getEventDate() {
