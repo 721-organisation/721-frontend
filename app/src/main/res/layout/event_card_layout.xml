@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    app:cardBackgroundColor="#333333"
     app:cardElevation="0dp">
 
     <RelativeLayout
@@ -20,12 +21,13 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="20dp"
+            android:contentDescription="@string/event_image_placeholder_text"
             android:scaleType="centerCrop" />
 
         <LinearLayout
+            android:id="@+id/eventLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/eventLinearLayout"
             android:layout_below="@+id/eventImage"
             android:orientation="vertical"
             android:padding="10dp">
@@ -35,25 +37,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/event_title_placeholder"
+                android:textColor="@android:color/white"
                 android:textSize="36sp" />
 
             <TextView
                 android:id="@+id/eventLine1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/event_line_one" />
+                android:text="@string/event_line_one"
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/eventLine2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/event_line_one" />
+                android:text="@string/event_line_one"
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/eventLine3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/event_line_one" />
+                android:text="@string/event_line_one"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/eventLine4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_line_one"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
 
