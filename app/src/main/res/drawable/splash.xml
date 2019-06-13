@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background color -->
+    <item android:drawable="@android:color/white"/>
+
+    <!-- Logo at the center of the screen -->
+    <item
+        android:drawable="@mipmap/ic_launcher_721"
+        android:gravity="center"/>
+
+</layer-list>

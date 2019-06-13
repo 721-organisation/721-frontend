@@ -6,33 +6,29 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
@@ -45,11 +41,13 @@ public class MainActivity extends AppCompatActivity {
     private int windowWidth;
     private int windowHeight;
     private int actionIndicator = 0;
-    private FrameLayout parentRelativeLayout;
+    private FrameLayout parentFrameLayout;
+    private RelativeLayout rootRelativeLayout;
     private ArrayList<EventCard> eventArrayList;
 
     // Firebase Instance ID
     String iid = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
         // Sets root layout
-        parentRelativeLayout = findViewById(R.id.main_layoutview);
+        parentFrameLayout = findViewById(R.id.main_layoutview);
+        rootRelativeLayout = findViewById(R.id.rootRelativeLayout);
         // Window mathematics
         windowWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         windowHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
@@ -85,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
         loadingCard.setLayoutParams(layoutParams);
         // Give unique tag and add to the stack
         loadingCard.setTag(99);
-        parentRelativeLayout.addView(loadingCard);
+        parentFrameLayout.addView(loadingCard);
 
 
-        View nextCard; // The next Event Card to add
+        View nextCard = null; // The next Event Card to add
         RelativeLayout relativeLayoutContainer; // The next Event Card's layout
         // Iterate through event arraylist
         for (int i = 0; i < eventArrayList.size(); i++) {
@@ -136,16 +135,19 @@ public class MainActivity extends AppCompatActivity {
                             });
 
                     // Remove the loading card if it's still in the layout
-                    if (parentRelativeLayout.findViewWithTag(99) != null)
-                        parentRelativeLayout.removeView(parentRelativeLayout.findViewWithTag(99));
+                    if (parentFrameLayout.findViewWithTag(99) != null)
+                        parentFrameLayout.removeView(parentFrameLayout.findViewWithTag(99));
 
-                    parentRelativeLayout.addView(finalContainerView);
+                    parentFrameLayout.addView(finalContainerView);
                 }
             }).execute(eventArrayList.get(i).getImgURL());
             // Set the card's listener to the movingcardlistener
-            nextCard.setOnTouchListener(new MovingCardListener(finalContainerView));
+            //nextCard.setOnTouchListener(new MovingCardListener(finalContainerView));
 
         }
+        if (nextCard != null) nextCard.setOnTouchListener(new MovingCardListener(nextCard));
+        MapsInitializer.initialize(this);
+
     }
 
     //TODO sample data at the moment
@@ -164,48 +166,41 @@ public class MainActivity extends AppCompatActivity {
         eventArrayList.add(test);
         eventArrayList.add(test);
         eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
-        eventArrayList.add(test);
+
     }
 
     // Dismisses the top card to the right
     public void likesTopCard(View view) {
-        if (parentRelativeLayout.getChildCount() > 0 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
+        if (parentFrameLayout.getChildCount() > 0 && parentFrameLayout.getChildAt(parentFrameLayout.getChildCount() - 1) instanceof CardView) {
             view.setClickable(false);
 
             // Use this to get info!
-            View card = parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1);
+            View card = parentFrameLayout.getChildAt(parentFrameLayout.getChildCount() - 1);
             autoSwipeTopCard(true, view);
         }
     }
 
     // Dismisses the top card to the left
     public void dislikesTopCard(View view) {
-        if (parentRelativeLayout.getChildCount() > 0 && parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1) instanceof CardView) {
+        if (parentFrameLayout.getChildCount() > 0 && parentFrameLayout.getChildAt(parentFrameLayout.getChildCount() - 1) instanceof CardView) {
             view.setClickable(false);
             // Use this to get info!
-            View card = parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 1);
+            View card = parentFrameLayout.getChildAt(parentFrameLayout.getChildCount() - 1);
             autoSwipeTopCard(false, view);
         }
     }
 
     void autoSwipeTopCard(boolean likes, final View buttonPushed) {
         int destination = likes ? windowWidth : -windowHeight;
-        final int index = parentRelativeLayout.getChildCount() - 1;
-        parentRelativeLayout.getChildAt(index).animate()
+        final int index = parentFrameLayout.getChildCount() - 1;
+        parentFrameLayout.getChildAt(index).animate()
                 .setInterpolator(new AccelerateInterpolator())
                 .setDuration(GLOBAL_ANIMATION_DURATION)
                 .translationX(destination)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        parentRelativeLayout.removeViewAt(index);
+                        parentFrameLayout.removeViewAt(index);
                         buttonPushed.setClickable(true);
                     }
                 }).start();
@@ -261,36 +256,38 @@ public class MainActivity extends AppCompatActivity {
                     x_cord = (int) event.getRawX();
                     y_cord = (int) event.getRawY();
                     if (actionIndicator == 0) {
+                        // Swipe down motion
+                        if (1.5 * y < y_cord) {
+                            // Inflate more info pulldown
+                            LayoutInflater layoutInflater =
+                                    (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-                        finalContainerView.animate().translationY(0).translationX(0).setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                if (1.5 * y < y_cord) {
-                                    LayoutInflater layoutInflater =
-                                            (LayoutInflater) MainActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            //Inflate the Pulldown Info Drawer
+                            final View moreInfoCard = layoutInflater.inflate(R.layout.event_more_info_card, null);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                                    RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
-                                    // Initialise with the Loading Card
-                                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                                            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                                    findViewById(R.id.thumbdownButton).animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            findViewById(R.id.thumbdownButton).setVisibility(View.GONE);
-                                        }
-                                    });
-                                    findViewById(R.id.thumbupButton).animate().alpha(0f).setListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            findViewById(R.id.thumbupButton).setVisibility(View.GONE);
-                                        }
-                                    });
-                                    // Inflate the Pulldown Info Drawer
-                                    final View moreInfoCard = layoutInflater.inflate(R.layout.event_more_info_card, null);
+                            // Hide buttons which display above all Views
+                            findViewById(R.id.thumbdownButton).setVisibility(View.GONE);
+                            findViewById(R.id.thumbupButton).setVisibility(View.GONE);
+
+                            moreInfoCard.setLayoutParams(layoutParams);
+                            moreInfoCard.setTag(rootRelativeLayout.getChildCount() + 1);
+                            moreInfoCard.setId(rootRelativeLayout.getChildCount() + 1);
+                            // Slide in from bottom animation
+                            moreInfoCard.setY(-windowHeight);
+                            moreInfoCard.animate()
+                                    .translationY(0)
+                                    .setDuration(SLIDE_ANIMATION_DURATION).start();
+                            finalContainerView.animate().translationY(0).translationX(0).setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    // Add the card
+                                    rootRelativeLayout.addView(moreInfoCard);
+
                                     // Add the swipe away functionality
-                                    moreInfoCard.setOnTouchListener(new SwipeUpToDismissCardTouchController(moreInfoCard, parentRelativeLayout, windowHeight) {
+                                    moreInfoCard.setOnTouchListener(new SwipeUpToDismissCardTouchController(moreInfoCard, parentFrameLayout, windowHeight) {
                                         @Override
                                         public boolean onTouch(View v, MotionEvent event) {
                                             super.onTouch(v, event);
@@ -301,18 +298,16 @@ public class MainActivity extends AppCompatActivity {
                                             return true;
                                         }
                                     });
+
+                                    // Initialise maps
                                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
-                                    if (mapFragment != null) {
+                                    if (mapFragment != null ) {
                                         mapFragment.getMapAsync(new OnMapReadyCallback() {
                                             @Override
                                             public void onMapReady(GoogleMap googleMap) {
-                                                // Zoom in, animating the camera
-                                                googleMap.animateCamera(CameraUpdateFactory.zoomIn());
-                                                // Zoom out to zoom level 10, animating with the global animation duration.
-                                                googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), GLOBAL_ANIMATION_DURATION, null);
                                                 // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
                                                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                                                        .target(eventArrayList.get((int) parentRelativeLayout.getChildAt(parentRelativeLayout.getChildCount() - 2).getTag()).getLocation())     // Sets the center of the map to Mountain View
+                                                        .target(eventArrayList.get((int) parentFrameLayout.getChildAt(parentFrameLayout.getChildCount() - 1).getTag()).getLocation())     // Sets the center of the map to Mountain View
                                                         .zoom(17)                   // Sets the zoom
                                                         .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                                                         .build();                   // Creates a CameraPosition from the builder
@@ -320,26 +315,20 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                    moreInfoCard.setLayoutParams(layoutParams);
-                                    moreInfoCard.setTag(parentRelativeLayout.getChildCount() + 1);
-                                    moreInfoCard.setId(parentRelativeLayout.getChildCount() + 1);
-                                    // Slide in from bottom animation
-                                    moreInfoCard.setY(-windowHeight);
-                                    moreInfoCard.animate()
-                                            .translationY(0)
-                                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                                            .setDuration(SLIDE_ANIMATION_DURATION).start();
-                                    parentRelativeLayout.addView(moreInfoCard);
-
                                 }
-                            }
-                        });
+                            });
+                        } else {
+                            // Just reposition the card
+                            finalContainerView.animate().translationY(0).translationX(0);
+                        }
+
                     } else if (actionIndicator == 1) {
                         finalContainerView.animate().alpha(0f).setDuration(GLOBAL_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
-                                parentRelativeLayout.removeView(finalContainerView);
+                                updateMovingCardListener();
+                                parentFrameLayout.removeView(finalContainerView);
                             }
                         });
                     } else if (actionIndicator == 2) {
@@ -347,7 +336,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 super.onAnimationEnd(animation);
-                                parentRelativeLayout.removeView(finalContainerView);
+                                updateMovingCardListener();
+                                parentFrameLayout.removeView(finalContainerView);
                             }
                         });
                     }
@@ -361,9 +351,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateMovingCardListener() {
+        if (parentFrameLayout.findViewWithTag(parentFrameLayout.getChildCount() - 2) != null) {
+            Log.v("MCL", "CARD LISTENER ATTACHED");
+            parentFrameLayout.findViewWithTag(parentFrameLayout.getChildCount() - 2).setOnTouchListener(new MovingCardListener(parentFrameLayout.findViewWithTag(parentFrameLayout.getChildCount() - 2)));
+        } else {
+            Log.v("MCL", "CARD LISTENER NOT ATTACHED");
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        if (parentRelativeLayout.findViewWithTag(parentRelativeLayout.getChildCount()) instanceof ConstraintLayout) {
+        if (parentFrameLayout.findViewWithTag(parentFrameLayout.getChildCount()) != null && parentFrameLayout.findViewWithTag(parentFrameLayout.getChildCount()) instanceof ConstraintLayout) {
             removeEventInfoCard();
         } else {
             super.onBackPressed();
@@ -371,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void removeEventInfoCard() {
-        final View moreInfoCard = parentRelativeLayout.findViewWithTag(parentRelativeLayout.getChildCount());
+        final View moreInfoCard = rootRelativeLayout.findViewWithTag(rootRelativeLayout.getChildCount());
         moreInfoCard.animate()
                 .translationY(-windowHeight)
                 .setDuration(GLOBAL_ANIMATION_DURATION)
@@ -383,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                                 .findFragmentById(R.id.mapView);
                         if (f != null)
                             getSupportFragmentManager().beginTransaction().remove(f).commit();
-                        parentRelativeLayout.removeView(moreInfoCard);
+                        parentFrameLayout.removeView(moreInfoCard);
                         findViewById(R.id.thumbdownButton).setVisibility(View.VISIBLE);
                         findViewById(R.id.thumbupButton).setVisibility(View.VISIBLE);
                         findViewById(R.id.thumbupButton).setAlpha(0f);
