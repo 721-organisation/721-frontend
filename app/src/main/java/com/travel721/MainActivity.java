@@ -2,6 +2,7 @@ package com.travel721;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -21,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     // Firebase Instance ID
     String iid = "";
 
-
+    @SuppressLint("InflateParams")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    void autoSwipeTopCard(boolean likes, final View buttonPushed) {
+    private void autoSwipeTopCard(boolean likes, final View buttonPushed) {
         int destination = likes ? windowWidth : -windowHeight;
         final int index = parentFrameLayout.getChildCount() - 1;
         parentFrameLayout.getChildAt(index).animate()

@@ -6,8 +6,7 @@
     android:name="com.travel721.EventMoreInfoActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="#FFFFFF">
+    android:animateLayoutChanges="true">
 
     <TextView
         android:id="@+id/eventLongDescription"
@@ -17,7 +16,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="44dp"
-        android:text="Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, "
+        android:text="@string/event_info_placeholder"
         app:layout_constraintBottom_toTopOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"

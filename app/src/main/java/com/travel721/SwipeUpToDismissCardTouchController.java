@@ -10,9 +10,9 @@ import static com.travel721.Constants.*;
 
 public class SwipeUpToDismissCardTouchController implements View.OnTouchListener {
 
-    protected View card;
-    protected FrameLayout parentLayout;
-    protected int windowHeight;
+    private View card;
+    private FrameLayout parentLayout;
+    private int windowHeight;
     protected boolean dismissed = false;
 
     public SwipeUpToDismissCardTouchController(View card, FrameLayout parentLayout, int windowHeight) {

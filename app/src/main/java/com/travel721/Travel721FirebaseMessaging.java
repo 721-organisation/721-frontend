@@ -24,9 +24,9 @@ public class Travel721FirebaseMessaging extends FirebaseMessagingService {
                     public void onResponse(String response) {
                         // SOMETHING get profiles where id = id
                         if (response.equals("SOMETHING")){
-
+                            // TODO implement this condition
                         }else{
-                            // otherwise create a new user
+                            // TODO otherwise create a new user
 
                         }
                     }

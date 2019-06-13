@@ -25,7 +25,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, Bitmap> {
             InputStream in = new java.net.URL(urldisplay).openStream();
             bmp = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            Log.e("Error", e.getLocalizedMessage());
             e.printStackTrace();
         }
         return bmp;

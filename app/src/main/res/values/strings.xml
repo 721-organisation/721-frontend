@@ -3,7 +3,7 @@
     <string name="loading_events_tip">Loading the latest gigs…</string>
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
-    <string name="title_activity_maps">Map</string>
     <string name="swipe_up_to_dismiss">Swipe up or press back</string>
     <string name="event_image_placeholder_text">Event Image</string>
+    <string name="event_info_placeholder">Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here,</string>
 </resources>
