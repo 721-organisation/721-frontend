@@ -231,11 +231,14 @@ public class MainActivity extends AppCompatActivity {
                     // Move the card
                     x_cord = (int) event.getRawX();
                     y_cord = (int) event.getRawY();
-
                     finalContainerView.setX(x_cord - x); // Move in X Direction
                     // Do not allow moving further up the screen
                     if (y_cord > y) finalContainerView.setY(y_cord - y);
-
+                    float centreX = finalContainerView.getX() + finalContainerView.getWidth() / 2;
+                    float centreY = finalContainerView.getY() + finalContainerView.getHeight() / 2;
+                    float containerCentreX = parentFrameLayout.getWidth() / 2;
+                    float containerTopY = parentFrameLayout.getY();
+                    finalContainerView.setRotation((float) ((centreX - containerCentreX) * (Math.PI / -32)));
 
                     if (x_cord > x) {
                         if (x_cord > (1 + CARD_SWIPING_STICKINESS) * x) {
@@ -250,7 +253,11 @@ public class MainActivity extends AppCompatActivity {
                             actionIndicator = 0;
                         }
                     }
-
+                    centreX = finalContainerView.getX() + finalContainerView.getWidth() / 2;
+                    centreY = finalContainerView.getY() + finalContainerView.getHeight() / 2;
+                    containerCentreX = parentFrameLayout.getWidth() / 2;
+                    containerTopY = parentFrameLayout.getY();
+                    finalContainerView.setRotation((float) ((centreX - containerCentreX) * (Math.PI / -32)));
                     break;
                 case MotionEvent.ACTION_UP:
                     x_cord = (int) event.getRawX();
@@ -279,12 +286,13 @@ public class MainActivity extends AppCompatActivity {
                             moreInfoCard.animate()
                                     .translationY(0)
                                     .setDuration(SLIDE_ANIMATION_DURATION).start();
-                            finalContainerView.animate().translationY(0).translationX(0).setListener(new AnimatorListenerAdapter() {
+                            // Add the card
+                            rootRelativeLayout.addView(moreInfoCard);
+                            finalContainerView.animate().translationY(0).translationX(0).rotation(0).setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     super.onAnimationEnd(animation);
-                                    // Add the card
-                                    rootRelativeLayout.addView(moreInfoCard);
+
 
                                     // Add the swipe away functionality
                                     moreInfoCard.setOnTouchListener(new SwipeUpToDismissCardTouchController(moreInfoCard, parentFrameLayout, windowHeight) {
@@ -301,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     // Initialise maps
                                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
-                                    if (mapFragment != null ) {
+                                    if (mapFragment != null) {
                                         mapFragment.getMapAsync(new OnMapReadyCallback() {
                                             @Override
                                             public void onMapReady(GoogleMap googleMap) {
@@ -319,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                         } else {
                             // Just reposition the card
-                            finalContainerView.animate().translationY(0).translationX(0);
+                            finalContainerView.animate().translationY(0).translationX(0).rotation(0).start();
                         }
 
                     } else if (actionIndicator == 1) {
