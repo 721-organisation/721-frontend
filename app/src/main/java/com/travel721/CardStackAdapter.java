@@ -55,9 +55,10 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         currTV.setText(ec.getTime());
         currTV = v.findViewById(R.id.eventPrice);
         currTV.setText(ec.getPrice());
-        Glide.with(holder.itemView.findViewById(R.id.imageView2))
+        Glide.with(holder.itemView.findViewById(R.id.eventImage))
                 .load(ec.getImgURL())
-                .into((ImageView) holder.itemView.findViewById(R.id.imageView2));
+                .placeholder(R.drawable.loading_spinner)
+                .into((ImageView) holder.itemView.findViewById(R.id.eventImage));
     }
 
     @Override

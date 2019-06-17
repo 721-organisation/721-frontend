@@ -43,14 +43,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|center"
-        android:layout_marginStart="144dp"
         android:layout_marginBottom="30dp"
         android:layout_toStartOf="@+id/thumbupButton"
         android:onClick="dislikesTopCard"
         app:backgroundTint="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_close"
         tools:layout_conversion_wrapHeight="147"
-        tools:layout_conversion_wrapWidth="147" />
+        tools:layout_conversion_wrapWidth="147"
+        tools:layout_editor_absoluteX="144dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

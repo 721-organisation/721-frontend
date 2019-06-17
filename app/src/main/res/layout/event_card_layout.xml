@@ -15,8 +15,9 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/eventImage"
             android:layout_width="match_parent"
+
             android:layout_height="300dp"
             android:padding="16dp"
             app:srcCompat="@color/colorAccent" />
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="32dp">
 
             <TextView
                 android:id="@+id/eventTitle"
