@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rootRelativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/rootConstraintLayout"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/main_layoutview"
-        android:layout_width="322dp"
-        android:layout_height="304dp"
-        android:layout_above="@+id/thumbdownButton"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="10dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        tools:context=".MainActivity">
-
-
-    </FrameLayout>
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/card_stack_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/thumbdownButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/thumbupButton"
@@ -29,26 +26,31 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="@dimen/fab_margin"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginEnd="120dp"
+        android:layout_gravity="bottom|center"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="30dp"
         android:onClick="likesTopCard"
-        app:srcCompat="@drawable/ic_done" />
+        app:backgroundTint="#ffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/thumbdownButton"
+        app:srcCompat="@drawable/ic_done"
+        tools:layout_conversion_wrapHeight="147"
+        tools:layout_conversion_wrapWidth="147" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/thumbdownButton"
-
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|end"
-        android:layout_marginStart="120dp"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_gravity="bottom|center"
+        android:layout_marginStart="144dp"
         android:layout_marginBottom="30dp"
+        android:layout_toStartOf="@+id/thumbupButton"
         android:onClick="dislikesTopCard"
-        app:srcCompat="@drawable/ic_close" />
-</RelativeLayout>
+        app:backgroundTint="#ffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_close"
+        tools:layout_conversion_wrapHeight="147"
+        tools:layout_conversion_wrapWidth="147" />
+</androidx.constraintlayout.widget.ConstraintLayout>

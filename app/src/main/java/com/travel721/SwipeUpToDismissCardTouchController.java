@@ -4,18 +4,18 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.travel721.Constants.*;
-
 public class SwipeUpToDismissCardTouchController implements View.OnTouchListener {
 
     private View card;
-    private FrameLayout parentLayout;
+    private RecyclerView parentLayout;
     private int windowHeight;
     protected boolean dismissed = false;
 
-    public SwipeUpToDismissCardTouchController(View card, FrameLayout parentLayout, int windowHeight) {
+    public SwipeUpToDismissCardTouchController(View card, RecyclerView parentLayout, int windowHeight) {
         this.card = card;
         this.parentLayout = parentLayout;
         this.windowHeight = windowHeight;
@@ -47,7 +47,7 @@ public class SwipeUpToDismissCardTouchController implements View.OnTouchListener
             case MotionEvent.ACTION_UP:
                 x_cord = (int) event.getRawX();
                 y_cord = (int) event.getRawY();
-                if (y_cord < (1-CARD_SWIPING_STICKINESS*0.5) * y) {
+                if (y_cord < (1 - CARD_SWIPING_STICKINESS * 0.5) * y) {
                     card.animate().translationY(-windowHeight).setDuration(GLOBAL_ANIMATION_DURATION).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -58,7 +58,7 @@ public class SwipeUpToDismissCardTouchController implements View.OnTouchListener
                         }
                     });
                     dismissed = true;
-                }else{
+                } else {
                     v.animate()
                             .translationY(0)
                             .translationX(0)

@@ -1,15 +1,61 @@
 package com.travel721;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class EventCard {
+import java.io.Serializable;
+
+public class EventCard implements Parcelable, Serializable {
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(skiddleID);
+        parcel.writeString(venueName);
+        parcel.writeString(String.valueOf(location.latitude));
+        parcel.writeString(String.valueOf(location.longitude));
+        parcel.writeString(imgURL);
+        parcel.writeString(eventHyperLink);
+        parcel.writeString(date);
+        parcel.writeString(time);
+        parcel.writeString(minimumAge);
+        parcel.writeString(price);
+
+    }
+
+    protected EventCard(Parcel in) {
+        name = in.readString();
+        skiddleID = in.readString();
+        venueName = in.readString();
+        String lat = in.readString();
+        String lon = in.readString();
+        location = new LatLng(Double.valueOf(lat), Double.valueOf(lon));
+        imgURL = in.readString();
+        eventHyperLink = in.readString();
+        date = in.readString();
+        time = in.readString();
+        minimumAge = in.readString();
+        price = in.readString();
+        this.formattedDate = date;
+    }
+
+    public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
+        @Override
+        public EventCard createFromParcel(Parcel in) {
+            return new EventCard(in);
+        }
+
+        @Override
+        public EventCard[] newArray(int size) {
+            return new EventCard[size];
+        }
+    };
+
     public String getName() {
         return name;
     }
@@ -50,11 +96,11 @@ public class EventCard {
         this.eventHyperLink = eventHyperLink;
     }
 
-    public Date getFormattedDate() {
+    public String getFormattedDate() {
         return formattedDate;
     }
 
-    public void setFormattedDate(Date formattedDate) {
+    public void setFormattedDate(String formattedDate) {
         this.formattedDate = formattedDate;
     }
 
@@ -102,7 +148,7 @@ public class EventCard {
     private String imgURL;
     private String eventHyperLink;
     private String date;
-    private Date formattedDate;
+    private String formattedDate;
     private String time;
     private String minimumAge;
     private String price;
@@ -112,23 +158,42 @@ public class EventCard {
         this.name = name;
         this.skiddleID = skiddleID;
         this.venueName = venueName;
-        this.location = new LatLng(Double.valueOf(venueLat),Double.valueOf(venueLong));
+        this.location = new LatLng(Double.valueOf(venueLat), Double.valueOf(venueLong));
         this.imgURL = imgURL;
         this.eventHyperLink = eventHyperLink;
         this.date = date;
         this.time = time;
         this.minimumAge = minimumAge;
         this.price = price;
-        new DownloadFileFromURL(new IOnFileDownloadedListener() {
-            @Override
-            public void onFileDownloaded(Bitmap bmp) {
-                imgBitmap = bmp;
-            }
-        });
-        try {
-            this.formattedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        new DownloadFileFromURL(new IOnFileDownloadedListener() {
+//            @Override
+//            public void onFileDownloaded(Bitmap bmp) {
+//                imgBitmap = bmp;
+//            }
+//        });
+        this.formattedDate = date;
+
     }
+
+    public static EventCard unpackFromJson(JSONObject jo) throws JSONException {
+        return new EventCard(jo.getString("name"),
+                jo.getString("skiddleId"),
+                jo.getString("venueName"),
+                jo.getString("venueLat"),
+                jo.getString("venueLong"),
+                jo.getString("image"),
+                jo.getString("link"),
+                jo.getString("date"),
+                jo.getString("time"),
+                jo.getString("minAge"),
+                jo.getString("price"));
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
 }
