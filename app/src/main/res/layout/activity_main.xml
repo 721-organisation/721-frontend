@@ -27,12 +27,12 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|center"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="30dp"
         android:onClick="likesTopCard"
         app:backgroundTint="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/thumbdownButton"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:srcCompat="@drawable/ic_done"
         tools:layout_conversion_wrapHeight="147"
         tools:layout_conversion_wrapWidth="147" />
@@ -43,14 +43,52 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom|center"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="30dp"
         android:layout_toStartOf="@+id/thumbupButton"
         android:onClick="dislikesTopCard"
         app:backgroundTint="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:srcCompat="@drawable/ic_close"
         tools:layout_conversion_wrapHeight="147"
-        tools:layout_conversion_wrapWidth="147"
-        tools:layout_editor_absoluteX="144dp" />
+        tools:layout_conversion_wrapWidth="147" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="205dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="settingsButtonClicked"
+        android:layout_marginBottom="30dp"
+        android:clickable="true"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/thumbdownButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_settings" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/previouslySelectedButton"
+        android:onClick="previouslySelectedClicked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="30dp"
+        android:clickable="true"
+        app:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/thumbupButton"
+        app:srcCompat="@drawable/ic_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

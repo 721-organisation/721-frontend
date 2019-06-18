@@ -3,6 +3,7 @@ package com.travel721;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +35,8 @@ import com.yuyakaido.android.cardstackview.SwipeableMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.travel721.Constants.*;
+import static com.travel721.Constants.GLOBAL_ANIMATION_DURATION;
+import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 
 public class MainActivity extends AppCompatActivity implements CardStackListener {
     private CardStackView cardStackView;
@@ -48,15 +51,40 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides title bar
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-        eventCards = getIntent().getParcelableArrayListExtra("events");
 
+        eventCards = getIntent().getParcelableArrayListExtra("events");
         rootConstraintLayout = findViewById(R.id.rootConstraintLayout);
 
         // Window mathematics
         windowHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
         cardStackView = findViewById(R.id.card_stack_view);
+        initialise();
 
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        // Create card stack manager
+        cardStackLayoutManager = new CardStackLayoutManager(this, this);
+        cardStackLayoutManager.setStackFrom(StackFrom.Top);
+        cardStackLayoutManager.setVisibleCount(5);
+        cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual);
+        List<Direction> directions = new ArrayList<>();
+        directions.add(Direction.Right);
+        directions.add(Direction.Left);
+        directions.add(Direction.Bottom);
+        cardStackLayoutManager.setDirections(directions);
+
+        // Create card stack adapter
+        CardStackAdapter cardStackAdapter = new CardStackAdapter(eventCards);
+
+        cardStackView.setLayoutManager(cardStackLayoutManager);
+        cardStackView.setAdapter(cardStackAdapter);
+    }
+
+    void initialise() {
         // Create card stack manager
         cardStackLayoutManager = new CardStackLayoutManager(this, this);
         cardStackLayoutManager.setStackFrom(StackFrom.Top);
@@ -147,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                         }
                     });
                 }
+                TextView desc = moreInfoCard.findViewById(R.id.eventLongDescription);
+                desc.setText(eventCards.get(cardStackLayoutManager.getTopPosition()-1).getDescription());
 
                 break;
         }
@@ -240,5 +270,17 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
                 }).start();
         cardStackView.rewind();
+    }
+
+    public void moreInfoButtonClicked(View view) {
+
+    }
+
+    public void settingsButtonClicked(View view) {
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+    }
+
+    public void previouslySelectedClicked(View view) {
     }
 }
