@@ -47,7 +47,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         View v = holder.itemView;
         currTV = v.findViewById(R.id.eventTitle);
         currTV.setText(ec.getName());
-        currTV = v.findViewById(R.id.eventVenue);
+        currTV = v.findViewById(R.id.eventCardVenue);
         currTV.setText(ec.getVenueName());
         currTV = v.findViewById(R.id.eventDate);
         currTV.setText(ec.getFormattedDate());

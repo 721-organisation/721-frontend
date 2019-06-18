@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     private CardStackLayoutManager cardStackLayoutManager;
     private ViewGroup rootConstraintLayout;
     private int windowHeight;
-    List<EventCard> eventCards;
+    ArrayList<EventCard> eventCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                         public void onMapReady(GoogleMap googleMap) {
                             // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
                             CameraPosition cameraPosition = new CameraPosition.Builder()
-                                    .target(eventCards.get(cardStackLayoutManager.getTopPosition()-1).getLocation())     // Sets the center of the map to Mountain View
+                                    .target(eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getLocation())     // Sets the center of the map to Mountain View
                                     .zoom(17)                   // Sets the zoom
                                     .tilt(30)                   // Sets the tilt of the camera to 30 degrees
                                     .build();                   // Creates a CameraPosition from the builder
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                     });
                 }
                 TextView desc = moreInfoCard.findViewById(R.id.eventLongDescription);
-                desc.setText(eventCards.get(cardStackLayoutManager.getTopPosition()-1).getDescription());
+                desc.setText(eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getDescription());
 
                 break;
         }
@@ -282,5 +282,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     }
 
     public void previouslySelectedClicked(View view) {
+        Intent i = new Intent(this, ListEventsActivity.class);
+        i.putParcelableArrayListExtra("events", eventCards);
+        startActivity(i);
     }
 }

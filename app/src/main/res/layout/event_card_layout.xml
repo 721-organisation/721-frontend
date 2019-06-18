@@ -36,7 +36,7 @@
                 tools:text="@string/event_title_placeholder" />
 
             <TextView
-                android:id="@+id/eventVenue"
+                android:id="@+id/eventCardVenue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
