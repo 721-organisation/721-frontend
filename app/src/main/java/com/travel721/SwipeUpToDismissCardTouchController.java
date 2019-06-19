@@ -7,17 +7,25 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.travel721.Constants.*;
+import static com.travel721.Constants.CARD_SWIPING_STICKINESS;
+import static com.travel721.Constants.GLOBAL_ANIMATION_DURATION;
+
 public class SwipeUpToDismissCardTouchController implements View.OnTouchListener {
 
     private View card;
-    private RecyclerView parentLayout;
+        private RecyclerView parentLayout;
     private int windowHeight;
     protected boolean dismissed = false;
 
     public SwipeUpToDismissCardTouchController(View card, RecyclerView parentLayout, int windowHeight) {
         this.card = card;
         this.parentLayout = parentLayout;
+        this.windowHeight = windowHeight;
+    }
+
+    public SwipeUpToDismissCardTouchController(View card, int windowHeight) {
+        this.card = card;
+//        this.parentLayout = parentLayout;
         this.windowHeight = windowHeight;
     }
 
@@ -52,9 +60,9 @@ public class SwipeUpToDismissCardTouchController implements View.OnTouchListener
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            parentLayout.removeView(card);
+//                            parentLayout.removeView(card);
                             card = null;
-                            parentLayout = null;
+//                            parentLayout = null;
                         }
                     });
                     dismissed = true;

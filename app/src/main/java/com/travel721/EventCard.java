@@ -11,6 +11,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class EventCard implements Parcelable, Serializable {
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
@@ -52,7 +55,6 @@ public class EventCard implements Parcelable, Serializable {
         price = in.readString();
         description = in.readString();
         sourceTag = in.readString();
-
 
     }
 
@@ -150,12 +152,30 @@ public class EventCard implements Parcelable, Serializable {
         this.eventHyperLink = eventHyperLink;
     }
 
+    public String getDayOfWeek() {
+        try {
+            Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
+            Date realCurrentDate = new Date();
+            String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(realCurrentDate);
+
+            if (formattedDate.equals(currentDate)) {
+                return "Today";
+            } else {
+                return new SimpleDateFormat("EEEE").format(realDateOfEvent);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
     public String getFormattedDate() {
         return formattedDate;
     }
 
     public void setFormattedDate(String formattedDate) {
         this.formattedDate = formattedDate;
+
     }
 
     public String getTime() {
@@ -219,5 +239,13 @@ public class EventCard implements Parcelable, Serializable {
 
     public String getSourceTag() {
         return sourceTag;
+    }
+
+    public double getLocationLatitude() {
+        return this.location.latitude;
+    }
+
+    public double getLocationLongitude() {
+        return this.location.longitude;
     }
 }

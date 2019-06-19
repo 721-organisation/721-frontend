@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -36,7 +38,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.event_card_layout, parent, false);
-
         return new ViewHolder(v);
     }
 
@@ -53,10 +54,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         currTV.setText(ec.getFormattedDate());
         currTV = v.findViewById(R.id.eventTime);
         currTV.setText(ec.getTime());
+        currTV = v.findViewById(R.id.dayOfWeekLabel);
+        currTV.setText(ec.getDayOfWeek());
         currTV = v.findViewById(R.id.eventPrice);
-        currTV.setText(ec.getPrice());
-        Glide.with(holder.itemView.findViewById(R.id.eventImage))
+        currTV.setText(currTV.getResources().getString(R.string.price,ec.getPrice()));
+        currTV = v.findViewById(R.id.eventSourceLabel);
+        currTV.setText(ec.getSourceTag());
+        ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
+        Glide.with(imageView.getContext())
                 .load(ec.getImgURL())
+                .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
                 .placeholder(R.drawable.loading_spinner)
                 .into((ImageView) holder.itemView.findViewById(R.id.eventImage));
     }

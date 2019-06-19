@@ -10,6 +10,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -232,8 +233,8 @@ public class SplashActivity extends Activity {
                                                                                         int radius = sharedPreferences.getInt("radius", testRadius);
                                                                                         int daysFromNow = sharedPreferences.getInt("daysFromNow", testDaysFromNow);
                                                                                         Map<String, String> params = new HashMap<>();
-                                                                                        params.put("latitude", String.valueOf(testLat));
-                                                                                        params.put("longitude", String.valueOf(testLong));
+                                                                                        params.put("latitude", String.valueOf(location.getLatitude()));
+                                                                                        params.put("longitude", String.valueOf(location.getLongitude()));
 
                                                                                         params.put("radius", String.valueOf(radius));
                                                                                         params.put("daysFromNow", String.valueOf(daysFromNow));
@@ -294,7 +295,8 @@ public class SplashActivity extends Activity {
 
                                                 }
                                             });
-                                    dialogBuilder.create().show();
+//                                    dialogBuilder.create().show();
+                                    Toast.makeText(getBaseContext(),"We couldn't get your location, please enable location and try again.",Toast.LENGTH_LONG).show();
                                 }
 
 

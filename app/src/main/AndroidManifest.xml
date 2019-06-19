@@ -18,10 +18,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ListEventsActivity"></activity>
+        <activity android:name=".EventMoreInfoActivity"
+            android:theme="@style/Theme.Transparent"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.travel721.MainActivity" />
