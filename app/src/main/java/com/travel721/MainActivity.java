@@ -1,11 +1,9 @@
 package com.travel721;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -21,7 +19,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -40,25 +37,26 @@ import java.util.Map;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 
+/**
+ * This class is the main layout which contains logic
+ * for the CardStackView and the on screen buttons.
+ *
+ * @author Bhav
+ */
 public class MainActivity extends AppCompatActivity implements CardStackListener {
+
+    // Keep a track of the CardView and it's adapter
     private CardStackView cardStackView;
     private CardStackLayoutManager cardStackLayoutManager;
-    private ViewGroup rootConstraintLayout;
-    private int windowHeight;
     ArrayList<EventCard> eventCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides title bar
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
-
+        // Gets the event info obtained from the splash activity
         eventCards = getIntent().getParcelableArrayListExtra("events");
-        rootConstraintLayout = findViewById(R.id.rootConstraintLayout);
-
-        // Window mathematics
-        windowHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
         cardStackView = findViewById(R.id.card_stack_view);
         initialise();
@@ -97,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     private boolean showingInfo = false;
 
-
     @Override
     public void onCardSwiped(Direction direction) {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -113,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                             @Override
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
-                                Toast.makeText(getBaseContext(), response, Toast.LENGTH_LONG).show();
+                                Log.v("SWIPE", "Successfully registered dislike");
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                         Map<String, String> map = new HashMap<>();
                         map.put("swipe", "false");
                         map.put("eventSourceId", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventSourceID());
-                        map.put("profileId",getIntent().getStringExtra("fiid"));
+                        map.put("profileId", getIntent().getStringExtra("fiid"));
                         return map;
                     }
                 };
@@ -143,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                             @Override
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
-                                Toast.makeText(getBaseContext(), response, Toast.LENGTH_LONG).show();
+                                Log.v("SWIPE", "Successfully registered like");
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                         Map<String, String> map = new HashMap<>();
                         map.put("swipe", "true");
                         map.put("eventSourceId", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventSourceID());
-                        map.put("profileId",getIntent().getStringExtra("fiid"));
+                        map.put("profileId", getIntent().getStringExtra("fiid"));
                         return map;
                     }
                 };
@@ -180,15 +177,18 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     @Override
     protected void onPostResume() {
-        RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
-                .setDirection(Direction.Bottom)
-                .setDuration(Duration.Normal.duration)
-                .setInterpolator(new DecelerateInterpolator())
-                .build();
-        cardStackLayoutManager.setRewindAnimationSetting(setting);
-        cardStackView.rewind();
-        showingInfo = false;
         super.onPostResume();
+        if (showingInfo) {
+            RewindAnimationSetting setting = new RewindAnimationSetting.Builder()
+                    .setDirection(Direction.Bottom)
+                    .setDuration(Duration.Normal.duration)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .build();
+            cardStackLayoutManager.setRewindAnimationSetting(setting);
+            cardStackView.rewind();
+            showingInfo = false;
+
+        }
     }
 
     @Override
@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     public void settingsButtonClicked(View view) {
         Intent i = new Intent(this, SettingsActivity.class);
         startActivity(i);
+        finish();
     }
 
     public void previouslySelectedClicked(View view) {

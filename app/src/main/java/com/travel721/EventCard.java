@@ -5,8 +5,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +28,17 @@ public class EventCard implements Parcelable, Serializable {
     private String name;
     private String eventSourceID;
     private String venueName;
-    private LatLng location;
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    private String latitude;
+    private String longitude;
     private String imgURL;
     private String eventHyperLink;
     private String formattedDate;
@@ -39,14 +47,36 @@ public class EventCard implements Parcelable, Serializable {
     private String price;
     private Bitmap imgBitmap = null;
     private String description;
+    private String sourceTag;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof EventCard) {
+            EventCard eventCard = (EventCard) obj;
+            return
+                    this.name.equals(eventCard.name) &&
+                            this.eventSourceID.equals(eventCard.eventSourceID) &&
+                            this.venueName.equals(eventCard.venueName) &&
+                            this.latitude.equals(eventCard.latitude) &&
+                            this.longitude.equals(eventCard.longitude) &&
+                            this.imgURL.equals(eventCard.imgURL) &&
+                            this.eventHyperLink.equals(eventCard.eventHyperLink) &&
+                            this.formattedDate.equals(eventCard.formattedDate) &&
+                            this.minimumAge.equals(eventCard.minimumAge) &&
+                            this.price.equals(eventCard.price) &&
+                            this.description.equals(eventCard.description) &&
+                            this.sourceTag.equals(eventCard.sourceTag);
+        } else {
+            return false;
+        }
+    }
 
     protected EventCard(Parcel in) {
         name = in.readString();
         eventSourceID = in.readString();
         venueName = in.readString();
-        String lat = in.readString();
-        String lon = in.readString();
-        location = new LatLng(Double.valueOf(lat), Double.valueOf(lon));
+        latitude = in.readString();
+        longitude = in.readString();
         imgURL = in.readString();
         eventHyperLink = in.readString();
         formattedDate = in.readString();
@@ -56,7 +86,6 @@ public class EventCard implements Parcelable, Serializable {
         description = in.readString();
         sourceTag = in.readString();
     }
-
 
     public EventCard() {
     }
@@ -68,7 +97,8 @@ public class EventCard implements Parcelable, Serializable {
         eventCard.setName(checkHasAndReturnData(jo, "name"));
         eventCard.setEventSourceID(checkHasAndReturnData(jo, "eventSourceId"));
         eventCard.setVenueName(checkHasAndReturnData(jo, "venueName"));
-        eventCard.setLocation(checkHasAndReturnData(jo, "venueLat"), checkHasAndReturnData(jo, "venueLong"));
+        eventCard.setLatitude(checkHasAndReturnData(jo, "venueLat"));
+        eventCard.setLongitude(checkHasAndReturnData(jo, "venueLong"));
         eventCard.setImgURL(checkHasAndReturnData(jo, "image"));
         eventCard.setEventHyperLink(checkHasAndReturnData(jo, "link"));
         eventCard.setFormattedDate(checkHasAndReturnData(jo, "date"));
@@ -94,8 +124,8 @@ public class EventCard implements Parcelable, Serializable {
         parcel.writeString(name);
         parcel.writeString(eventSourceID);
         parcel.writeString(venueName);
-        parcel.writeString(String.valueOf(location.latitude));
-        parcel.writeString(String.valueOf(location.longitude));
+        parcel.writeString(latitude);
+        parcel.writeString(longitude);
         parcel.writeString(imgURL);
         parcel.writeString(eventHyperLink);
         parcel.writeString(formattedDate);
@@ -128,19 +158,6 @@ public class EventCard implements Parcelable, Serializable {
 
     public void setVenueName(String venueName) {
         this.venueName = venueName;
-    }
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public void setLocation(LatLng location) {
-        this.location = location;
-    }
-
-    public void setLocation(String lat, String lon) {
-        if (lat.equals("") || lon.equals("")) setLocation(new LatLng(0, 0));
-        this.setLocation(new LatLng(Float.valueOf(lat), Float.valueOf(lon)));
     }
 
     public String getEventHyperLink() {
@@ -230,21 +247,21 @@ public class EventCard implements Parcelable, Serializable {
         this.description = description;
     }
 
-    private String sourceTag;
+    public String getSourceTag() {
+        return sourceTag;
+    }
 
     public void setSourceTag(String sourceTag) {
         this.sourceTag = sourceTag;
     }
 
-    public String getSourceTag() {
-        return sourceTag;
+    public String getLocationLatitude() {
+        return latitude;
     }
 
-    public double getLocationLatitude() {
-        return this.location.latitude;
+    public String getLocationLongitude() {
+        return longitude;
     }
 
-    public double getLocationLongitude() {
-        return this.location.longitude;
-    }
+
 }

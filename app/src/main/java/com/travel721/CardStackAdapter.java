@@ -83,7 +83,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             public void onGenerated(Palette p) {
                                 int defaultColour = overlayImageView.getResources().getColor(R.color.colorAccent);
 
-                                int drawable = getColourMatchedOverlay(p.getDarkVibrantColor(defaultColour), overlayImageView.getContext());
+                                int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
 
                                 Drawable overlayDrawable = overlayImageView.getResources().getDrawable(drawable);
                                 overlayImageView.setImageDrawable(overlayDrawable);

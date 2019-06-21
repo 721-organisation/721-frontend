@@ -18,12 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ListEventsActivity"></activity>
-        <activity android:name=".EventMoreInfoActivity"
+        <activity
+            android:name=".EventMoreInfoActivity"
             android:theme="@style/Theme.Transparent"></activity>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.AppCompat">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -40,6 +40,16 @@
         <activity android:name=".MainActivity" />
         <activity
             android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
+
+        </activity>
+        <activity
+            android:name=".ReloadMainActivity"
+            android:theme="@style/SplashTheme">
+
+        </activity>
+        <activity
+            android:name=".InitialAppLoader"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

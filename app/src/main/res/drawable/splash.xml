@@ -7,8 +7,4 @@
     <item
         android:drawable="@mipmap/ic_launcher_721"
         android:gravity="center"/>
-    <item
-        android:drawable="@drawable/loading_spinner"
-        android:gravity="center"
-        android:duration="100"/>
 </layer-list>

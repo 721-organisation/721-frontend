@@ -41,11 +41,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.travel721.Constants.API_ROOT_URL;
+import static com.travel721.Constants.eventProfileSearchFilter;
+import static com.travel721.Constants.eventSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
@@ -85,6 +89,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FirebaseApp.initializeApp(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         SharedPreferences sharedPreferences =
@@ -131,7 +136,7 @@ public class SplashActivity extends Activity {
                                                 final ArrayList<EventCard> eventsFound = new ArrayList<>();
                                                 final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                                                 final String finalIID = task.getResult().getToken();
-                                                Log.v("FIID",finalIID);
+                                                Log.v("FIID", finalIID);
                                                 // Get an access token for the API
 
                                                 // Auth params
@@ -140,7 +145,7 @@ public class SplashActivity extends Activity {
                                                 loginPOST.put("password", p);
                                                 // Get access token
                                                 // POST REQUEST: Authenticate
-                                                final StringRequest stringRequest = new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
+                                                queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
                                                         new Response.Listener<String>() {
                                                             @Override
                                                             public void onResponse(String response) {
@@ -152,6 +157,7 @@ public class SplashActivity extends Activity {
 
                                                                     Log.v("API access Token ", accessToken);
                                                                     Log.v("IID", finalIID);
+                                                                    Log.v("REQUEST", "Checking profile");
                                                                     // GET REQUEST: Does profile exist?
                                                                     queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles?" + profileSearchURL(finalIID) + "&access_token=" + accessToken, new Response.Listener<String>() {
                                                                         @Override
@@ -185,6 +191,7 @@ public class SplashActivity extends Activity {
                                                                                     // User exists, don't need to do anything yet
                                                                                 }
                                                                                 // PUT REQUEST: Update events on server
+                                                                                Log.v("Requests", "Updating events on server...");
                                                                                 queue.add(new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, new Response.Listener<String>() {
                                                                                     @Override
                                                                                     public void onResponse(String response) {
@@ -192,27 +199,61 @@ public class SplashActivity extends Activity {
                                                                                         queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, new Response.Listener<String>() {
                                                                                             @Override
                                                                                             public void onResponse(String response) {
-                                                                                                Log.v("RES", response);
                                                                                                 try {
                                                                                                     JSONObject jo = new JSONObject(response);
                                                                                                     JSONArray events = jo.getJSONArray("getWithinDistance");
 
-                                                                                                    Log.v("ImTRYING", events.toString());
                                                                                                     for (int i = 0; i < events.length(); i++) {
                                                                                                         JSONObject event = events.getJSONObject(i);
-                                                                                                        Log.v("RES", "Added an event to the list");
                                                                                                         eventsFound.add(EventCard.unpackFromJson(event));
 
                                                                                                     }
 
-                                                                                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                                                                                    Log.v("FINISHED", "Added" + eventsFound.size() + "events");
-                                                                                                    intent.putParcelableArrayListExtra("events", eventsFound);
-                                                                                                    intent.putExtra("accessToken",accessToken);
-                                                                                                    intent.putExtra("fiid",finalIID);
-                                                                                                    startActivity(intent);
-                                                                                                    finish();
-                                                                                                } catch (JSONException e) {
+                                                                                                    // Filter events already swiped through
+                                                                                                    // Request a string response from the provided URL.
+                                                                                                    Log.v("Requests", "Filtering through events already swiped through");
+                                                                                                    queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileSearchFilter(finalIID),
+                                                                                                            new Response.Listener<String>() {
+                                                                                                                @Override
+                                                                                                                public void onResponse(String response) {
+                                                                                                                    try {
+                                                                                                                        final JSONArray eventProfileArray = new JSONArray(response);
+                                                                                                                        JSONObject jsonObject;
+                                                                                                                        ArrayList<String> alreadySwipedIDs = new ArrayList<>();
+                                                                                                                        for (int i = 0; i < eventProfileArray.length(); i++) {
+                                                                                                                            jsonObject = eventProfileArray.getJSONObject(i);
+                                                                                                                            String eventID = jsonObject.getString("eventSourceId");
+                                                                                                                            alreadySwipedIDs.add(eventID);
+                                                                                                                        }
+                                                                                                                        ArrayList<EventCard> filteredCards = new ArrayList<>();
+                                                                                                                        for(EventCard e : eventsFound){
+                                                                                                                            if(!alreadySwipedIDs.contains(e.getEventSourceID())){
+                                                                                                                                filteredCards.add(e);
+                                                                                                                            }
+                                                                                                                        }
+
+                                                                                                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                                                                                        intent.putParcelableArrayListExtra("events", filteredCards);
+                                                                                                                        intent.putExtra("accessToken",accessToken);
+                                                                                                                        intent.putExtra("fiid",finalIID);
+                                                                                                                        startActivity(intent);
+                                                                                                                        finish();
+
+                                                                                                                    } catch (JSONException je) {
+                                                                                                                        je.printStackTrace();
+                                                                                                                    }
+                                                                                                                }
+
+
+                                                                                                            },
+                                                                                                            new Response.ErrorListener() {
+                                                                                                                @Override
+                                                                                                                public void onErrorResponse(VolleyError error) {
+
+                                                                                                                }
+                                                                                                            }));
+                                                                                                } catch (
+                                                                                                        JSONException e) {
                                                                                                     e.printStackTrace();
                                                                                                 }
 
@@ -220,19 +261,24 @@ public class SplashActivity extends Activity {
                                                                                             }
                                                                                         }, new Response.ErrorListener() {
                                                                                             @Override
-                                                                                            public void onErrorResponse(VolleyError error) {
+                                                                                            public void onErrorResponse
+                                                                                                    (VolleyError
+                                                                                                             error) {
                                                                                                 // TODO create error activity
                                                                                             }
                                                                                         }));
                                                                                     }
-                                                                                }, new Response.ErrorListener() {
-                                                                                    @Override
-                                                                                    public void onErrorResponse(VolleyError error) {
+                                                                                },
+                                                                                        new Response.ErrorListener() {
+                                                                                            @Override
+                                                                                            public void onErrorResponse(VolleyError error) {
 
-                                                                                    }
-                                                                                }) {
+                                                                                            }
+                                                                                        }) {
                                                                                     @Override
-                                                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                                                    protected Map<String, String> getParams
+                                                                                            () throws
+                                                                                            AuthFailureError {
 
                                                                                         Map<String, String> params = new HashMap<>();
                                                                                         params.put("latitude", String.valueOf(location.getLatitude()));
@@ -245,7 +291,8 @@ public class SplashActivity extends Activity {
                                                                                 });
 
 
-                                                                            } catch (JSONException e) {
+                                                                            } catch (
+                                                                                    JSONException e) {
                                                                                 e.printStackTrace();
                                                                             }
                                                                         }
@@ -257,7 +304,8 @@ public class SplashActivity extends Activity {
                                                                     }));
 
 
-                                                                } catch (JSONException e) {
+                                                                } catch (
+                                                                        JSONException e) {
                                                                     e.printStackTrace();
                                                                 }
 
@@ -273,13 +321,10 @@ public class SplashActivity extends Activity {
                                                     protected Map<String, String> getParams() {
                                                         return loginPOST;
                                                     }
-                                                };
+                                                });
 
-                                                // Add the request to the RequestQueue.
-                                                queue.add(stringRequest);
-
-
-                                            } catch (IOException e) {
+                                            } catch (
+                                                    IOException e) {
                                                 e.printStackTrace();
                                             }
 

@@ -24,7 +24,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, R.anim.slideup);
+        overridePendingTransition(0, R.anim.fade_out);
     }
 
     @Override
