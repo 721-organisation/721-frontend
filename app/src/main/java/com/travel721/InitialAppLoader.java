@@ -10,7 +10,7 @@ public class InitialAppLoader extends SplashActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setContentView(R.layout.loading_spinner_layout);
-        Snackbar.make(findViewById(R.id.loading_spinner_view), "Loading the latest events near you...", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.loading_app_tooltip), Snackbar.LENGTH_LONG).show();
         super.onCreate(savedInstanceState);
     }
 }
