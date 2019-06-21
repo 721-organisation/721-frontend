@@ -55,7 +55,6 @@ public class EventCard implements Parcelable, Serializable {
         price = in.readString();
         description = in.readString();
         sourceTag = in.readString();
-
     }
 
 

@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:onClick="openCCT"
-        android:text="Go to event webpage" />
+        android:text="@string/go_to_event_webpage" />
 
     <TextView
         android:id="@+id/eventTitle"

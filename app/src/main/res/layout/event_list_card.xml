@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFFFF"
         android:padding="10dp"
-        android:text="TextView"
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -45,29 +44,27 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/eventCardName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:text="TextView"
-            android:textAlignment="textStart"
-            android:textColor="#FFFFFFFF"
-            android:textStyle="bold"
-            app:autoSizeTextType="uniform" />
-
-        <TextView
             android:id="@+id/eventCardDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="TextView"
-            android:textAlignment="textStart"
+            android:gravity="center|start"
             android:textColor="#FFFFFFFF"
-            app:autoSizeTextType="uniform" />
+            app:autoSizeTextType="uniform"
+            tools:text="Event Time" />
+
+        <TextView
+            android:id="@+id/eventCardName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="4"
+            android:gravity="center|start"
+            android:textColor="#FFFFFFFF"
+            android:textStyle="bold"
+            app:autoSizeTextType="uniform"
+            tools:text="Event Name" />
 
         <TextView
             android:id="@+id/eventCardVenue"
@@ -75,11 +72,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="TextView"
-            android:textAlignment="textStart"
+            android:gravity="center|start"
             android:textColor="#FFFFFFFF"
-            app:autoSizeTextType="uniform" />
+            app:autoSizeTextType="uniform"
+            tools:text="Event Venue" />
 
     </LinearLayout>
 

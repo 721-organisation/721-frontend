@@ -3,4 +3,20 @@
     <color name="colorPrimary">#FE6060</color>
     <color name="colorPrimaryDark">#DF5151</color>
     <color name="colorAccent">#FE6060</color>
+    <color name="darkgreen6">#2D876E</color>
+    <color name="bronze6">#9B813A</color>
+    <color name="green6">#009B55</color>
+    <color name="navy6">#004E84</color>
+    <color name="pink6">#C717BD</color>
+    <color name="purple6">#8264E6</color>
+    <color name="red6">#B21414</color>
+    <color name="teal6">#B6DDE6</color>
+    <color name="bronze5">#684E07</color>
+    <color name="darkgreen5">#00543B</color>
+    <color name="green5">#006822</color>
+    <color name="navy5">#001B51</color>
+    <color name="pink5">#94008A</color>
+    <color name="purple5">#4F31B3</color>
+    <color name="red5">#E54747</color>
+    <color name="teal5">#83AAB3</color>
 </resources>

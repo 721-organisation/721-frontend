@@ -24,4 +24,5 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="going_to_experience">Events you\'ve liked…</string>
     <string name="price">Price: %s</string>
+    <string name="go_to_event_webpage">Go to event webpage</string>
 </resources>

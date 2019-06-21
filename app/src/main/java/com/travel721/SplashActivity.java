@@ -48,8 +48,6 @@ import java.util.Map;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
-import static com.travel721.Constants.testLat;
-import static com.travel721.Constants.testLong;
 import static com.travel721.Constants.testRadius;
 
 public class SplashActivity extends Activity {
@@ -89,6 +87,10 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        final int radius = sharedPreferences.getInt("radius", testRadius);
+        final int daysFromNow = sharedPreferences.getInt("daysFromNow", testDaysFromNow);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // Ask for permission
@@ -129,7 +131,7 @@ public class SplashActivity extends Activity {
                                                 final ArrayList<EventCard> eventsFound = new ArrayList<>();
                                                 final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
                                                 final String finalIID = task.getResult().getToken();
-
+                                                Log.v("FIID",finalIID);
                                                 // Get an access token for the API
 
                                                 // Auth params
@@ -148,7 +150,7 @@ public class SplashActivity extends Activity {
                                                                     final String accessToken = String.valueOf(jo.get("id"));
                                                                     // Encoded URL for profile search
 
-                                                                    Log.v("Token ", accessToken);
+                                                                    Log.v("API access Token ", accessToken);
                                                                     Log.v("IID", finalIID);
                                                                     // GET REQUEST: Does profile exist?
                                                                     queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles?" + profileSearchURL(finalIID) + "&access_token=" + accessToken, new Response.Listener<String>() {
@@ -187,13 +189,14 @@ public class SplashActivity extends Activity {
                                                                                     @Override
                                                                                     public void onResponse(String response) {
                                                                                         // GET REQUEST: Get events from the server
-                                                                                        queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + 4 + "&daysFromNow=" + 4 + "&access_token=" + accessToken, new Response.Listener<String>() {
+                                                                                        queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, new Response.Listener<String>() {
                                                                                             @Override
                                                                                             public void onResponse(String response) {
                                                                                                 Log.v("RES", response);
                                                                                                 try {
                                                                                                     JSONObject jo = new JSONObject(response);
                                                                                                     JSONArray events = jo.getJSONArray("getWithinDistance");
+
                                                                                                     Log.v("ImTRYING", events.toString());
                                                                                                     for (int i = 0; i < events.length(); i++) {
                                                                                                         JSONObject event = events.getJSONObject(i);
@@ -205,6 +208,8 @@ public class SplashActivity extends Activity {
                                                                                                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                                                                                     Log.v("FINISHED", "Added" + eventsFound.size() + "events");
                                                                                                     intent.putParcelableArrayListExtra("events", eventsFound);
+                                                                                                    intent.putExtra("accessToken",accessToken);
+                                                                                                    intent.putExtra("fiid",finalIID);
                                                                                                     startActivity(intent);
                                                                                                     finish();
                                                                                                 } catch (JSONException e) {
@@ -228,10 +233,7 @@ public class SplashActivity extends Activity {
                                                                                 }) {
                                                                                     @Override
                                                                                     protected Map<String, String> getParams() throws AuthFailureError {
-                                                                                        SharedPreferences sharedPreferences =
-                                                                                                PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                                                                                        int radius = sharedPreferences.getInt("radius", testRadius);
-                                                                                        int daysFromNow = sharedPreferences.getInt("daysFromNow", testDaysFromNow);
+
                                                                                         Map<String, String> params = new HashMap<>();
                                                                                         params.put("latitude", String.valueOf(location.getLatitude()));
                                                                                         params.put("longitude", String.valueOf(location.getLongitude()));
@@ -285,18 +287,8 @@ public class SplashActivity extends Activity {
                                     });
                                 } else {
                                     // Logic to handle location object
-                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getBaseContext());
-                                    dialogBuilder
-                                            .setMessage("We couldn't get your location, please enable location and try again.")
-                                            .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    finish();
-
-                                                }
-                                            });
-//                                    dialogBuilder.create().show();
-                                    Toast.makeText(getBaseContext(),"We couldn't get your location, please enable location and try again.",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getBaseContext(), "We couldn't get your location, please enable location and try again.", Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
 
 
