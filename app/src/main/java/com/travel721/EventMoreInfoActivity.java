@@ -40,8 +40,8 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
-                    double latitude = getIntent().getDoubleExtra("lat", 0);
-                    double longitude = getIntent().getDoubleExtra("lon", 0);
+                    double latitude = Double.parseDouble(getIntent().getStringExtra("lat"));
+                    double longitude = Double.parseDouble(getIntent().getStringExtra("lon"));
                     googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(latitude, longitude))
                             .title("Marker"));

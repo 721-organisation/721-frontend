@@ -112,6 +112,10 @@ public class EventCard implements Parcelable, Serializable {
 
     private static String checkHasAndReturnData(JSONObject jo, String prop) throws JSONException {
         if (jo.has(prop)) {
+            String strProp = jo.getString(prop);
+            if (strProp.equals("")) {
+                return "No data provided for " + prop;
+            }
             return jo.getString(prop);
         } else {
             return "No data provided for " + prop;
