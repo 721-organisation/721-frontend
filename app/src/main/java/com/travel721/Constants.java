@@ -3,6 +3,9 @@ package com.travel721;
 import java.util.Random;
 
 public class Constants {
+    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 999;
+    public static final int REQUEST_LOCATION_PERMISSIONS = 999;
+
     public final static int SLIDE_ANIMATION_DURATION = 300;
     public static final int GLOBAL_ANIMATION_DURATION = 100;
     public static final double CARD_SWIPING_STICKINESS = 0.4;

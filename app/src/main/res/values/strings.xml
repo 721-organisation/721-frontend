@@ -27,4 +27,10 @@
     <string name="go_to_event_webpage">Go to event webpage</string>
     <string name="reloading_app">Applying your settings and loading the latest events...</string>
     <string name="loading_app_tooltip">Loading the latest events near you...</string>
+    <string-array name="libraries">
+        <item></item>
+        <item></item>
+        <item></item>
+        <item></item>
+    </string-array>
 </resources>

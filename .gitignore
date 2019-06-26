@@ -11,3 +11,6 @@
 /build
 /captures
 .externalNativeBuild
+app/src/debug/res/values/strings.xml
+app/src/release/res/values/strings.xml
+app/google-services.json

@@ -28,9 +28,9 @@
 
         </SeekBarPreference>
         <SeekBarPreference
+            android:max="14"
             app:defaultValue="2"
             app:key="daysFromNow"
-            android:max="14"
             app:min="1"
             app:showSeekBarValue="true"
             app:summary="We will curate events this many days from now">
@@ -39,5 +39,18 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Third Party Libraries">
+        <Preference
+            app:key="loadTPLIntent"
+            app:title="This app relies on third-party libraries. To see them, click here.">
+        <intent
+            android:targetClass="com.travel721.ListLibrariesActivity"
+            android:targetPackage="com.travel721">
+            <extra
+                android:name="example_key"
+                android:value="example_value" />
+        </intent>
+        </Preference>
+    </PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
