@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
@@ -55,7 +56,9 @@ import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
  * @author Bhav
  */
 public class MainActivity extends AppCompatActivity implements CardStackListener {
-
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
     // Keep a track of the CardView and it's adapter
     private CardStackView cardStackView;
     private CardStackLayoutManager cardStackLayoutManager;
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         setContentView(R.layout.activity_main);
 
         FloatingActionButton fab = findViewById(R.id.overflowFab);
+        fab.findViewById(R.id.fab_icon_wrapper).setBackground(ContextCompat.getDrawable(this, R.drawable.ic_more_vert));
         final com.google.android.material.floatingactionbutton.FloatingActionButton likeButton = findViewById(R.id.thumbupButton);
         final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = findViewById(R.id.thumbdownButton);
         fab.setSpeedDialMenuAdapter(new MainActivitySpeedDialAdapter());

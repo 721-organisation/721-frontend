@@ -3,4 +3,5 @@
     <integer name="radius_min">1</integer>
     <integer name="radius_max">10</integer>
     <integer name="radius_default">5</integer>
+    <integer name="default_animation_length">300</integer>
 </resources>

@@ -104,48 +104,57 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventTitle"
+                style="@android:style/TextAppearance.DeviceDefault.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
                 android:gravity="center_vertical"
-                app:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:singleLine="true"
                 tools:text="@string/event_title_placeholder" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventCardVenue"
+                style="@android:style/TextAppearance.DeviceDefault.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                app:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:singleLine="true"
                 tools:text="Sample Event Venue" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventDate"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                app:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:singleLine="true"
                 tools:text="01/01/1970" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventTime"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                app:autoSizeTextType="uniform"
+                android:maxLines="1"
+                android:singleLine="true"
                 tools:text="00:00" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventPrice"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@string/price"
-                app:autoSizeTextType="uniform"
                 tools:text="Price: £0.00" />
 
         </LinearLayout>

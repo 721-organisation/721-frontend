@@ -19,11 +19,15 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.location.LocationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
@@ -85,7 +89,6 @@ import static com.travel721.Constants.testRadius;
 
 public abstract class SplashActivity extends Activity {
 
-    protected boolean disableSnackBars;
     LocationRequest mLocationRequestHighAccuracy;
     // Private fields
     private FusedLocationProviderClient fusedLocationClient;
@@ -109,7 +112,8 @@ public abstract class SplashActivity extends Activity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // Location permission was granted, yay!
-                    Snackbar.make(findViewById(R.id.loading_spinner_view), "Thanks! Getting your location now...", Snackbar.LENGTH_SHORT).show();
+                    //Snackbar.make(findViewById(R.id.loading_spinner_view), "Thanks! Getting your location now...", Snackbar.LENGTH_SHORT).show();
+                    statusText.setText("Thanks! Getting your location now...");
                     Log.v("DOLOAD", "Called from onRPR");
                     doLoad();
                 } else {
@@ -124,18 +128,29 @@ public abstract class SplashActivity extends Activity {
         }
     }
 
+    TextSwitcher statusText;
+
     // TODO permission first, then change settings - not the other way around
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        disableSnackBars = getIntent().getBooleanExtra("DisableSnackBars", false);
         super.onCreate(savedInstanceState);
+        statusText = findViewById(R.id.statusText);
+
+        statusText.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                TextView tv = new TextView(SplashActivity.this);
+                tv.setTextColor(getResources().getColor(android.R.color.white));
+                return tv;
+            }
+        });
+        statusText.setInAnimation(this, R.anim.fade_in_text_switch);
+        statusText.setOutAnimation(this, R.anim.fade_out_text_switch);
         // Initialise Firebase
         FirebaseApp.initializeApp(this);
         //Initialise FLP
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         // Review Location Settings
-        if (!disableSnackBars)
-            Snackbar.make(findViewById(R.id.loading_spinner_view), "Getting your current location...", Snackbar.LENGTH_SHORT).show();
         mLocationRequestHighAccuracy = LocationRequest.create();
         mLocationRequestHighAccuracy.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -182,7 +197,9 @@ public abstract class SplashActivity extends Activity {
     }
 
     private void doLoad() {
+        statusText.setText("Checking permissions...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.v("PERMS","FAIL");
             // Ask for permission
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             dialogBuilder
@@ -198,6 +215,7 @@ public abstract class SplashActivity extends Activity {
                     });
             dialogBuilder.create().show();
         } else {
+            Log.v("PERMS","SUCCESS");
             // All permissions and settings satisfied, begin loading location
             // Sets the location callback
             locationCallback = new LocationCallback() {
@@ -207,6 +225,7 @@ public abstract class SplashActivity extends Activity {
                     if (locationResult == null || locationResult.getLastLocation() == null) {
                         // No possible way to get location
                         // Show the user an error message
+                        statusText.setVisibility(View.GONE);
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, new View.OnClickListener() {
                                     @Override
@@ -221,6 +240,7 @@ public abstract class SplashActivity extends Activity {
                             @Override
                             public void onLocationChanged(Location location) {
                                 locationManager.removeUpdates(this);
+                                Log.v("LOCGET","From LM");
                                 registerAndGetEvents(location);
                             }
 
@@ -239,8 +259,11 @@ public abstract class SplashActivity extends Activity {
 
                             }
                         };
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,locationListener,null);
+
                     } else {
+                        Log.v("LOCGET","From FLP");
+
                         registerAndGetEvents(locationResult.getLastLocation());
                     }
 
@@ -249,7 +272,8 @@ public abstract class SplashActivity extends Activity {
             // Request the location update
             fusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy,
                     locationCallback,
-                    Looper.myLooper());
+                    null);
+            Log.v("LOGGER","From UGH");
         }
     }
 
@@ -263,17 +287,12 @@ public abstract class SplashActivity extends Activity {
         fusedLocationClient.removeLocationUpdates(locationCallback);
 
         // Extract location and show a nice message with their city/county name
-        Geocoder geocoder = new Geocoder(SplashActivity.this, Locale.getDefault());
-        try {
-            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            String city = address.get(0).getSubAdminArea();
-            Snackbar.make(findViewById(R.id.loading_spinner_view), "Loading the latest experiences in " + city + "...", Snackbar.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Snackbar.make(findViewById(R.id.loading_spinner_view), "Loading the latest experiences...", Snackbar.LENGTH_SHORT).show();
-        }
+        final Geocoder geocoder = new Geocoder(SplashActivity.this, Locale.getDefault());
+
 
         // Got last known location. In some rare situations this can be null.
         // NB: I've mitigated most of these rare cases.
+        statusText.setText("Checking in with 721");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -316,6 +335,7 @@ public abstract class SplashActivity extends Activity {
                                                 try {
                                                     JSONArray profilesResponse = new JSONArray(response);
                                                     if (profilesResponse.isNull(0)) {
+                                                        statusText.setText("Registering with 721...");
                                                         // User does not exist. This condition definitely needs testing
                                                         Log.v("USERS", "User not found, creating...");
                                                         queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, new Response.Listener<String>() {
@@ -340,6 +360,13 @@ public abstract class SplashActivity extends Activity {
 
                                                     } else {
                                                         // User exists, don't need to do anything yet
+                                                        try {
+                                                            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                                            String city = address.get(0).getSubAdminArea();
+                                                            statusText.setText("Welcome back! Loading the latest experiences in " + city + "...");
+                                                        } catch (IOException e) {
+                                                            statusText.setText("Welcome back! Loading the latest experiences...");
+                                                        }
                                                     }
                                                     // PUT REQUEST: Update events on server
                                                     Log.v("Requests", "Updating events on server...");
