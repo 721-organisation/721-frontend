@@ -26,7 +26,12 @@
     <string name="price">Price: %s</string>
     <string name="go_to_event_webpage">Go to event webpage</string>
     <string name="reloading_app">Applying your settings and loading the latest events...</string>
-    <string name="loading_app_tooltip">Loading the latest events near you...</string>
+    <string name="location_is_off_title">Location is off</string>
+    <string name="location_is_off_message">721 needs your location in order to continue</string>
+    <string name="location_permission_required_title">Location Permission Required</string>
+    <string name="location_permission_required_message">721 needs your location to show you events near you</string>
+    <string name="no_location_error_message">We couldn\'t get your location, please check location settings and try again.</string>
+    <string name="loading_app_tooltip">Loading...</string>
     <string-array name="libraries">
         <item></item>
         <item></item>

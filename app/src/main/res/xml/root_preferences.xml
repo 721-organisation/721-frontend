@@ -28,7 +28,7 @@
 
         </SeekBarPreference>
         <SeekBarPreference
-            android:max="14"
+            android:max="7"
             app:defaultValue="2"
             app:key="daysFromNow"
             app:min="1"

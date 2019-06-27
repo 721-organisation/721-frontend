@@ -14,7 +14,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(this, UpdatedSettingsSplash.class);
+        Intent i = new Intent(this, UpdatedSettingsSplashActivity.class);
         startActivity(i);
         finish();
         overridePendingTransition(0,R.anim.fade_out);

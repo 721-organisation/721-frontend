@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         fab.setOnSpeedDialMenuOpenListener(new SpeedDialMenuOpenListener() {
             @Override
             public void onOpen(@NotNull FloatingActionButton floatingActionButton) {
-                floatingActionButton.setContentCoverColour(0x99ff9900);
+                floatingActionButton.setContentCoverColour(0x99fe6060);
                 floatingActionButton.openSpeedDialMenu();
                 floatingActionButton.setContentCoverEnabled(true);
                 likeButton.setVisibility(View.INVISIBLE);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         fab.setOnSpeedDialMenuCloseListener(new SpeedDialMenuCloseListener() {
             @Override
             public void onClose(@NotNull FloatingActionButton floatingActionButton) {
-                floatingActionButton.setContentCoverColour(0x99ff9900);
+                floatingActionButton.setContentCoverColour(0x99fe6060);
 
                 floatingActionButton.closeSpeedDialMenu();
                 floatingActionButton.setContentCoverEnabled(false);

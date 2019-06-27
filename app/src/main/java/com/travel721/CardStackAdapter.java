@@ -24,11 +24,14 @@ import java.util.List;
 import static com.travel721.ColourFinder.getColourMatchedOverlay;
 import static com.travel721.Constants.getRandomOverlay;
 
+/**
+ * This is the adapter for the Event Card
+ *
+ * @author Bhav
+ */
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
+    // Field for cards in the stack
     private List<EventCard> events;
-
-    private CardStackAdapter() {
-    }
 
     public CardStackAdapter(@NonNull List<EventCard> eventCardList) {
         this.events = eventCardList;
@@ -42,6 +45,13 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         this.events = events;
     }
 
+    /**
+     * Inflates a new card to the layout
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -50,9 +60,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         return new ViewHolder(v);
     }
 
+    /**
+     * Sets the text and image on an Event Card
+     *
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final EventCard ec = events.get(position);
+        // Set TextView values
         TextView currTV;
         View v = holder.itemView;
         currTV = v.findViewById(R.id.eventTitle);
@@ -66,9 +83,10 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         currTV = v.findViewById(R.id.dayOfWeekLabel);
         currTV.setText(ec.getDayOfWeek());
         currTV = v.findViewById(R.id.eventPrice);
-        currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice()));
+        currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
         currTV = v.findViewById(R.id.eventSourceLabel);
         currTV.setText(ec.getSourceTag());
+        // Slightly complicated to load the image, using a 3rd party library
         final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
         final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
         Glide.with(imageView.getContext())
@@ -79,6 +97,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         imageView.setImageDrawable(resource);
+                        // Extract a colour from the image to set the overlay with
                         Palette.from(((BitmapDrawable) resource).getBitmap()).generate(new Palette.PaletteAsyncListener() {
                             public void onGenerated(Palette p) {
                                 int defaultColour = overlayImageView.getResources().getColor(R.color.colorAccent);
@@ -93,7 +112,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-
+                        // Unnecessary but required
                     }
                 });
         ImageView iv = v.findViewById(R.id.overlayImageView);

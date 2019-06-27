@@ -6,12 +6,18 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.Snackbar;
 
-public class InitialAppLoader extends SplashActivity {
+/**
+ * This is the Activity that first loads.
+ * Snackbars (the small messages) are enabled.
+ * @author Bhav
+ */
+public class InitialLoadSplashActivity extends SplashActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setContentView(R.layout.loading_spinner_layout);
-        getWindow().setBackgroundDrawable(null);
+        disableSnackBars = false;
+        setContentView(R.layout.splash_screen_layout);
         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.loading_app_tooltip), Snackbar.LENGTH_LONG).show();
         super.onCreate(savedInstanceState);
+
     }
 }
