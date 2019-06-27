@@ -1,15 +1,18 @@
 package com.travel721;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -29,10 +32,18 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import uk.co.markormesher.android_fab.FloatingActionButton;
+import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
+import uk.co.markormesher.android_fab.SpeedDialMenuCloseListener;
+import uk.co.markormesher.android_fab.SpeedDialMenuItem;
+import uk.co.markormesher.android_fab.SpeedDialMenuOpenListener;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
@@ -55,6 +66,34 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
+
+        FloatingActionButton fab = findViewById(R.id.overflowFab);
+        final com.google.android.material.floatingactionbutton.FloatingActionButton likeButton = findViewById(R.id.thumbupButton);
+        final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = findViewById(R.id.thumbdownButton);
+        fab.setSpeedDialMenuAdapter(new MainActivitySpeedDialAdapter());
+        fab.setOnSpeedDialMenuOpenListener(new SpeedDialMenuOpenListener() {
+            @Override
+            public void onOpen(@NotNull FloatingActionButton floatingActionButton) {
+                floatingActionButton.setContentCoverColour(0x99ff9900);
+                floatingActionButton.openSpeedDialMenu();
+                floatingActionButton.setContentCoverEnabled(true);
+                likeButton.setVisibility(View.INVISIBLE);
+                dislikeButton.setVisibility(View.INVISIBLE);
+                floatingActionButton.getContentCoverView().setVisibility(View.VISIBLE);
+            }
+        });
+        fab.setOnSpeedDialMenuCloseListener(new SpeedDialMenuCloseListener() {
+            @Override
+            public void onClose(@NotNull FloatingActionButton floatingActionButton) {
+                floatingActionButton.setContentCoverColour(0x99ff9900);
+
+                floatingActionButton.closeSpeedDialMenu();
+                floatingActionButton.setContentCoverEnabled(false);
+                likeButton.setVisibility(View.VISIBLE);
+                dislikeButton.setVisibility(View.VISIBLE);
+                floatingActionButton.getContentCoverView().setVisibility(View.GONE);
+            }
+        });
         // Gets the event info obtained from the splash activity
         eventCards = getIntent().getParcelableArrayListExtra("events");
 
@@ -169,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 i.putExtra("desc", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getDescription());
                 i.putExtra("URL", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventHyperLink());
                 startActivity(i);
+                overridePendingTransition(R.anim.slide_in_from_top, 0);
                 showingInfo = true;
                 break;
         }
@@ -239,9 +279,77 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         finish();
     }
 
-    public void previouslySelectedClicked(View view) {
-        Intent i = new Intent(this, ListEventsActivity.class);
-        i.putExtra("access_token", getIntent().getStringExtra("accessToken"));
-        startActivity(i);
+    public void overflowFabClicked(View view) {
+        if (view instanceof FloatingActionButton) {
+            if (!((FloatingActionButton) view).isSpeedDialMenuOpen()) {
+                ((FloatingActionButton) view).closeSpeedDialMenu();
+
+            } else {
+
+                ((FloatingActionButton) view).openSpeedDialMenu();
+            }
+        }
     }
+
+
+    //    No longer used
+//    public void previouslySelectedClicked(View view) {
+//        Intent i = new Intent(this, ListEventsActivity.class);
+//        i.putExtra("access_token", getIntent().getStringExtra("accessToken"));
+//        startActivity(i);
+//    }
+    class MainActivitySpeedDialAdapter extends SpeedDialMenuAdapter {
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean onMenuItemClick(int position) {
+            switch (position) {
+                case 0:
+                    Intent i = new Intent(getBaseContext(), SettingsActivity.class);
+                    startActivity(i);
+                    finish();
+                    break;
+                case 1:
+                    Intent j = new Intent(getBaseContext(), ListEventsActivity.class);
+                    j.putExtra("access_token", getIntent().getStringExtra("accessToken"));
+                    startActivity(j);
+                    break;
+            }
+            return super.onMenuItemClick(position);
+        }
+
+        @Override
+        public int getBackgroundColour(int position) {
+            return Color.rgb(255, 255, 255);
+        }
+
+        @Override
+        public void onPrepareItemLabel(@NotNull Context context, int position, @NotNull TextView label) {
+            super.onPrepareItemLabel(context, position, label);
+        }
+
+        @Override
+        public float fabRotationDegrees() {
+            return 90f;
+        }
+
+        @NotNull
+        @Override
+        public SpeedDialMenuItem getMenuItem(@NotNull Context context, int i) {
+            switch (i) {
+                // Settings
+                case 0:
+                    return new SpeedDialMenuItem(context, ContextCompat.getDrawable(context, R.drawable.ic_settings), "Settings");
+                case 1:
+                    return new SpeedDialMenuItem(context, ContextCompat.getDrawable(context, R.drawable.ic_subject), "Like History");
+                default:
+                    return null;
+            }
+
+        }
+    }
+
 }

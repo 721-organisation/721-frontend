@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">721Travel</string>
-    <string name="loading_events_tip">Loading the latest gigs…</string>
+    <string name="loading_events_tip">Things to do in 48 hrs</string>
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
     <string name="swipe_up_to_dismiss">Swipe this bar up to dismiss</string>

@@ -61,34 +61,15 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:onClick="settingsButtonClicked"
-        android:layout_marginBottom="30dp"
-        android:clickable="true"
-        app:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/thumbdownButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_settings" />
+    <uk.co.markormesher.android_fab.FloatingActionButton
+        android:id="@+id/overflowFab"
+        android:layout_width="match_parent"
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/previouslySelectedButton"
-        android:onClick="previouslySelectedClicked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="30dp"
-        android:clickable="true"
-        app:backgroundTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/thumbupButton"
-        app:srcCompat="@drawable/ic_list" />
+        android:layout_height="match_parent"
+        android:onClick="overflowFabClicked"
+        app:buttonBackgroundColour="#FFFFFF"
+        app:buttonIcon="@drawable/ic_more_vert"
+        app:internalOffsetBottom="15dp"
+        app:internalOffsetEnd="15dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
