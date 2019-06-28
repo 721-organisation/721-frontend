@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EventCard implements Parcelable, Serializable {
+public class EventCard implements Parcelable, Serializable, Comparable<EventCard> {
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
         @Override
         public EventCard createFromParcel(Parcel in) {
@@ -94,19 +94,19 @@ public class EventCard implements Parcelable, Serializable {
         Log.v("json", jo.toString());
         // Guaranteed Field
         EventCard eventCard = new EventCard();
-        eventCard.setSourceTag(checkHasAndReturnData(jo, "eventSourceTag",""));
-        eventCard.setName(checkHasAndReturnData(jo, "name",eventCard.getSourceTag()));
-        eventCard.setEventSourceID(checkHasAndReturnData(jo, "eventSourceId",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setVenueName(checkHasAndReturnData(jo, "venueName",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setLatitude(checkHasAndReturnData(jo, "venueLat",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setLongitude(checkHasAndReturnData(jo, "venueLong",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setImgURL(checkHasAndReturnData(jo, "image",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setEventHyperLink(checkHasAndReturnData(jo, "link",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setFormattedDate(checkHasAndReturnData(jo, "date",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setTime(checkHasAndReturnData(jo, "time",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setMinimumAge(checkHasAndReturnData(jo, "minAge",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setPrice(checkHasAndReturnData(jo, "price",eventCard.getSourceTag().toLowerCase()));
-        eventCard.setDescription(checkHasAndReturnData(jo, "description",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setSourceTag(checkHasAndReturnData(jo, "eventSourceTag", ""));
+        eventCard.setName(checkHasAndReturnData(jo, "name", eventCard.getSourceTag()));
+        eventCard.setEventSourceID(checkHasAndReturnData(jo, "eventSourceId", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setVenueName(checkHasAndReturnData(jo, "venueName", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setLatitude(checkHasAndReturnData(jo, "venueLat", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setLongitude(checkHasAndReturnData(jo, "venueLong", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setImgURL(checkHasAndReturnData(jo, "image", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setEventHyperLink(checkHasAndReturnData(jo, "link", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setFormattedDate(checkHasAndReturnData(jo, "date", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setTime(checkHasAndReturnData(jo, "time", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setMinimumAge(checkHasAndReturnData(jo, "minAge", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setPrice(checkHasAndReturnData(jo, "price", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setDescription(checkHasAndReturnData(jo, "description", eventCard.getSourceTag().toLowerCase()));
         return eventCard;
     }
 
@@ -118,7 +118,7 @@ public class EventCard implements Parcelable, Serializable {
             }
             return jo.getString(prop);
         } else {
-              return "No data provided by " + eventSource + " for " + prop;
+            return "No data provided by " + eventSource + " for " + prop;
 
         }
 
@@ -184,6 +184,16 @@ public class EventCard implements Parcelable, Serializable {
             } else {
                 return new SimpleDateFormat("EEEE").format(realDateOfEvent);
             }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getPrettyDate() {
+        try {
+            Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
+            return new SimpleDateFormat("EEE, MMM d").format(realDateOfEvent);
         } catch (ParseException e) {
             e.printStackTrace();
             return "";
@@ -268,5 +278,22 @@ public class EventCard implements Parcelable, Serializable {
         return longitude;
     }
 
+    /**
+     * Events are to be compared by dates
+     *
+     * @param eventCard
+     * @return
+     */
+    @Override
+    public int compareTo(EventCard eventCard) {
+        try {
+            Date dateOfThis = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
+            Date dateOfTo = new SimpleDateFormat("yyyy-MM-dd").parse(eventCard.formattedDate);
 
+            return dateOfThis.compareTo(dateOfTo);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
