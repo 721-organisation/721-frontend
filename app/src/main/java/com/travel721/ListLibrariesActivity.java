@@ -14,9 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ListLibrariesActivity extends AppCompatActivity implements ItemClickListener {
     MyRecyclerViewAdapter adapter;
 
@@ -32,28 +29,23 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
         RecyclerView recyclerView = findViewById(R.id.libraries_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // data to populate the RecyclerView with
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
-
-        adapter = new MyRecyclerViewAdapter(this, animalNames);
+        Resources res = getResources();
+        String[] libraries = res.getStringArray(R.array.libraries);
+        adapter = new MyRecyclerViewAdapter(this, libraries);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
-        Resources res = getResources();
-        String[] planets = res.getStringArray(R.array.libraries);
+
+
     }
 
     public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
-        private List<String> mData;
+        private String[] mData;
         private LayoutInflater mInflater;
         private ItemClickListener mClickListener;
 
         // data is passed into the constructor
-        MyRecyclerViewAdapter(Context context, List<String> data) {
+        MyRecyclerViewAdapter(Context context, String[] data) {
             this.mInflater = LayoutInflater.from(context);
             this.mData = data;
         }
@@ -68,14 +60,14 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
         // binds the data to the TextView in each row
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String animal = mData.get(position);
-            holder.myTextView.setText(animal);
+            String library = mData[position];
+            holder.myTextView.setText(library);
         }
 
         // total number of rows
         @Override
         public int getItemCount() {
-            return mData.size();
+            return mData.length;
         }
 
 
@@ -97,7 +89,7 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
 
         // convenience method for getting data at click position
         String getItem(int id) {
-            return mData.get(id);
+            return mData[id];
         }
 
         // allows clicks events to be caught
