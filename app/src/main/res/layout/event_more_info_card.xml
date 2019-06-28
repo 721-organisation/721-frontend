@@ -27,7 +27,8 @@
         android:layout_margin="10dp"
         android:layout_weight="1"
         android:onClick="openEventInChromeCustomTab"
-        android:text="@string/go_to_event_webpage" />
+        android:text="@string/go_to_event_webpage"
+        android:textColor="@android:color/white" />
 
     <TextView
         android:id="@+id/eventLongDescription"
@@ -36,6 +37,7 @@
         android:layout_weight="2"
         android:padding="10dp"
         android:text="@string/event_info_placeholder"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#FF000000"
         map:autoSizeTextType="uniform"
         tools:text="Insert Event Long Description Here" />
@@ -46,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:padding="10dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Event Provider" />
 
     <TextView
@@ -55,5 +58,6 @@
         android:layout_weight="1"
         android:padding="10dp"
         android:text="@string/swipe_up_to_dismiss"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 </LinearLayout>

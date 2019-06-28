@@ -26,10 +26,8 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -312,6 +310,7 @@ public abstract class SplashActivity extends Activity {
                                 queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
                                     try {
                                         JSONArray profilesResponse = new JSONArray(response15);
+                                        boolean userExists = false;
                                         if (profilesResponse.isNull(0)) {
                                             statusText.setText("Registering with 721...");
                                             // User does not exist. This condition definitely needs testing
@@ -325,25 +324,21 @@ public abstract class SplashActivity extends Activity {
                                                     map.put("profileId", finalIID);
                                                     return map;
                                                 }
-
-                                                @Override
-                                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-
-                                                    return super.parseNetworkResponse(response);
-
-                                                }
-
                                             });
 
                                         } else {
-                                            statusText.setText("Welcome back to 721...");
+                                            userExists = true;
                                         }
                                         try {
                                             List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                             String city = address.get(0).getSubAdminArea();
-                                            statusText.setText("Welcome to 721! Loading the latest in " + city + "...");
+                                            statusText.setText(userExists ?
+                                                    getString(R.string.returning_user_geocoded_welcome, city) :
+                                                    getString(R.string.new_user_geocoded_message, city));
                                         } catch (IOException e) {
-                                            statusText.setText("Welcome to 721! Loading the latest experiences...");
+                                            statusText.setText(userExists ?
+                                                    getString(R.string.returning_user_failed_geocoding) :
+                                                    getString(R.string.new_user_failed_geocoding));
                                         }
                                         // PUT REQUEST: Update events on server
                                         Log.v("Requests", "Updating events on server...");

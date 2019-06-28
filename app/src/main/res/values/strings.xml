@@ -33,6 +33,10 @@
     <string name="no_location_error_message">We couldn\'t get your location, please check location settings and try again.</string>
     <string name="loading_app_tooltip">Loading…</string>
     <string name="event_provided_by_placeholder">Event provided by %s</string>
+    <string name="returning_user_geocoded_welcome">Welcome back to 721! Loading the latest experiences in %s…</string>
+    <string name="new_user_geocoded_message">Welcome to 721! Loading the latest experiences in %s…</string>
+    <string name="returning_user_failed_geocoding">Welcome back to 721! Loading the latest experiences</string>
+    <string name="new_user_failed_geocoding">Welcome to 721! Loading the latest experiences in</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>

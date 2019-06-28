@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = findViewById(R.id.thumbdownButton);
         fab.setSpeedDialMenuAdapter(new MainActivitySpeedDialAdapter());
         fab.setOnSpeedDialMenuOpenListener(floatingActionButton -> {
-            floatingActionButton.setContentCoverColour(0x99fe6060);
+            floatingActionButton.setContentCoverColour(0xeefe6060);
             floatingActionButton.openSpeedDialMenu();
             floatingActionButton.setContentCoverEnabled(true);
             likeButton.setVisibility(View.INVISIBLE);

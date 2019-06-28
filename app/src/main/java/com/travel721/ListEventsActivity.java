@@ -3,6 +3,7 @@ package com.travel721;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -103,14 +104,13 @@ public class ListEventsActivity extends AppCompatActivity {
                                                                 tv.setText(eventCard.getVenueName());
                                                                 card.setOnClickListener(view -> {
                                                                     Intent i = new Intent(ListEventsActivity.this, EventMoreInfoActivity.class);
-                                                                    i.putExtra("lat", eventCard.getLocationLatitude());
-                                                                    i.putExtra("lon", eventCard.getLocationLongitude());
-                                                                    i.putExtra("desc", eventCard.getDescription());
-                                                                    i.putExtra("URL", eventCard.getEventHyperLink());
+                                                                    i.putExtra("eventCard", (Parcelable) eventCard);
                                                                     startActivity(i);
                                                                     overridePendingTransition(R.anim.slide_in_from_top, 0);
                                                                 });
                                                                 AnalyticsHelper.logEvent(ListEventsActivity.this, AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
+                                                                tv = card.findViewById(R.id.dateTag);
+                                                                tv.setText(eventCard.getDayOfWeek());
                                                                 linearLayout.addView(card);
 
                                                             }

@@ -114,6 +114,6 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
                 .setShowTitle(true)
                 .build();
 
-        customTabsIntent.launchUrl(this, Uri.parse(eventCard.getImgURL()));
+        customTabsIntent.launchUrl(this, Uri.parse(eventCard.getEventHyperLink()));
     }
 }
