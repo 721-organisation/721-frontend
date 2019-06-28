@@ -192,6 +192,7 @@ public class EventCard implements Parcelable, Serializable, Comparable<EventCard
 
     public String getPrettyDate() {
         try {
+            if(getDayOfWeek().equals("Today")) return "Today";
             Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
             return new SimpleDateFormat("EEE, MMM d").format(realDateOfEvent);
         } catch (ParseException e) {

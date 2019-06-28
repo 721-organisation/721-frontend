@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.android.volley.Request;
@@ -135,7 +136,8 @@ public class ListEventsActivity extends AppCompatActivity {
                                             return;
                                         }
                                         Collections.sort(eventCardArrayList);
-                                        Collections.reverse(eventCardArrayList);
+                                        if (!PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("eventListOrder", false))
+                                            Collections.reverse(eventCardArrayList);
                                         for (int i = 0; i < eventCardArrayList.size(); i++) {
                                             View card;
                                             card = getLayoutInflater().inflate(R.layout.event_list_card, null);

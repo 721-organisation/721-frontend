@@ -17,7 +17,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Event Curation Settings">
+    <PreferenceCategory app:title="Event Curation">
         <SeekBarPreference
             android:max="@integer/radius_max"
             app:defaultValue="@integer/radius_default"
@@ -39,17 +39,25 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Event History">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="eventListOrder"
+            android:title="Event ordering setting"
+            app:summary="By default, we'll show events you've liked starting from the furthest in the future. Check this to see the oldest first." />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="Third Party Libraries">
         <Preference
             app:key="loadTPLIntent"
             app:title="This app relies on third-party libraries. To see them, click here.">
-        <intent
-            android:targetClass="com.travel721.ListLibrariesActivity"
-            android:targetPackage="com.travel721">
-            <extra
-                android:name="example_key"
-                android:value="example_value" />
-        </intent>
+            <intent
+                android:targetClass="com.travel721.ListLibrariesActivity"
+                android:targetPackage="com.travel721">
+                <extra
+                    android:name="example_key"
+                    android:value="example_value" />
+            </intent>
         </Preference>
     </PreferenceCategory>
 
