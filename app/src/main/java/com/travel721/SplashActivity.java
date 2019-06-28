@@ -26,8 +26,10 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -222,6 +224,7 @@ public abstract class SplashActivity extends Activity {
                             public void onProviderEnabled(String s) {
 
                             }
+
                             //
                             @Override
                             public void onProviderDisabled(String s) {
@@ -229,7 +232,7 @@ public abstract class SplashActivity extends Activity {
                             }
                         };
                         locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-                        
+
 
                     } else {
                         Log.v("LOCGET", "From FLP");
@@ -311,17 +314,25 @@ public abstract class SplashActivity extends Activity {
                                                     map.put("profileId", finalIID);
                                                     return map;
                                                 }
+
+                                                @Override
+                                                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+
+                                                    return super.parseNetworkResponse(response);
+
+                                                }
+
                                             });
 
                                         } else {
-                                            // User exists, don't need to do anything yet
-                                            try {
-                                                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                                String city = address.get(0).getSubAdminArea();
-                                                statusText.setText("Welcome back! Loading the latest experiences in " + city + "...");
-                                            } catch (IOException e) {
-                                                statusText.setText("Welcome back! Loading the latest experiences...");
-                                            }
+                                            statusText.setText("Welcome back to 721...");
+                                        }
+                                        try {
+                                            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                            String city = address.get(0).getSubAdminArea();
+                                            statusText.setText("Welcome to 721! Loading the latest in " + city + "...");
+                                        } catch (IOException e) {
+                                            statusText.setText("Welcome to 721! Loading the latest experiences...");
                                         }
                                         // PUT REQUEST: Update events on server
                                         Log.v("Requests", "Updating events on server...");
