@@ -204,41 +204,36 @@ public abstract class SplashActivity extends Activity {
                         statusText.setVisibility(View.GONE);
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, view -> finish()).show();
-
-//                        return;
-                        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                        final LocationListener locationListener = new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                locationManager.removeUpdates(this);
-                                Log.v("LOCGET", "From LM");
-                                registerAndGetEvents(location);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String s) {
-
-                            }
-
-                            //
-                            @Override
-                            public void onProviderDisabled(String s) {
-
-                            }
-                        };
-                        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
-
-
                     } else {
                         Log.v("LOCGET", "From FLP");
-
-                        registerAndGetEvents(locationResult.getLastLocation());
+                        registrationSingleExecutor(locationResult.getLastLocation());
                     }
+
+                }
+            };
+            final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            final LocationListener locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    locationManager.removeUpdates(this);
+                    fusedLocationClient.removeLocationUpdates(locationCallback);
+                    Log.v("LOCGET", "From LM");
+                    registrationSingleExecutor(location);
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                //
+                @Override
+                public void onProviderDisabled(String s) {
 
                 }
             };
@@ -246,7 +241,23 @@ public abstract class SplashActivity extends Activity {
             fusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy,
                     locationCallback,
                     null);
-            Log.v("LOGGER", "From UGH");
+            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+        }
+    }
+
+    private boolean executed = false;
+
+    /**
+     * This prevents both Location providers from returning at exactly the sam
+     * moment and thus invoking two registration tasks. Which would load two
+     * activities and waste resources
+     *
+     * @param location location to pass through
+     */
+    private synchronized void registrationSingleExecutor(final Location location) {
+        if (!executed) {
+            executed = true;
+            registerAndGetEvents(location);
         }
     }
 

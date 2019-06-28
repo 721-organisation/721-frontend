@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -189,10 +190,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
             case Bottom:
                 AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_DOWN, null);
                 Intent i = new Intent(this, EventMoreInfoActivity.class);
-                i.putExtra("lat", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getLocationLatitude());
-                i.putExtra("lon", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getLocationLongitude());
-                i.putExtra("desc", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getDescription());
-                i.putExtra("URL", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventHyperLink());
+                i.putExtra("eventCard", (Parcelable) eventCards.get(cardStackLayoutManager.getTopPosition() - 1));
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_from_top, 0);
                 showingInfo = true;

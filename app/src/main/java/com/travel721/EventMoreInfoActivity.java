@@ -22,6 +22,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class EventMoreInfoActivity extends AppCompatActivity implements View.OnTouchListener {
+
+    EventCard eventCard;
+
     @Override
     public void finish() {
         super.finish();
@@ -31,6 +34,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        eventCard = getIntent().getParcelableExtra("eventCard");
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.event_more_info_card);
         _root = findViewById(R.id.moreInfoConstraintLayout);
@@ -41,8 +45,8 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             mapFragment.getMapAsync(new OnMapReadyCallback() {
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
-                    double latitude = Double.parseDouble(getIntent().getStringExtra("lat"));
-                    double longitude = Double.parseDouble(getIntent().getStringExtra("lon"));
+                    double latitude = Double.parseDouble(eventCard.getLocationLatitude());
+                    double longitude = Double.parseDouble(eventCard.getLocationLongitude());
                     googleMap.addMarker(new MarkerOptions()
                             .position(new LatLng(latitude, longitude))
                             .title("Marker"));
@@ -53,7 +57,9 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             });
         }
         TextView desc = findViewById(R.id.eventLongDescription);
-        desc.setText(getIntent().getStringExtra("desc"));
+        desc.setText(eventCard.getDescription());
+        TextView source = findViewById(R.id.eventProvidedBy);
+        source.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
     }
 
     private int _yDelta;
@@ -83,23 +89,31 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             case MotionEvent.ACTION_POINTER_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.topMargin = Y - _yDelta;
-                layoutParams.bottomMargin = _yDelta - Y;
-                view.setLayoutParams(layoutParams);
+                if (Y - _yDelta < 0) {
+                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+                    layoutParams.topMargin = Y - _yDelta;
+                    layoutParams.bottomMargin = _yDelta - Y;
+                    view.setLayoutParams(layoutParams);
+                }
                 break;
         }
         _root.invalidate();
         return true;
     }
 
-    public void openCCT(View view) {
+    /**
+     * Opens a Chrome Custom Tab with the event's webpage
+     *
+     * @param view
+     */
+    public void openEventInChromeCustomTab(View view) {
+        AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_CONVERSION_EVENT_AFF_LINK_CLICK, null);
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .addDefaultShareMenuItem()
                 .setToolbarColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setShowTitle(true)
                 .build();
 
-        customTabsIntent.launchUrl(this, Uri.parse(getIntent().getStringExtra("URL")));
+        customTabsIntent.launchUrl(this, Uri.parse(eventCard.getImgURL()));
     }
 }

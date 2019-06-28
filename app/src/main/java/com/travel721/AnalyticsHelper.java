@@ -24,6 +24,7 @@ public class AnalyticsHelper {
     public static final String SETTINGS_OPENED = "UserOpenedAppSettings";
     public static final String USER_OPENED_LIST_EVENTS_ACTIVITY = "UserSawTheirLikedEvents";
     public static final String USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST = "UserReviewedLikedEventInfo";
+    public static final String USER_CONVERSION_EVENT_AFF_LINK_CLICK = "UserAffiliateLinkClick";
     public static final String TEST_RELEASE_ANALYTICS_EVENT = "PleaseIgnoreThisStatistic";
 
     @Retention(RetentionPolicy.SOURCE)
@@ -35,7 +36,8 @@ public class AnalyticsHelper {
             SETTINGS_OPENED,
             USER_OPENED_LIST_EVENTS_ACTIVITY,
             USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST,
-            TEST_RELEASE_ANALYTICS_EVENT
+            TEST_RELEASE_ANALYTICS_EVENT,
+            USER_CONVERSION_EVENT_AFF_LINK_CLICK
     })
     public @interface AnalyticsEvent {
     }
@@ -57,7 +59,7 @@ public class AnalyticsHelper {
             mFirebaseAnalytics.logEvent(event, bundle);
         } else if (!warn_user_analytics_disabled) {
             warn_user_analytics_disabled = true;
-            Toast.makeText(context, "Analytics: Disabled in debug mode. Do not distribute this version of the app.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Analytics: Disabled in this build mode. Do not distribute this version of the app.", Toast.LENGTH_SHORT).show();
         }
     }
 }

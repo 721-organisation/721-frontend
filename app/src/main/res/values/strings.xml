@@ -3,7 +3,7 @@
     <string name="loading_events_tip">Things to do in 48 hrs</string>
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
-    <string name="swipe_up_to_dismiss">Swipe this bar up to dismiss</string>
+    <string name="swipe_up_to_dismiss">Swipe up here to dismiss</string>
     <string name="event_image_placeholder_text">Event Image</string>
     <string name="event_info_placeholder">Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here,</string>
     <string name="title_activity_settings">Settings</string>
@@ -24,18 +24,19 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="going_to_experience">Events you\'ve liked…</string>
     <string name="price">Price: %s</string>
-    <string name="go_to_event_webpage">Go to event webpage</string>
-    <string name="reloading_app">Applying your settings and loading the latest events...</string>
+    <string name="go_to_event_webpage">Tap here to go to the event\'s webpage</string>
+    <string name="reloading_app">Applying your settings and loading the latest events…</string>
     <string name="location_is_off_title">Location is off</string>
     <string name="location_is_off_message">721 needs your location in order to continue</string>
     <string name="location_permission_required_title">Location Permission Required</string>
     <string name="location_permission_required_message">721 needs your location to show you events near you</string>
     <string name="no_location_error_message">We couldn\'t get your location, please check location settings and try again.</string>
-    <string name="loading_app_tooltip">Loading...</string>
+    <string name="loading_app_tooltip">Loading…</string>
+    <string name="event_provided_by_placeholder">Event provided by %s</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>
-        <item></item>
+        <item>Glide, </item>
         <item></item>
     </string-array>
 </resources>
