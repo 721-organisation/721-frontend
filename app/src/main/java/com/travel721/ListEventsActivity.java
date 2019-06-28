@@ -1,6 +1,7 @@
 package com.travel721;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,10 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
@@ -49,7 +47,7 @@ public class ListEventsActivity extends AppCompatActivity {
         final String api_access_token = getIntent().getStringExtra("access_token");
         final Context c = this;
         final LinearLayout linearLayout = findViewById(R.id.eventListCardHolder);
-        Snackbar.make(linearLayout,"Loading your picks...", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(linearLayout, "Loading your picks...", Snackbar.LENGTH_LONG).show();
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
@@ -84,12 +82,15 @@ public class ListEventsActivity extends AppCompatActivity {
                                                                 EventCard eventCard = EventCard.unpackFromJson(eventToShow);
 
                                                                 View card;
-                                                                LinearLayout layout = (LinearLayout) findViewById(R.id.info);
                                                                 card = getLayoutInflater().inflate(R.layout.event_list_card, null);
                                                                 ImageView imageView = card.findViewById(R.id.eventCardImage);
+                                                                CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
+                                                                circularProgressDrawable.setStrokeWidth(5f);
+                                                                circularProgressDrawable.setCenterRadius(30f);
+                                                                circularProgressDrawable.start();
                                                                 Glide.with(c)
                                                                         .load(eventCard.getImgURL())
-                                                                        .placeholder(R.drawable.loading_spinner)
+                                                                        .placeholder(circularProgressDrawable)
                                                                         .into(imageView);
                                                                 imageView.setHorizontalFadingEdgeEnabled(true);
                                                                 imageView.setFadingEdgeLength(40);
@@ -100,6 +101,16 @@ public class ListEventsActivity extends AppCompatActivity {
                                                                 tv.setText(eventCard.getFormattedDate() + " " + eventCard.getTime());
                                                                 tv = card.findViewById(R.id.eventCardVenue);
                                                                 tv.setText(eventCard.getVenueName());
+                                                                card.setOnClickListener(view -> {
+                                                                    Intent i = new Intent(ListEventsActivity.this, EventMoreInfoActivity.class);
+                                                                    i.putExtra("lat", eventCard.getLocationLatitude());
+                                                                    i.putExtra("lon", eventCard.getLocationLongitude());
+                                                                    i.putExtra("desc", eventCard.getDescription());
+                                                                    i.putExtra("URL", eventCard.getEventHyperLink());
+                                                                    startActivity(i);
+                                                                    overridePendingTransition(R.anim.slide_in_from_top, 0);
+                                                                });
+                                                                AnalyticsHelper.logEvent(ListEventsActivity.this, AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
                                                                 linearLayout.addView(card);
 
                                                             }

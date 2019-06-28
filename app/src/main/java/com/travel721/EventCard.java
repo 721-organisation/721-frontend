@@ -94,31 +94,32 @@ public class EventCard implements Parcelable, Serializable {
         Log.v("json", jo.toString());
         // Guaranteed Field
         EventCard eventCard = new EventCard();
-        eventCard.setName(checkHasAndReturnData(jo, "name"));
-        eventCard.setEventSourceID(checkHasAndReturnData(jo, "eventSourceId"));
-        eventCard.setVenueName(checkHasAndReturnData(jo, "venueName"));
-        eventCard.setLatitude(checkHasAndReturnData(jo, "venueLat"));
-        eventCard.setLongitude(checkHasAndReturnData(jo, "venueLong"));
-        eventCard.setImgURL(checkHasAndReturnData(jo, "image"));
-        eventCard.setEventHyperLink(checkHasAndReturnData(jo, "link"));
-        eventCard.setFormattedDate(checkHasAndReturnData(jo, "date"));
-        eventCard.setTime(checkHasAndReturnData(jo, "time"));
-        eventCard.setMinimumAge(checkHasAndReturnData(jo, "minAge"));
-        eventCard.setPrice(checkHasAndReturnData(jo, "price"));
-        eventCard.setDescription(checkHasAndReturnData(jo, "description"));
-        eventCard.setSourceTag(checkHasAndReturnData(jo, "eventSourceTag"));
+        eventCard.setSourceTag(checkHasAndReturnData(jo, "eventSourceTag",""));
+        eventCard.setName(checkHasAndReturnData(jo, "name",eventCard.getSourceTag()));
+        eventCard.setEventSourceID(checkHasAndReturnData(jo, "eventSourceId",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setVenueName(checkHasAndReturnData(jo, "venueName",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setLatitude(checkHasAndReturnData(jo, "venueLat",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setLongitude(checkHasAndReturnData(jo, "venueLong",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setImgURL(checkHasAndReturnData(jo, "image",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setEventHyperLink(checkHasAndReturnData(jo, "link",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setFormattedDate(checkHasAndReturnData(jo, "date",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setTime(checkHasAndReturnData(jo, "time",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setMinimumAge(checkHasAndReturnData(jo, "minAge",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setPrice(checkHasAndReturnData(jo, "price",eventCard.getSourceTag().toLowerCase()));
+        eventCard.setDescription(checkHasAndReturnData(jo, "description",eventCard.getSourceTag().toLowerCase()));
         return eventCard;
     }
 
-    private static String checkHasAndReturnData(JSONObject jo, String prop) throws JSONException {
+    private static String checkHasAndReturnData(JSONObject jo, String prop, String eventSource) throws JSONException {
         if (jo.has(prop)) {
             String strProp = jo.getString(prop);
             if (strProp.equals("")) {
-                return "No data provided for " + prop;
+                return "No data provided by " + eventSource + " for " + prop;
             }
             return jo.getString(prop);
         } else {
-            return "No data provided for " + prop;
+              return "No data provided by " + eventSource + " for " + prop;
+
         }
 
     }

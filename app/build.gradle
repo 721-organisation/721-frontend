@@ -10,25 +10,25 @@ android {
             keyPassword 'password'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 28
     defaultConfig {
         applicationId "com.travel721"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
-        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
-        android.defaultConfig.vectorDrawables.useSupportLibrary = true
         debug {
+            buildConfigField 'boolean', 'ENABLE_FIREBASE_ANALYTICS', 'false'
         }
         release {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'boolean', 'ENABLE_FIREBASE_ANALYTICS', 'true'
 
         }
     }
@@ -46,7 +46,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.preference:preference:1.1.0-beta01'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation "com.squareup.okhttp:okhttp:2.7.5"
     implementation 'com.google.gms:google-services:4.3.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.firebase:firebase-core:17.0.0'

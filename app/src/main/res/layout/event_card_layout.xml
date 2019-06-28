@@ -19,7 +19,8 @@
             android:id="@+id/right_overlay_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="TODO" android:scaleType="centerInside"
+            android:contentDescription="TODO"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_thumb_up" />
 
     </FrameLayout>
@@ -33,7 +34,8 @@
             android:id="@+id/left_overlay_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="TODO" android:scaleType="centerInside"
+            android:contentDescription="TODO"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_thumb_down" />
     </FrameLayout>
 
@@ -51,15 +53,16 @@
                 android:id="@+id/eventImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="TODO" android:padding="16dp"
-                app:srcCompat="@color/colorAccent" />
+                android:contentDescription="TODO"
+                android:padding="16dp" />
 
             <ImageView
                 android:id="@+id/overlayImageView"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="10dp"
-                android:contentDescription="TODO" android:paddingBottom="10dp"
+                android:contentDescription="TODO"
+                android:padding="10dp"
                 android:scaleType="fitXY" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -108,8 +111,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:singleLine="true"
                 tools:text="@string/event_title_placeholder" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -119,8 +120,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:singleLine="true"
                 tools:text="Sample Event Venue" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -130,8 +129,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:singleLine="true"
                 tools:text="01/01/1970" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -141,8 +138,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:singleLine="true"
                 tools:text="00:00" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -152,8 +147,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:maxLines="1"
-                android:singleLine="true"
                 android:text="@string/price"
                 tools:text="Price: £0.00" />
 

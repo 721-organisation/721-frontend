@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
@@ -89,25 +90,25 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         currTV.setText(ec.getSourceTag());
         // Slightly complicated to load the image, using a 3rd party library
         final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
+        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
+        circularProgressDrawable.setStrokeWidth(5f);
+        circularProgressDrawable.setCenterRadius(30f);
+        circularProgressDrawable.start();
         final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
-        Glide.with(imageView.getContext())
+        GlideApp.with(imageView.getContext())
                 .load(ec.getImgURL())
                 .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
-                .placeholder(R.drawable.loading_spinner)
+                .placeholder(circularProgressDrawable)
                 .into(new CustomTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         imageView.setImageDrawable(resource);
                         // Extract a colour from the image to set the overlay with
-                        Palette.from(((BitmapDrawable) resource).getBitmap()).generate(new Palette.PaletteAsyncListener() {
-                            public void onGenerated(Palette p) {
-                                int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
-
-                                int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
-
-                                Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
-                                overlayImageView.setImageDrawable(overlayDrawable);
-                            }
+                        Palette.from(((BitmapDrawable) resource).getBitmap()).generate(p -> {
+                            int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
+                            int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
+                            Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
+                            overlayImageView.setImageDrawable(overlayDrawable);
                         });
                     }
 

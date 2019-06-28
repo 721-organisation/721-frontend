@@ -18,8 +18,6 @@ import androidx.core.content.ContextCompat;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,9 +40,7 @@ import java.util.Map;
 
 import uk.co.markormesher.android_fab.FloatingActionButton;
 import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
-import uk.co.markormesher.android_fab.SpeedDialMenuCloseListener;
 import uk.co.markormesher.android_fab.SpeedDialMenuItem;
-import uk.co.markormesher.android_fab.SpeedDialMenuOpenListener;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
@@ -59,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
+
     // Keep a track of the CardView and it's adapter
     private CardStackView cardStackView;
     private CardStackLayoutManager cardStackLayoutManager;
@@ -66,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AnalyticsHelper.logEvent(this, AnalyticsHelper.TEST_RELEASE_ANALYTICS_EVENT, null);
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_main);
@@ -134,12 +132,15 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     @Override
     public void onCardSwiped(Direction direction) {
+        int index = buttonPushed ? cardStackLayoutManager.getTopPosition() : cardStackLayoutManager.getTopPosition() - 1;
+        if (buttonPushed) buttonPushed = false;
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest stringRequest;
         String url = API_ROOT_URL + "eventProfiles?access_token=" + getIntent().getStringExtra("accessToken");
+        // Each case makes a call to the Analytics API
         switch (direction) {
             case Left:
-                Log.v("URL", url);
+                AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_LEFT, null);
                 // Dislikes
                 // Request a string response from the provided URL.
                 stringRequest = new StringRequest(Request.Method.POST, url,
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> map = new HashMap<>();
                         map.put("swipe", "false");
-                        map.put("eventSourceId", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventSourceID());
+                        map.put("eventSourceId", eventCards.get(index).getEventSourceID());
                         map.put("profileId", getIntent().getStringExtra("fiid"));
                         return map;
                     }
@@ -162,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 // TODO make a request to the API
                 break;
             case Right:
+                AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_RIGHT, null);
+
                 // Likes
                 // Request a string response from the provided URL.
                 stringRequest = new StringRequest(Request.Method.POST, url,
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> map = new HashMap<>();
                         map.put("swipe", "true");
-                        map.put("eventSourceId", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getEventSourceID());
+                        map.put("eventSourceId", eventCards.get(index).getEventSourceID());
                         map.put("profileId", getIntent().getStringExtra("fiid"));
                         return map;
                     }
@@ -184,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 // TODO make a request to the API
                 break;
             case Bottom:
+                AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_DOWN, null);
                 Intent i = new Intent(this, EventMoreInfoActivity.class);
                 i.putExtra("lat", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getLocationLatitude());
                 i.putExtra("lon", eventCards.get(cardStackLayoutManager.getTopPosition() - 1).getLocationLongitude());
@@ -233,25 +237,27 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     }
 
+    boolean buttonPushed = false;
+
     public void dislikesTopCard(View view) {
+        buttonPushed = true;
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Left)
                 .setDuration(SLIDE_ANIMATION_DURATION)
                 .setInterpolator(new AccelerateInterpolator())
                 .build());
         cardStackView.swipe();
-        onCardSwiped(Direction.Left);
 
     }
 
     public void likesTopCard(View view) {
+        buttonPushed = true;
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
                 .setDuration(SLIDE_ANIMATION_DURATION)
                 .setInterpolator(new AccelerateInterpolator())
                 .build());
         cardStackView.swipe();
-        onCardSwiped(Direction.Right);
     }
 
 
@@ -290,11 +296,13 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         public boolean onMenuItemClick(int position) {
             switch (position) {
                 case 0:
+                    AnalyticsHelper.logEvent(MainActivity.this, AnalyticsHelper.SETTINGS_OPENED, null);
                     Intent i = new Intent(getBaseContext(), SettingsActivity.class);
                     startActivity(i);
                     finish();
                     break;
                 case 1:
+
                     Intent j = new Intent(getBaseContext(), ListEventsActivity.class);
                     j.putExtra("access_token", getIntent().getStringExtra("accessToken"));
                     startActivity(j);
