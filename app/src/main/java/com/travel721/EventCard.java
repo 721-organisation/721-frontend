@@ -114,12 +114,11 @@ public class EventCard implements Parcelable, Serializable, Comparable<EventCard
         if (jo.has(prop)) {
             String strProp = jo.getString(prop);
             if (strProp.equals("")) {
-                return "No data provided by " + eventSource + " for " + prop;
+                return "No " + prop + " provided by " + eventSource;
             }
             return jo.getString(prop);
         } else {
-            return "No data provided by " + eventSource + " for " + prop;
-
+            return "No " + prop + " provided by " + eventSource;
         }
 
     }
@@ -192,7 +191,7 @@ public class EventCard implements Parcelable, Serializable, Comparable<EventCard
 
     public String getPrettyDate() {
         try {
-            if(getDayOfWeek().equals("Today")) return "Today";
+            if (getDayOfWeek().equals("Today")) return "Today";
             Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
             return new SimpleDateFormat("EEE, MMM d").format(realDateOfEvent);
         } catch (ParseException e) {

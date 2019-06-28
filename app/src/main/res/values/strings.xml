@@ -3,7 +3,7 @@
     <string name="loading_events_tip">Things to do in 48 hrs</string>
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
-    <string name="swipe_up_to_dismiss">Swipe up here to dismiss</string>
+    <string name="swipe_up_to_dismiss">Swipe up to dismiss</string>
     <string name="event_image_placeholder_text">Event Image</string>
     <string name="event_info_placeholder">Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here,</string>
     <string name="title_activity_settings">Settings</string>
@@ -24,7 +24,7 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="going_to_experience">Events you\'ve liked…</string>
     <string name="price">Price: %s</string>
-    <string name="go_to_event_webpage">Tap here to go to the event\'s webpage</string>
+    <string name="event_hyperlink_text">Take me to %s for %s</string>
     <string name="reloading_app">Applying your settings and loading the latest events…</string>
     <string name="location_is_off_title">Location is off</string>
     <string name="location_is_off_message">721 needs your location in order to continue</string>

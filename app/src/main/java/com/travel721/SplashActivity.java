@@ -1,7 +1,6 @@
 package com.travel721;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -193,7 +192,6 @@ public abstract class SplashActivity extends Activity {
             // All permissions and settings satisfied, begin loading location
             // Sets the location callback
             locationCallback = new LocationCallback() {
-                @SuppressLint("MissingPermission")
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
                     if (locationResult == null || locationResult.getLastLocation() == null) {
@@ -203,7 +201,7 @@ public abstract class SplashActivity extends Activity {
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, view -> finish()).show();
                     } else {
-                        Log.v("LOCGET", "From FLP");
+                        AnalyticsHelper.debugLogEvent(SplashActivity.this, AnalyticsHelper.DEBUG_USED_FUSED_LOCATION_PROVIDER, null);
                         registrationSingleExecutor(locationResult.getLastLocation());
                     }
 
@@ -213,9 +211,11 @@ public abstract class SplashActivity extends Activity {
             final LocationListener locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
-                    locationManager.removeUpdates(this);
+                    if (locationManager != null) {
+                        locationManager.removeUpdates(this);
+                    }
                     fusedLocationClient.removeLocationUpdates(locationCallback);
-                    Log.v("LOCGET", "From LM");
+                    AnalyticsHelper.debugLogEvent(SplashActivity.this, AnalyticsHelper.DEBUG_USED_NATIVE_LOCATION_MANAGER, null);
                     registrationSingleExecutor(location);
                 }
 

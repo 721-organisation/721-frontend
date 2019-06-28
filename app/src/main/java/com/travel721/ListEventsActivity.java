@@ -132,7 +132,7 @@ public class ListEventsActivity extends AppCompatActivity {
                                     AtomicInteger dealtSize = new AtomicInteger();
                                     queue.addRequestFinishedListener(request -> {
                                         dealtSize.getAndIncrement();
-                                        if (dealtSize.get() < arrSize + 1) {
+                                        if (dealtSize.get() < arrSize + 1 || isDestroyed()) {
                                             return;
                                         }
                                         Collections.sort(eventCardArrayList);

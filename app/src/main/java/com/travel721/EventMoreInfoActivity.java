@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -15,8 +16,6 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -42,24 +41,23 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         // Initialise maps
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
         if (mapFragment != null) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    double latitude = Double.parseDouble(eventCard.getLocationLatitude());
-                    double longitude = Double.parseDouble(eventCard.getLocationLongitude());
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(latitude, longitude))
-                            .title("Marker"));
-                    // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17));
-                    // Sets the center of the map to Mountain View
-                }
+            mapFragment.getMapAsync(googleMap -> {
+                double latitude = Double.parseDouble(eventCard.getLocationLatitude());
+                double longitude = Double.parseDouble(eventCard.getLocationLongitude());
+                googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(latitude, longitude))
+                        .title(eventCard.getName()));
+                // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17));
+                // Sets the center of the map to Mountain View
             });
         }
-        TextView desc = findViewById(R.id.eventLongDescription);
-        desc.setText(eventCard.getDescription());
-        TextView source = findViewById(R.id.eventProvidedBy);
-        source.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
+        Button button = findViewById(R.id.eventHyperlink);
+        button.setText(getString(R.string.event_hyperlink_text, eventCard.getSourceTag(), eventCard.getName()));
+        TextView tv = findViewById(R.id.eventLongDescription);
+        tv.setText(eventCard.getDescription());
+        tv = findViewById(R.id.eventProvidedBy);
+        tv.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
     }
 
     private int _yDelta;
