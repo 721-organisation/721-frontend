@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -100,11 +101,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                         // Extract a colour from the image to set the overlay with
                         Palette.from(((BitmapDrawable) resource).getBitmap()).generate(new Palette.PaletteAsyncListener() {
                             public void onGenerated(Palette p) {
-                                int defaultColour = overlayImageView.getResources().getColor(R.color.colorAccent);
+                                int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
 
                                 int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
 
-                                Drawable overlayDrawable = overlayImageView.getResources().getDrawable(drawable);
+                                Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
                                 overlayImageView.setImageDrawable(overlayDrawable);
                             }
                         });
@@ -116,7 +117,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                     }
                 });
         ImageView iv = v.findViewById(R.id.overlayImageView);
-        iv.setImageDrawable(v.getResources().getDrawable(getRandomOverlay()));
+        iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
     }
 
     @Override

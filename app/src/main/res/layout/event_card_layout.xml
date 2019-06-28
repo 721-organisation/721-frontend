@@ -19,7 +19,7 @@
             android:id="@+id/right_overlay_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:contentDescription="TODO" android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_thumb_up" />
 
     </FrameLayout>
@@ -33,7 +33,7 @@
             android:id="@+id/left_overlay_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
+            android:contentDescription="TODO" android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_thumb_down" />
     </FrameLayout>
 
@@ -51,7 +51,7 @@
                 android:id="@+id/eventImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="16dp"
+                android:contentDescription="TODO" android:padding="16dp"
                 app:srcCompat="@color/colorAccent" />
 
             <ImageView
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:contentDescription="TODO" android:paddingBottom="10dp"
                 android:scaleType="fitXY" />
 
             <androidx.appcompat.widget.AppCompatTextView

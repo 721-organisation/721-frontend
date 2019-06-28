@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -95,8 +96,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
     public void openCCT(View view) {
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .addDefaultShareMenuItem()
-                .setToolbarColor(this.getResources()
-                        .getColor(R.color.colorAccent))
+                .setToolbarColor(ContextCompat.getColor(this, R.color.colorAccent))
                 .setShowTitle(true)
                 .build();
 

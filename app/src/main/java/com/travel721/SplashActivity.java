@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -16,25 +15,19 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
-import androidx.core.location.LocationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -46,14 +39,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,13 +125,10 @@ public abstract class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         statusText = findViewById(R.id.statusText);
 
-        statusText.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView tv = new TextView(SplashActivity.this);
-                tv.setTextColor(getResources().getColor(android.R.color.white));
-                return tv;
-            }
+        statusText.setFactory(() -> {
+            TextView tv = new TextView(SplashActivity.this);
+            tv.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+            return tv;
         });
         statusText.setInAnimation(this, R.anim.fade_in_text_switch);
         statusText.setOutAnimation(this, R.anim.fade_out_text_switch);
@@ -158,40 +144,31 @@ public abstract class SplashActivity extends Activity {
         SettingsClient client = LocationServices.getSettingsClient(this);
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
         // If settings are correct
-        task.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                // All settings required are set correctly, proceed
-                Log.d("doLoad", "called from OnSuccessListener");
-                doLoad();
-            }
+        task.addOnSuccessListener(locationSettingsResponse -> {
+            // All settings required are set correctly, proceed
+            Log.d("doLoad", "called from OnSuccessListener");
+            doLoad();
         });
         // If settings need to be changed
-        task.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull final Exception e) {
-                if (e instanceof ResolvableApiException) {
-                    final ResolvableApiException resolvable = (ResolvableApiException) e;
-                    // Location settings are not satisfied, show dialog
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SplashActivity.this);
-                    dialogBuilder
-                            .setTitle(getResources().getString(R.string.location_is_off_title))
-                            .setMessage(getResources().getString(R.string.location_is_off_message))
-                            .setPositiveButton("Change Settings", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    try {
-                                        resolvable.startResolutionForResult(SplashActivity.this,
-                                                REQUEST_CHECK_LOCATION_SETTINGS);
-                                    } catch (IntentSender.SendIntentException e1) {
-                                        e1.printStackTrace();
-                                    }
-                                }
-                            });
-                    dialogBuilder.create().show();
-                } else {
-                    e.printStackTrace(); // This error is nearly impossible
-                }
+        task.addOnFailureListener(e -> {
+            if (e instanceof ResolvableApiException) {
+                final ResolvableApiException resolvable = (ResolvableApiException) e;
+                // Location settings are not satisfied, show dialog
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+                dialogBuilder
+                        .setTitle(getResources().getString(R.string.location_is_off_title))
+                        .setMessage(getResources().getString(R.string.location_is_off_message))
+                        .setPositiveButton("Change Settings", (dialogInterface, i) -> {
+                            try {
+                                resolvable.startResolutionForResult(SplashActivity.this,
+                                        REQUEST_CHECK_LOCATION_SETTINGS);
+                            } catch (IntentSender.SendIntentException e1) {
+                                e1.printStackTrace();
+                            }
+                        });
+                dialogBuilder.create().show();
+            } else {
+                e.printStackTrace(); // This error is nearly impossible
             }
         });
     }
@@ -199,23 +176,20 @@ public abstract class SplashActivity extends Activity {
     private void doLoad() {
         statusText.setText("Checking permissions...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.v("PERMS","FAIL");
+            Log.v("PERMS", "FAIL");
             // Ask for permission
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             dialogBuilder
                     .setTitle(getResources().getString(R.string.location_permission_required_title))
                     .setMessage(getResources().getString(R.string.location_permission_required_message))
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS);
-                            }
+                    .setPositiveButton("Okay", (dialogInterface, i) -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS);
                         }
                     });
             dialogBuilder.create().show();
         } else {
-            Log.v("PERMS","SUCCESS");
+            Log.v("PERMS", "SUCCESS");
             // All permissions and settings satisfied, begin loading location
             // Sets the location callback
             locationCallback = new LocationCallback() {
@@ -227,12 +201,7 @@ public abstract class SplashActivity extends Activity {
                         // Show the user an error message
                         statusText.setVisibility(View.GONE);
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
-                                .setAction(android.R.string.ok, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        finish();
-                                    }
-                                }).show();
+                                .setAction(android.R.string.ok, view -> finish()).show();
 
 //                        return;
                         final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -240,7 +209,7 @@ public abstract class SplashActivity extends Activity {
                             @Override
                             public void onLocationChanged(Location location) {
                                 locationManager.removeUpdates(this);
-                                Log.v("LOCGET","From LM");
+                                Log.v("LOCGET", "From LM");
                                 registerAndGetEvents(location);
                             }
 
@@ -253,16 +222,17 @@ public abstract class SplashActivity extends Activity {
                             public void onProviderEnabled(String s) {
 
                             }
-
+                            //
                             @Override
                             public void onProviderDisabled(String s) {
 
                             }
                         };
-                        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER,locationListener,null);
+                        locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+                        
 
                     } else {
-                        Log.v("LOCGET","From FLP");
+                        Log.v("LOCGET", "From FLP");
 
                         registerAndGetEvents(locationResult.getLastLocation());
                     }
@@ -273,7 +243,7 @@ public abstract class SplashActivity extends Activity {
             fusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy,
                     locationCallback,
                     null);
-            Log.v("LOGGER","From UGH");
+            Log.v("LOGGER", "From UGH");
         }
     }
 
@@ -292,224 +262,173 @@ public abstract class SplashActivity extends Activity {
 
         // Got last known location. In some rare situations this can be null.
         // NB: I've mitigated most of these rare cases.
-        statusText.setText("Checking in with 721");
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                InputStream uis = getResources().openRawResource(R.raw.gravestones);
-                InputStream pis = getResources().openRawResource(R.raw.mouthpiece);
-                BufferedReader ubr = new BufferedReader(new InputStreamReader(uis));
-                BufferedReader pbr = new BufferedReader(new InputStreamReader(pis));
-                try {
-                    String u = ubr.readLine();
-                    String p = pbr.readLine();
-                    final ArrayList<EventCard> eventsFound = new ArrayList<>();
-                    final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                    final String finalIID = task.getResult().getToken();
-                    Log.v("FIID", finalIID);
-                    // Get an access token for the API
+        statusText.setText("Loading 721..");
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
+            InputStream uis = getResources().openRawResource(R.raw.gravestones);
+            InputStream pis = getResources().openRawResource(R.raw.mouthpiece);
+            BufferedReader ubr = new BufferedReader(new InputStreamReader(uis));
+            BufferedReader pbr = new BufferedReader(new InputStreamReader(pis));
+            try {
+                String u = ubr.readLine();
+                String p = pbr.readLine();
+                final ArrayList<EventCard> eventsFound = new ArrayList<>();
+                final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+                final String finalIID = task.getResult().getToken();
+                Log.v("FIID", finalIID);
+                // Get an access token for the API
 
-                    // Auth params
-                    final Map<String, String> loginPOST = new HashMap<String, String>();
-                    loginPOST.put("email", u);
-                    loginPOST.put("password", p);
-                    // Get access token
-                    // POST REQUEST: Authenticate
-                    queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
+                // Auth params
+                final Map<String, String> loginPOST = new HashMap<>();
+                loginPOST.put("email", u);
+                loginPOST.put("password", p);
+                // Get access token
+                // POST REQUEST: Authenticate
+                queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
+                        response -> {
+                            try {
+                                // Parse JSON and get access token
+                                JSONObject jo = new JSONObject(response);
+                                final String accessToken = String.valueOf(jo.get("id"));
+                                // Encoded URL for profile search
+
+                                Log.v("API access Token ", accessToken);
+                                Log.v("IID", finalIID);
+                                Log.v("REQUEST", "Checking profile");
+                                // GET REQUEST: Does profile exist?
+                                queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
                                     try {
-                                        // Parse JSON and get access token
-                                        JSONObject jo = new JSONObject(response);
-                                        final String accessToken = String.valueOf(jo.get("id"));
-                                        // Encoded URL for profile search
+                                        JSONArray profilesResponse = new JSONArray(response15);
+                                        if (profilesResponse.isNull(0)) {
+                                            statusText.setText("Registering with 721...");
+                                            // User does not exist. This condition definitely needs testing
+                                            Log.v("USERS", "User not found, creating...");
+                                            queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
 
-                                        Log.v("API access Token ", accessToken);
-                                        Log.v("IID", finalIID);
-                                        Log.v("REQUEST", "Checking profile");
-                                        // GET REQUEST: Does profile exist?
-                                        queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, new Response.Listener<String>() {
-                                            @Override
-                                            public void onResponse(String response) {
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() throws AuthFailureError {
+                                                    Map<String, String> map = new HashMap<>();
+                                                    map.put("profileId", finalIID);
+                                                    return map;
+                                                }
+                                            });
+
+                                        } else {
+                                            // User exists, don't need to do anything yet
+                                            try {
+                                                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                                String city = address.get(0).getSubAdminArea();
+                                                statusText.setText("Welcome back! Loading the latest experiences in " + city + "...");
+                                            } catch (IOException e) {
+                                                statusText.setText("Welcome back! Loading the latest experiences...");
+                                            }
+                                        }
+                                        // PUT REQUEST: Update events on server
+                                        Log.v("Requests", "Updating events on server...");
+                                        queue.add(new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
+                                            // GET REQUEST: Get events from the server
+                                            queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, response12 -> {
                                                 try {
-                                                    JSONArray profilesResponse = new JSONArray(response);
-                                                    if (profilesResponse.isNull(0)) {
-                                                        statusText.setText("Registering with 721...");
-                                                        // User does not exist. This condition definitely needs testing
-                                                        Log.v("USERS", "User not found, creating...");
-                                                        queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, new Response.Listener<String>() {
-                                                            @Override
-                                                            public void onResponse(String response) {
-                                                                Log.v("USERS", "User created");
+                                                    JSONObject jo1 = new JSONObject(response12);
+                                                    JSONArray events = jo1.getJSONArray("getWithinDistance");
 
-                                                            }
-                                                        }, new Response.ErrorListener() {
-                                                            @Override
-                                                            public void onErrorResponse(VolleyError error) {
+                                                    for (int i = 0; i < events.length(); i++) {
+                                                        JSONObject event = events.getJSONObject(i);
+                                                        eventsFound.add(EventCard.unpackFromJson(event));
 
-                                                            }
-                                                        }) {
-                                                            @Override
-                                                            protected Map<String, String> getParams() throws AuthFailureError {
-                                                                Map<String, String> map = new HashMap<>();
-                                                                map.put("profileId", finalIID);
-                                                                return map;
-                                                            }
-                                                        });
-
-                                                    } else {
-                                                        // User exists, don't need to do anything yet
-                                                        try {
-                                                            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                                            String city = address.get(0).getSubAdminArea();
-                                                            statusText.setText("Welcome back! Loading the latest experiences in " + city + "...");
-                                                        } catch (IOException e) {
-                                                            statusText.setText("Welcome back! Loading the latest experiences...");
-                                                        }
                                                     }
-                                                    // PUT REQUEST: Update events on server
-                                                    Log.v("Requests", "Updating events on server...");
-                                                    queue.add(new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-                                                            // GET REQUEST: Get events from the server
-                                                            queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, new Response.Listener<String>() {
-                                                                @Override
-                                                                public void onResponse(String response) {
-                                                                    try {
-                                                                        JSONObject jo = new JSONObject(response);
-                                                                        JSONArray events = jo.getJSONArray("getWithinDistance");
 
-                                                                        for (int i = 0; i < events.length(); i++) {
-                                                                            JSONObject event = events.getJSONObject(i);
-                                                                            eventsFound.add(EventCard.unpackFromJson(event));
-
+                                                    // Filter events already swiped through
+                                                    // Request a string response from the provided URL.
+                                                    Log.v("Requests", "Filtering through events already swiped through");
+                                                    queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileSearchFilter(finalIID),
+                                                            response1 -> {
+                                                                try {
+                                                                    final JSONArray eventProfileArray = new JSONArray(response1);
+                                                                    JSONObject jsonObject;
+                                                                    ArrayList<String> alreadySwipedIDs = new ArrayList<>();
+                                                                    for (int i = 0; i < eventProfileArray.length(); i++) {
+                                                                        jsonObject = eventProfileArray.getJSONObject(i);
+                                                                        String eventID = jsonObject.getString("eventSourceId");
+                                                                        alreadySwipedIDs.add(eventID);
+                                                                    }
+                                                                    ArrayList<EventCard> filteredCards = new ArrayList<>();
+                                                                    for (EventCard e : eventsFound) {
+                                                                        if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
+                                                                            filteredCards.add(e);
                                                                         }
-
-                                                                        // Filter events already swiped through
-                                                                        // Request a string response from the provided URL.
-                                                                        Log.v("Requests", "Filtering through events already swiped through");
-                                                                        queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileSearchFilter(finalIID),
-                                                                                new Response.Listener<String>() {
-                                                                                    @Override
-                                                                                    public void onResponse(String response) {
-                                                                                        try {
-                                                                                            final JSONArray eventProfileArray = new JSONArray(response);
-                                                                                            JSONObject jsonObject;
-                                                                                            ArrayList<String> alreadySwipedIDs = new ArrayList<>();
-                                                                                            for (int i = 0; i < eventProfileArray.length(); i++) {
-                                                                                                jsonObject = eventProfileArray.getJSONObject(i);
-                                                                                                String eventID = jsonObject.getString("eventSourceId");
-                                                                                                alreadySwipedIDs.add(eventID);
-                                                                                            }
-                                                                                            ArrayList<EventCard> filteredCards = new ArrayList<>();
-                                                                                            for (EventCard e : eventsFound) {
-                                                                                                if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
-                                                                                                    filteredCards.add(e);
-                                                                                                }
-                                                                                            }
-
-                                                                                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                                                                            intent.putParcelableArrayListExtra("events", filteredCards);
-                                                                                            intent.putExtra("accessToken", accessToken);
-                                                                                            intent.putExtra("fiid", finalIID);
-                                                                                            startActivity(intent);
-                                                                                            finish();
-
-                                                                                        } catch (JSONException je) {
-                                                                                            je.printStackTrace();
-                                                                                        }
-                                                                                    }
-
-
-                                                                                },
-                                                                                new Response.ErrorListener() {
-                                                                                    @Override
-                                                                                    public void onErrorResponse(VolleyError error) {
-
-                                                                                    }
-                                                                                }));
-                                                                    } catch (
-                                                                            JSONException e) {
-                                                                        e.printStackTrace();
                                                                     }
 
+                                                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                                    intent.putParcelableArrayListExtra("events", filteredCards);
+                                                                    intent.putExtra("accessToken", accessToken);
+                                                                    intent.putExtra("fiid", finalIID);
+                                                                    startActivity(intent);
+                                                                    finish();
 
+                                                                } catch (JSONException je) {
+                                                                    je.printStackTrace();
                                                                 }
-                                                            }, new Response.ErrorListener() {
-                                                                @Override
-                                                                public void onErrorResponse
-                                                                        (VolleyError
-                                                                                 error) {
-                                                                    // TODO create error activity
-                                                                }
+                                                            },
+                                                            error -> {
+
                                                             }));
-                                                        }
-                                                    },
-                                                            new Response.ErrorListener() {
-                                                                @Override
-                                                                public void onErrorResponse(VolleyError error) {
-
-                                                                }
-                                                            }) {
-                                                        @Override
-                                                        protected Map<String, String> getParams
-                                                                () throws
-                                                                AuthFailureError {
-
-                                                            Map<String, String> params = new HashMap<>();
-                                                            params.put("latitude", String.valueOf(location.getLatitude()));
-                                                            params.put("longitude", String.valueOf(location.getLongitude()));
-
-                                                            params.put("radius", String.valueOf(radius));
-                                                            params.put("daysFromNow", String.valueOf(daysFromNow));
-                                                            return params;
-                                                        }
-                                                    });
-
-
                                                 } catch (
                                                         JSONException e) {
                                                     e.printStackTrace();
                                                 }
-                                            }
-                                        }, new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
 
+
+                                            }, error -> {
+                                                // TODO create error activity
+                                            }));
+                                        },
+                                                error -> {
+
+                                                }) {
+                                            @Override
+                                            protected Map<String, String> getParams
+                                                    () throws
+                                                    AuthFailureError {
+
+                                                Map<String, String> params = new HashMap<>();
+                                                params.put("latitude", String.valueOf(location.getLatitude()));
+                                                params.put("longitude", String.valueOf(location.getLongitude()));
+
+                                                params.put("radius", String.valueOf(radius));
+                                                params.put("daysFromNow", String.valueOf(daysFromNow));
+                                                return params;
                                             }
-                                        }));
+                                        });
 
 
                                     } catch (
                                             JSONException e) {
                                         e.printStackTrace();
                                     }
+                                }, error -> {
 
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            // OOPSIE WOOPSIE
-                            Log.v("OOPS", "Something something");
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() {
-                            return loginPOST;
-                        }
-                    });
+                                }));
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
+
+                            } catch (
+                                    JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }, error -> {
+                    // OOPSIE WOOPSIE
+                    Log.v("OOPS", "Something something");
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        return loginPOST;
+                    }
+                });
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }).addOnFailureListener(e -> e.printStackTrace());
     }
 }

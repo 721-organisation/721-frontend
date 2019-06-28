@@ -75,28 +75,22 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         final com.google.android.material.floatingactionbutton.FloatingActionButton likeButton = findViewById(R.id.thumbupButton);
         final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = findViewById(R.id.thumbdownButton);
         fab.setSpeedDialMenuAdapter(new MainActivitySpeedDialAdapter());
-        fab.setOnSpeedDialMenuOpenListener(new SpeedDialMenuOpenListener() {
-            @Override
-            public void onOpen(@NotNull FloatingActionButton floatingActionButton) {
-                floatingActionButton.setContentCoverColour(0x99fe6060);
-                floatingActionButton.openSpeedDialMenu();
-                floatingActionButton.setContentCoverEnabled(true);
-                likeButton.setVisibility(View.INVISIBLE);
-                dislikeButton.setVisibility(View.INVISIBLE);
-                floatingActionButton.getContentCoverView().setVisibility(View.VISIBLE);
-            }
+        fab.setOnSpeedDialMenuOpenListener(floatingActionButton -> {
+            floatingActionButton.setContentCoverColour(0x99fe6060);
+            floatingActionButton.openSpeedDialMenu();
+            floatingActionButton.setContentCoverEnabled(true);
+            likeButton.setVisibility(View.INVISIBLE);
+            dislikeButton.setVisibility(View.INVISIBLE);
+            floatingActionButton.getContentCoverView().setVisibility(View.VISIBLE);
         });
-        fab.setOnSpeedDialMenuCloseListener(new SpeedDialMenuCloseListener() {
-            @Override
-            public void onClose(@NotNull FloatingActionButton floatingActionButton) {
-                floatingActionButton.setContentCoverColour(0x99fe6060);
+        fab.setOnSpeedDialMenuCloseListener(floatingActionButton -> {
+            floatingActionButton.setContentCoverColour(0x99fe6060);
 
-                floatingActionButton.closeSpeedDialMenu();
-                floatingActionButton.setContentCoverEnabled(false);
-                likeButton.setVisibility(View.VISIBLE);
-                dislikeButton.setVisibility(View.VISIBLE);
-                floatingActionButton.getContentCoverView().setVisibility(View.GONE);
-            }
+            floatingActionButton.closeSpeedDialMenu();
+            floatingActionButton.setContentCoverEnabled(false);
+            likeButton.setVisibility(View.VISIBLE);
+            dislikeButton.setVisibility(View.VISIBLE);
+            floatingActionButton.getContentCoverView().setVisibility(View.GONE);
         });
         // Gets the event info obtained from the splash activity
         eventCards = getIntent().getParcelableArrayListExtra("events");
@@ -149,18 +143,10 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 // Dislikes
                 // Request a string response from the provided URL.
                 stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
-                                Log.v("SWIPE", "Successfully registered dislike");
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
+                        response -> {
+                            // Display the first 500 characters of the response string.
+                            Log.v("SWIPE", "Successfully registered dislike");
+                        }, error -> Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> map = new HashMap<>();
@@ -179,18 +165,10 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 // Likes
                 // Request a string response from the provided URL.
                 stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // Display the first 500 characters of the response string.
-                                Log.v("SWIPE", "Successfully registered like");
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
+                        response -> {
+                            // Display the first 500 characters of the response string.
+                            Log.v("SWIPE", "Successfully registered like");
+                        }, error -> Toast.makeText(getBaseContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         Map<String, String> map = new HashMap<>();
