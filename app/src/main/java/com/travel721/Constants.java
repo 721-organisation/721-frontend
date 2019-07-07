@@ -25,9 +25,13 @@ public class Constants {
         return "?filter=%7B%22where%22%3A%7B%22profileId%22%3A%22" + iid + "%22%7D%7D";
     }
 
-    public static final String eventProfileSearchFilter(String profileID) {
+    public static final String eventProfileLikedSearchFilter(String profileID) {
         return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%2C%22swipe%22%3Atrue%7D%7D";
     }
+    public static final String eventProfileAllSearchFilter(String profileID) {
+        return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%7D%7D";
+    }
+
 
     public static final String eventSearchFilter(String eventProfileID) {
         return "%7B%22where%22%3A%7B%22eventSourceId%22%3A%22" + eventProfileID + "%22%7D%7D";

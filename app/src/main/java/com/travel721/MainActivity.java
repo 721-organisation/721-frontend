@@ -3,12 +3,15 @@ package com.travel721;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
@@ -38,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import uk.co.markormesher.android_fab.FloatingActionButton;
 import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
@@ -139,8 +144,26 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         StringRequest stringRequest;
         String url = API_ROOT_URL + "eventProfiles?access_token=" + getIntent().getStringExtra("accessToken");
         // Each case makes a call to the Analytics API
+        //vectordrawable
+        TSnackbar snackbar = TSnackbar
+                .make(findViewById(R.id.rootConstraintLayout), "", TSnackbar.LENGTH_SHORT);
+        snackbar.setActionTextColor(Color.WHITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.WHITE);
+        TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        textView.setPadding(0, 50, 0, 50);
+        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setGravity(View.TEXT_ALIGNMENT_CENTER);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
         switch (direction) {
             case Left:
+                snackbar.dismiss();
+                String[] negative_terms = getResources().getStringArray(R.array.negative_terms);
+                textView.setText(getRandom(negative_terms));
+                textView.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                snackbar.show();
                 AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_LEFT, null);
                 // Dislikes
                 // Request a string response from the provided URL.
@@ -164,6 +187,11 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
                 // TODO make a request to the API
                 break;
             case Right:
+                snackbar.dismiss();
+                String[] positive_terms = getResources().getStringArray(R.array.positive_terms);
+                textView.setText(getRandom(positive_terms));
+                textView.setTextColor(Color.rgb(0, 230, 118));
+                snackbar.show();
                 AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_SWIPED_RIGHT, null);
 
                 // Likes
@@ -340,4 +368,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         }
     }
 
+    public static String getRandom(String[] array) {
+        int rnd = new Random().nextInt(array.length);
+        return array[rnd];
+    }
 }

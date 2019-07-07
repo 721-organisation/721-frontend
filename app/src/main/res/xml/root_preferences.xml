@@ -17,6 +17,18 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <PreferenceCategory app:title="Slack">
+        <Preference
+            android:key="slackkey"
+            android:summary="To leave feedback, and keep up with the 721 Community, click here!"
+            android:title="Join our Slack community here" >
+        <intent
+            android:targetClass="com.travel721.SlackActivity"
+            android:targetPackage="com.travel721">
+        </intent>
+        </Preference>
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="Event Curation">
         <SeekBarPreference
             android:max="@integer/radius_max"
@@ -54,9 +66,6 @@
             <intent
                 android:targetClass="com.travel721.ListLibrariesActivity"
                 android:targetPackage="com.travel721">
-                <extra
-                    android:name="example_key"
-                    android:value="example_value" />
             </intent>
         </Preference>
     </PreferenceCategory>

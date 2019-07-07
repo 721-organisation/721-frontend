@@ -60,7 +60,8 @@ import java.util.Map;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.REQUEST_CHECK_LOCATION_SETTINGS;
 import static com.travel721.Constants.REQUEST_LOCATION_PERMISSIONS;
-import static com.travel721.Constants.eventProfileSearchFilter;
+import static com.travel721.Constants.eventProfileAllSearchFilter;
+import static com.travel721.Constants.eventSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
@@ -358,7 +359,7 @@ public abstract class SplashActivity extends Activity {
                                                     // Filter events already swiped through
                                                     // Request a string response from the provided URL.
                                                     Log.v("Requests", "Filtering through events already swiped through");
-                                                    queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileSearchFilter(finalIID),
+                                                    queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileAllSearchFilter(finalIID),
                                                             response1 -> {
                                                                 try {
                                                                     final JSONArray eventProfileArray = new JSONArray(response1);

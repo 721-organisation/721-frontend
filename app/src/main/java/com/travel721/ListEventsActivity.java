@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.travel721.Constants.API_ROOT_URL;
-import static com.travel721.Constants.eventProfileSearchFilter;
+import static com.travel721.Constants.eventProfileLikedSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
 
 public class ListEventsActivity extends AppCompatActivity {
@@ -60,7 +60,7 @@ public class ListEventsActivity extends AppCompatActivity {
                 // Instantiate the RequestQueue.
                 final RequestQueue queue = Volley.newRequestQueue(c);
                 String fiid = task.getResult().getToken();
-                String url = API_ROOT_URL + "eventProfiles?access_token=" + api_access_token + "&filter=" + eventProfileSearchFilter(fiid);
+                String url = API_ROOT_URL + "eventProfiles?access_token=" + api_access_token + "&filter=" + eventProfileLikedSearchFilter(fiid);
                 // Request a string response from the provided URL.
                 final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {

@@ -43,4 +43,14 @@
         <item>Glide, </item>
         <item></item>
     </string-array>
+    <string-array name="positive_terms">
+        <item>Sounds Good</item>
+        <item>Count me in</item>
+        <item>Looks fun</item>
+    </string-array>
+    <string-array name="negative_terms">
+        <item>Nah</item>
+        <item>Maybe not</item>
+        <item>Not for me</item>
+    </string-array>
 </resources>
