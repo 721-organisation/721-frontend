@@ -113,7 +113,7 @@ public class EventCard implements Parcelable, Serializable, Comparable<EventCard
     private static String checkHasAndReturnData(JSONObject jo, String prop, String eventSource) throws JSONException {
         if (jo.has(prop)) {
             String strProp = jo.getString(prop);
-            if (strProp.equals("")) {
+            if (strProp.equals("")|| strProp.toLowerCase().equals("null")) {
                 return "No " + prop + " provided by " + eventSource;
             }
             return jo.getString(prop);
