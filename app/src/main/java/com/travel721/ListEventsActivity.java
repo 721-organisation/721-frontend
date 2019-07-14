@@ -138,7 +138,12 @@ public class ListEventsActivity extends AppCompatActivity {
                                         Collections.sort(eventCardArrayList);
                                         if (!PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("eventListOrder", false))
                                             Collections.reverse(eventCardArrayList);
+                                        String previousDateTag = "";
+
                                         for (int i = 0; i < eventCardArrayList.size(); i++) {
+                                            boolean requireDateTag = false;
+                                            if (i==0) requireDateTag = true;
+
                                             View card;
                                             card = getLayoutInflater().inflate(R.layout.event_list_card, null);
                                             ImageView imageView = card.findViewById(R.id.eventCardImage);
@@ -167,9 +172,16 @@ public class ListEventsActivity extends AppCompatActivity {
                                                 overridePendingTransition(R.anim.slide_in_from_top, 0);
                                             });
                                             AnalyticsHelper.logEvent(ListEventsActivity.this, AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
-                                            tv = card.findViewById(R.id.dateTag);
-                                            tv.setText(eventCardArrayList.get(i).getPrettyDate());
+
+                                            if (requireDateTag || !eventCardArrayList.get(i).getPrettyDate().equals(previousDateTag))   {
+                                                requireDateTag = false;
+                                                View dateTag = getLayoutInflater().inflate(R.layout.date_tag, null);
+                                                TextView dateTagTextView = dateTag.findViewById(R.id.dateTag);
+                                                dateTagTextView.setText(eventCardArrayList.get(i).getPrettyDate());
+                                                linearLayout.addView(dateTag);
+                                            }
                                             linearLayout.addView(card);
+                                            previousDateTag = eventCardArrayList.get(i).getPrettyDate();
                                         }
                                     });
                                     queue.start();
