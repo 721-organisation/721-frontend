@@ -37,6 +37,7 @@
     <string name="new_user_geocoded_message">Welcome to 721! Loading the latest experiences in %s…</string>
     <string name="returning_user_failed_geocoding">Welcome back to 721! Loading the latest experiences</string>
     <string name="new_user_failed_geocoding">Welcome to 721! Loading the latest experiences in</string>
+    <string name="no_more_events">No more events in your area!</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>

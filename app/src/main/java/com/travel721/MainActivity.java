@@ -100,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
         eventCards = getIntent().getParcelableArrayListExtra("events");
 
         cardStackView = findViewById(R.id.card_stack_view);
+
+        if (eventCards.isEmpty()) findViewById(R.id.no_more_events_tv).setVisibility(View.VISIBLE);
+
         initialise();
 
     }
@@ -138,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements CardStackListener
 
     @Override
     public void onCardSwiped(Direction direction) {
+        if (cardStackLayoutManager.getChildCount() == 0) findViewById(R.id.no_more_events_tv).setVisibility(View.VISIBLE);
+
         int index = buttonPushed ? cardStackLayoutManager.getTopPosition() : cardStackLayoutManager.getTopPosition() - 1;
         if (buttonPushed) buttonPushed = false;
         RequestQueue queue = Volley.newRequestQueue(this);
