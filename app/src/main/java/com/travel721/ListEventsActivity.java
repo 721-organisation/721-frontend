@@ -88,36 +88,6 @@ public class ListEventsActivity extends AppCompatActivity {
                                                             JSONObject eventToShow = eventsFound.getJSONObject(0);
                                                             EventCard eventCard = EventCard.unpackFromJson(eventToShow);
                                                             eventCardArrayList.add(eventCard);
-//                                                                View card;
-//                                                                card = getLayoutInflater().inflate(R.layout.event_list_card, null);
-//                                                                ImageView imageView = card.findViewById(R.id.eventCardImage);
-//                                                                CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
-//                                                                circularProgressDrawable.setStrokeWidth(5f);
-//                                                                circularProgressDrawable.setCenterRadius(30f);
-//                                                                circularProgressDrawable.start();
-//                                                                Glide.with(c)
-//                                                                        .load(eventCard.getImgURL())
-//                                                                        .placeholder(circularProgressDrawable)
-//                                                                        .into(imageView);
-//                                                                imageView.setHorizontalFadingEdgeEnabled(true);
-//                                                                imageView.setFadingEdgeLength(40);
-//
-//                                                                TextView tv = card.findViewById(R.id.eventCardName);
-//                                                                tv.setText(eventCard.getName());
-//                                                                tv = card.findViewById(R.id.eventCardDateTime);
-//                                                                tv.setText(eventCard.getFormattedDate() + " " + eventCard.getTime());
-//                                                                tv = card.findViewById(R.id.eventCardVenue);
-//                                                                tv.setText(eventCard.getVenueName());
-//                                                                card.setOnClickListener(view -> {
-//                                                                    Intent i = new Intent(ListEventsActivity.this, EventMoreInfoActivity.class);
-//                                                                    i.putExtra("eventCard", (Parcelable) eventCard);
-//                                                                    startActivity(i);
-//                                                                    overridePendingTransition(R.anim.slide_in_from_top, 0);
-//                                                                });
-//                                                                AnalyticsHelper.logEvent(ListEventsActivity.this, AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
-//                                                                tv = card.findViewById(R.id.dateTag);
-//                                                                tv.setText(eventCard.getDayOfWeek());
-//                                                                linearLayout.addView(card);
 
                                                         }
                                                         Log.v("Inner Request", response1);
@@ -185,26 +155,7 @@ public class ListEventsActivity extends AppCompatActivity {
                                         }
                                     });
                                     queue.start();
-//TODO reimplement this part
-//                                    LinearLayout linearLayout = findViewById(R.id.eventListCardHolder);
-//                                    View card;
-//                                        //LinearLayout layout = (LinearLayout) findViewById(R.id.info);
-//                                        card = getLayoutInflater().inflate(R.layout.event_list_card, null);
-//                                        ImageView imageView = card.findViewById(R.id.eventCardImage);
-//                                        Glide.with(c)
-//                                                .load(e.getImgURL())
-//                                                .placeholder(R.drawable.loading_spinner)
-//                                                .into(imageView);
-//                                        imageView.setHorizontalFadingEdgeEnabled(true);
-//                                        imageView.setFadingEdgeLength(40);
-//
-//                                        TextView tv = card.findViewById(R.id.eventCardName);
-//                                        tv.setText(e.getName());
-//                                        tv = card.findViewById(R.id.eventCardDateTime);
-//                                        tv.setText(e.getFormattedDate() + " " + e.getTime());
-//                                        tv = card.findViewById(R.id.eventCardVenue);
-//                                        tv.setText(e.getVenueName());
-//                                        linearLayout.addView(card);
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
