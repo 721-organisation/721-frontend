@@ -39,6 +39,7 @@
     <string name="new_user_failed_geocoding">Welcome to 721! Loading the latest experiences in</string>
     <string name="no_more_events">No more events in your area!</string>
     <string name="feedback_card_tagline">Enjoying using 721? Swipe to send us your feedback</string>
+    <string name="get_started">Get Started</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>
