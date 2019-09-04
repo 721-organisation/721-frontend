@@ -13,7 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class EventCard implements Parcelable, Serializable, Comparable<EventCard> {
+public class EventCard extends Card implements Parcelable, Serializable, Comparable<EventCard> {
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
         @Override
         public EventCard createFromParcel(Parcel in) {
@@ -113,7 +113,7 @@ public class EventCard implements Parcelable, Serializable, Comparable<EventCard
     private static String checkHasAndReturnData(JSONObject jo, String prop, String eventSource) throws JSONException {
         if (jo.has(prop)) {
             String strProp = jo.getString(prop);
-            if (strProp.equals("")|| strProp.toLowerCase().equals("null")) {
+            if (strProp.equals("") || strProp.toLowerCase().equals("null")) {
                 return "No " + prop + " provided by " + eventSource;
             }
             return jo.getString(prop);

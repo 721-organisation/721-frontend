@@ -15,7 +15,9 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
@@ -25,10 +27,13 @@ import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -61,7 +66,6 @@ import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.REQUEST_CHECK_LOCATION_SETTINGS;
 import static com.travel721.Constants.REQUEST_LOCATION_PERMISSIONS;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
-import static com.travel721.Constants.eventSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
@@ -79,9 +83,12 @@ import static com.travel721.Constants.testRadius;
 public abstract class SplashActivity extends Activity {
 
     LocationRequest mLocationRequestHighAccuracy;
+    //TextSwitcher statusText;
     // Private fields
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private boolean executed = false;
+    private DefaultRetryPolicy splashRetryPolicy = new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     /**
      * This is called when permissions are changed on the app's recommendation
@@ -101,8 +108,7 @@ public abstract class SplashActivity extends Activity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // Location permission was granted, yay!
-                    //Snackbar.make(findViewById(R.id.loading_spinner_view), "Thanks! Getting your location now...", Snackbar.LENGTH_SHORT).show();
-                    statusText.setText("Thanks! Getting your location now...");
+                    loadingTextView.setText("Thanks! Getting your location now...");
                     Log.v("DOLOAD", "Called from onRPR");
                     doLoad();
                 } else {
@@ -117,21 +123,24 @@ public abstract class SplashActivity extends Activity {
         }
     }
 
-    TextSwitcher statusText;
-
     // TODO permission first, then change settings - not the other way around
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        statusText = findViewById(R.id.statusText);
+        loadingTextView = findViewById(R.id.loading_text_view);
 
-        statusText.setFactory(() -> {
+        loadingTextView.setFactory(() -> {
             TextView tv = new TextView(SplashActivity.this);
+            tv.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+            tv.setGravity(Gravity.CENTER);
+            // Add this
+            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+
             tv.setTextColor(ContextCompat.getColor(this, android.R.color.white));
             return tv;
         });
-        statusText.setInAnimation(this, R.anim.fade_in_text_switch);
-        statusText.setOutAnimation(this, R.anim.fade_out_text_switch);
+        loadingTextView.setInAnimation(this, R.anim.fade_in_text_switch);
+        loadingTextView.setOutAnimation(this, R.anim.fade_out_text_switch);
         // Initialise Firebase
         FirebaseApp.initializeApp(this);
         //Initialise FLP
@@ -173,8 +182,10 @@ public abstract class SplashActivity extends Activity {
         });
     }
 
+    TextSwitcher loadingTextView;
+
     private void doLoad() {
-        statusText.setText("Checking permissions...");
+        loadingTextView.setText("Checking permissions...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.v("PERMS", "FAIL");
             // Ask for permission
@@ -198,7 +209,7 @@ public abstract class SplashActivity extends Activity {
                     if (locationResult == null || locationResult.getLastLocation() == null) {
                         // No possible way to get location
                         // Show the user an error message
-                        statusText.setVisibility(View.GONE);
+                        loadingTextView.setVisibility(View.GONE);
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, view -> finish()).show();
                     } else {
@@ -225,6 +236,7 @@ public abstract class SplashActivity extends Activity {
 
                 }
 
+
                 @Override
                 public void onProviderEnabled(String s) {
 
@@ -243,8 +255,6 @@ public abstract class SplashActivity extends Activity {
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
         }
     }
-
-    private boolean executed = false;
 
     /**
      * This prevents both Location providers from returning at exactly the sam
@@ -275,7 +285,7 @@ public abstract class SplashActivity extends Activity {
 
         // Got last known location. In some rare situations this can be null.
         // NB: I've mitigated most of these rare cases.
-        statusText.setText("Loading 721..");
+        loadingTextView.setText("Loading 721..");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
             InputStream uis = getResources().openRawResource(R.raw.gravestones);
             InputStream pis = getResources().openRawResource(R.raw.mouthpiece);
@@ -296,157 +306,193 @@ public abstract class SplashActivity extends Activity {
                 loginPOST.put("password", p);
                 // Get access token
                 // POST REQUEST: Authenticate
-                queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
-                        response -> {
-                            try {
-                                // Parse JSON and get access token
-                                JSONObject jo = new JSONObject(response);
-                                final String accessToken = String.valueOf(jo.get("id"));
-                                // Encoded URL for profile search
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
 
-                                Log.v("API access Token ", accessToken);
-                                Log.v("IID", finalIID);
-                                Log.v("REQUEST", "Checking profile");
-                                // GET REQUEST: Does profile exist?
-                                queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
-                                    try {
-                                        JSONArray profilesResponse = new JSONArray(response15);
-                                        boolean userExists = false;
-                                        if (profilesResponse.isNull(0)) {
-                                            statusText.setText("Registering with 721...");
-                                            // User does not exist. This condition definitely needs testing
-                                            Log.v("USERS", "User not found, creating...");
-                                            queue.add(new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
+                                try {
+                                    // Parse JSON and get access token
+                                    JSONObject jo = new JSONObject(response);
+                                    final String accessToken = String.valueOf(jo.get("id"));
+                                    // Encoded URL for profile search
 
-                                            }) {
-                                                @Override
-                                                protected Map<String, String> getParams() throws AuthFailureError {
-                                                    Map<String, String> map = new HashMap<>();
-                                                    map.put("profileId", finalIID);
-                                                    return map;
-                                                }
-                                            });
-
-                                        } else {
-                                            userExists = true;
-                                        }
+                                    Log.v("API access Token ", accessToken);
+                                    Log.v("IID", finalIID);
+                                    Log.v("REQUEST", "Checking profile");
+                                    // GET REQUEST: Does profile exist?
+                                    StringRequest stringRequest1 = new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
                                         try {
-                                            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                            String city = address.get(0).getSubAdminArea();
-                                            statusText.setText(userExists ?
-                                                    getString(R.string.returning_user_geocoded_welcome, city) :
-                                                    getString(R.string.new_user_geocoded_message, city));
-                                        } catch (IOException e) {
-                                            statusText.setText(userExists ?
-                                                    getString(R.string.returning_user_failed_geocoding) :
-                                                    getString(R.string.new_user_failed_geocoding));
-                                        }
-                                        // PUT REQUEST: Update events on server
-                                        Log.v("Requests", "Updating events on server...");
-                                        queue.add(new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
-                                            // GET REQUEST: Get events from the server
-                                            queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, response12 -> {
-                                                try {
-                                                    JSONObject jo1 = new JSONObject(response12);
-                                                    JSONArray events = jo1.getJSONArray("getWithinDistance");
-
-                                                    for (int i = 0; i < events.length(); i++) {
-                                                        JSONObject event = events.getJSONObject(i);
-                                                        eventsFound.add(EventCard.unpackFromJson(event));
-
-                                                    }
-
-                                                    // Filter events already swiped through
-                                                    // Request a string response from the provided URL.
-                                                    Log.v("Requests", "Filtering through events already swiped through");
-                                                    queue.add(new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileAllSearchFilter(finalIID),
-                                                            response1 -> {
-                                                                try {
-                                                                    final JSONArray eventProfileArray = new JSONArray(response1);
-                                                                    JSONObject jsonObject;
-                                                                    ArrayList<String> alreadySwipedIDs = new ArrayList<>();
-                                                                    for (int i = 0; i < eventProfileArray.length(); i++) {
-                                                                        jsonObject = eventProfileArray.getJSONObject(i);
-                                                                        String eventID = jsonObject.getString("eventSourceId");
-                                                                        alreadySwipedIDs.add(eventID);
-                                                                    }
-                                                                    ArrayList<EventCard> filteredCards = new ArrayList<>();
-                                                                    for (EventCard e : eventsFound) {
-                                                                        if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
-                                                                            filteredCards.add(e);
-                                                                        }
-                                                                    }
-
-                                                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                                                    intent.putParcelableArrayListExtra("events", filteredCards);
-                                                                    intent.putExtra("accessToken", accessToken);
-                                                                    intent.putExtra("fiid", finalIID);
-                                                                    startActivity(intent);
-                                                                    finish();
-
-                                                                } catch (JSONException je) {
-                                                                    je.printStackTrace();
-                                                                }
-                                                            },
-                                                            error -> {
-
-                                                            }));
-                                                } catch (
-                                                        JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-
-
-                                            }, error -> {
-                                                // TODO create error activity
-                                            }));
-                                        },
-                                                error -> {
+                                            JSONArray profilesResponse = new JSONArray(response15);
+                                            boolean userExists = false;
+                                            if (profilesResponse.isNull(0)) {
+                                                loadingTextView.setText("Registering with 721...");
+                                                // User does not exist. This condition definitely needs testing
+                                                Log.v("USERS", "User not found, creating...");
+                                                StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
 
                                                 }) {
-                                            @Override
-                                            protected Map<String, String> getParams
-                                                    () throws
-                                                    AuthFailureError {
-
-                                                Map<String, String> params = new HashMap<>();
-                                                params.put("latitude", String.valueOf(location.getLatitude()));
-                                                params.put("longitude", String.valueOf(location.getLongitude()));
-
-                                                params.put("radius", String.valueOf(radius));
-                                                params.put("daysFromNow", String.valueOf(daysFromNow));
-                                                return params;
+                                                    @Override
+                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                        Map<String, String> map = new HashMap<>();
+                                                        map.put("profileId", finalIID);
+                                                        return map;
+                                                    }
+                                                };
+                                                stringRequest2.setRetryPolicy(splashRetryPolicy);
+                                                queue.add(stringRequest2);
+                                            } else {
+                                                userExists = true;
                                             }
-                                        });
+                                            try {
+                                                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                                String city = address.get(0).getSubAdminArea();
+                                                loadingTextView.setText(userExists ?
+                                                        SplashActivity.this.getString(R.string.returning_user_geocoded_welcome, city) :
+                                                        SplashActivity.this.getString(R.string.new_user_geocoded_message, city));
+                                            } catch (IOException e) {
+                                                loadingTextView.setText(userExists ?
+                                                        SplashActivity.this.getString(R.string.returning_user_failed_geocoding) :
+                                                        SplashActivity.this.getString(R.string.new_user_failed_geocoding));
+                                            }
+                                            // PUT REQUEST: Update events on server
+                                            Log.v("Requests", "Updating events on server...");
+                                            StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
+                                                // GET REQUEST: Get events from the server
+                                                StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, response12 -> {
+                                                    try {
+                                                        JSONObject jo1 = new JSONObject(response12);
+                                                        JSONArray events = jo1.getJSONArray("getWithinDistance");
+
+                                                        for (int i = 0; i < events.length(); i++) {
+                                                            JSONObject event = events.getJSONObject(i);
+                                                            eventsFound.add(EventCard.unpackFromJson(event));
+
+                                                        }
+
+                                                        // Filter events already swiped through
+                                                        // Request a string response from the provided URL.
+                                                        Log.v("Requests", "Filtering through events already swiped through");
+                                                        StringRequest stringRequest5 = new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileAllSearchFilter(finalIID),
+                                                                response1 -> {
+                                                                    try {
+                                                                        final JSONArray eventProfileArray = new JSONArray(response1);
+                                                                        JSONObject jsonObject;
+                                                                        ArrayList<String> alreadySwipedIDs = new ArrayList<>();
+                                                                        for (int i = 0; i < eventProfileArray.length(); i++) {
+                                                                            jsonObject = eventProfileArray.getJSONObject(i);
+                                                                            String eventID = jsonObject.getString("eventSourceId");
+                                                                            alreadySwipedIDs.add(eventID);
+                                                                        }
+                                                                        ArrayList<Card> filteredCards = new ArrayList<>();
+                                                                        for (EventCard e : eventsFound) {
+                                                                            if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
+                                                                                filteredCards.add(e);
+                                                                            }
+                                                                        }
+                                                                        filteredCards.add(new FeedbackCard());
+                                                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                                        intent.putParcelableArrayListExtra("events", filteredCards);
+                                                                        intent.putExtra("accessToken", accessToken);
+                                                                        intent.putExtra("fiid", finalIID);
+                                                                        startActivity(intent);
+                                                                        finish();
+
+                                                                    } catch (JSONException je) {
+                                                                        je.printStackTrace();
+                                                                        splashErrorHandler(je.getLocalizedMessage());
+                                                                    }
+                                                                },
+                                                                error -> {
+                                                                    error.printStackTrace();
+                                                                    splashErrorHandler(error.toString());
+                                                                });
+                                                        stringRequest5.setRetryPolicy(splashRetryPolicy);
+                                                        queue.add(stringRequest5);
+                                                    } catch (
+                                                            JSONException e) {
+                                                        e.printStackTrace();
+                                                        splashErrorHandler(e.getLocalizedMessage());
+                                                    }
 
 
-                                    } catch (
-                                            JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }, error -> {
+                                                }, error -> {
+                                                    error.printStackTrace();
+                                                    splashErrorHandler(error.toString());
+                                                });
+                                                stringRequest4.setRetryPolicy(splashRetryPolicy);
+                                                queue.add(stringRequest4);
+                                            },
+                                                    error -> {
+                                                        error.printStackTrace();
+                                                        splashErrorHandler(error.toString());
+                                                    }) {
+                                                @Override
+                                                protected Map<String, String> getParams
+                                                        () throws
+                                                        AuthFailureError {
 
-                                }));
+                                                    Map<String, String> params = new HashMap<>();
+                                                    params.put("latitude", String.valueOf(location.getLatitude()));
+                                                    params.put("longitude", String.valueOf(location.getLongitude()));
 
+                                                    params.put("radius", String.valueOf(radius));
+                                                    params.put("daysFromNow", String.valueOf(daysFromNow));
+                                                    return params;
+                                                }
+                                            };
+                                            stringRequest3.setRetryPolicy(splashRetryPolicy);
+                                            queue.add(stringRequest3);
+                                        } catch (
+                                                JSONException e) {
+                                            e.printStackTrace();
+                                            SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
+                                        }
+                                    }, error -> {
+                                        error.printStackTrace();
+                                        SplashActivity.this.splashErrorHandler(error.toString());
+                                    });
+                                    stringRequest1.setRetryPolicy(splashRetryPolicy);
+                                    queue.add(stringRequest1);
 
-                            } catch (
-                                    JSONException e) {
-                                e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
+                                }
+
                             }
-
                         }, error -> {
-                    // OOPSIE WOOPSIE
-                    Log.v("OOPS", "Something something");
+                    error.printStackTrace();
+                    splashErrorHandler(error.toString());
+
                 }) {
                     @Override
                     protected Map<String, String> getParams() {
                         return loginPOST;
                     }
-                });
-
+                };
+                stringRequest.setRetryPolicy(splashRetryPolicy);
+                queue.add(stringRequest);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).addOnFailureListener(e -> e.printStackTrace());
+        }).addOnFailureListener(e -> {
+            e.printStackTrace();
+            splashErrorHandler(e.getLocalizedMessage());
+        });
+    }
+
+    private void splashErrorHandler(String cause) {
+        Crashlytics.logException(new SplashScreenLoadFailure());
+        Crashlytics.log(Log.ERROR, "SplashActivityLoadError", cause);
+        loadingTextView.setText("");
+        Snackbar sb = Snackbar.make(findViewById(R.id.loading_spinner_view), "An error occurred; we're working hard to fix it", Snackbar.LENGTH_INDEFINITE);
+        sb.setAction("Try Again?", view -> {
+            Intent i = new Intent(this, InitialLoadSplashActivity.class);
+            startActivity(i);
+            finish();
+
+        });
+        sb.show();
     }
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 /**
  * This class is designed to match an overlay colour to a specified colour.
@@ -65,7 +66,7 @@ public class ColourFinder {
         for (int i = 0; i < colourSwatch().size(); i++) {
             int key = colourSwatch().keyAt(i);
             // Resolve the actual colour
-            int col = context.getResources().getColor(key);
+            int col = ContextCompat.getColor(context, key);
             // Extract RGB values
             int swatchRedValue = (col >> 16) & 0xFF;
             int swatchGreenValue = (col >> 8) & 0xFF;
@@ -85,7 +86,7 @@ public class ColourFinder {
             }
         }
         // Send back the closest color in the swatch
-        Log.v("CS", "Closest Overlay: "+closestOverlay);
+        Log.v("CS", "Closest Overlay: " + closestOverlay);
         return closestOverlay;
     }
 }

@@ -68,7 +68,7 @@ public class ListEventsActivity extends AppCompatActivity {
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
                                 Log.v("RES", response);
-//                                List<EventCard> eventCards = getIntent().getParcelableArrayListExtra("events");
+//                                List<EventCard> cardArrayList = getIntent().getParcelableArrayListExtra("events");
 
                                 try {
                                     JSONArray eventProfileArray = new JSONArray(response);

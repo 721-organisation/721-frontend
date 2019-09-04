@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">721Travel</string>
+    <string name="app_name">721</string>
     <string name="loading_events_tip">Things to do in 48 hrs</string>
     <string name="event_title_placeholder">This is a sample event</string>
     <string name="event_line_one">Insert Something Here</string>
@@ -38,6 +38,7 @@
     <string name="returning_user_failed_geocoding">Welcome back to 721! Loading the latest experiences</string>
     <string name="new_user_failed_geocoding">Welcome to 721! Loading the latest experiences in</string>
     <string name="no_more_events">No more events in your area!</string>
+    <string name="feedback_card_tagline">Enjoying using 721? Swipe to send us your feedback</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>

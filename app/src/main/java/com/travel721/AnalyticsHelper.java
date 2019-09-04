@@ -33,7 +33,8 @@ public class AnalyticsHelper {
     public static final String DEBUG_USED_FUSED_LOCATION_PROVIDER = "FusedLocationProvider_Was_Used";
     public static final String DEBUG_USED_NATIVE_LOCATION_MANAGER = "NativeLocationManager_Was_Used";
     public static final String TEST_RELEASE_ANALYTICS_EVENT = "PleaseIgnoreThisStatistic";
-
+    public static final String USER_POSITIVE_FEEDBACK = "FeedbackCardPositiveFeedback";
+    public static final String USER_NEGATIVE_FEEDBACK = "FeedbackCardNegativeFeedback";
 
     /**
      * This is the custom Analytics logger for 721.

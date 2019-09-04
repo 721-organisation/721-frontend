@@ -15,7 +15,6 @@ import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -33,17 +32,26 @@ import static com.travel721.Constants.getRandomOverlay;
  */
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
     // Field for cards in the stack
-    private List<EventCard> events;
+    private List<Card> events;
 
-    public CardStackAdapter(@NonNull List<EventCard> eventCardList) {
+    public CardStackAdapter(@NonNull List<Card> eventCardList) {
         this.events = eventCardList;
     }
 
-    public List<EventCard> getEvents() {
+    public List<Card> getEvents() {
         return events;
     }
 
-    public void setEvents(List<EventCard> events) {
+    @Override
+    public int getItemViewType(int position) {
+        if (events.get(position) instanceof EventCard)
+            return 0;
+        if (events.get(position) instanceof FeedbackCard)
+            return 1;
+        return -1;
+    }
+
+    public void setEvents(List<Card> events) {
         this.events = events;
     }
 
@@ -58,8 +66,17 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.event_card_layout, parent, false);
-        return new ViewHolder(v);
+        View v ;
+        switch (viewType){
+            case 0:
+                v = inflater.inflate(R.layout.event_card_layout, parent, false);
+                return new ViewHolder(v);
+            case 1:
+                v = inflater.inflate(R.layout.feedback_card_layout, parent, false);
+                return new ViewHolder(v);
+        }
+        // This should never happen
+        return new ViewHolder(inflater.inflate(R.layout.event_card_layout, parent, false));
     }
 
     /**
@@ -70,55 +87,57 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
      */
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final EventCard ec = events.get(position);
-        // Set TextView values
-        TextView currTV;
-        View v = holder.itemView;
-        currTV = v.findViewById(R.id.eventTitle);
-        currTV.setText(ec.getName());
-        currTV = v.findViewById(R.id.eventCardVenue);
-        currTV.setText(ec.getVenueName());
-        currTV = v.findViewById(R.id.eventDate);
-        currTV.setText(ec.getFormattedDate());
-        currTV = v.findViewById(R.id.eventTime);
-        currTV.setText(ec.getTime());
-        currTV = v.findViewById(R.id.dayOfWeekLabel);
-        currTV.setText(ec.getDayOfWeek());
-        currTV = v.findViewById(R.id.eventPrice);
-        currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
-        currTV = v.findViewById(R.id.eventSourceLabel);
-        currTV.setText(ec.getSourceTag());
-        // Slightly complicated to load the image, using a 3rd party library
-        final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
-        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
-        circularProgressDrawable.setStrokeWidth(5f);
-        circularProgressDrawable.setCenterRadius(30f);
-        circularProgressDrawable.start();
-        final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
-        GlideApp.with(imageView.getContext())
-                .load(ec.getImgURL())
-                .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
-                .placeholder(circularProgressDrawable)
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        imageView.setImageDrawable(resource);
-                        // Extract a colour from the image to set the overlay with
-                        Palette.from(((BitmapDrawable) resource).getBitmap()).generate(p -> {
-                            int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
-                            int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
-                            Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
-                            overlayImageView.setImageDrawable(overlayDrawable);
-                        });
-                    }
+        if (events.get(position) instanceof EventCard) {
+            final EventCard ec = (EventCard) events.get(position);
+            // Set TextView values
+            TextView currTV;
+            View v = holder.itemView;
+            currTV = v.findViewById(R.id.eventTitle);
+            currTV.setText(ec.getName());
+            currTV = v.findViewById(R.id.eventCardVenue);
+            currTV.setText(ec.getVenueName());
+            currTV = v.findViewById(R.id.eventDate);
+            currTV.setText(ec.getFormattedDate());
+            currTV = v.findViewById(R.id.eventTime);
+            currTV.setText(ec.getTime());
+            currTV = v.findViewById(R.id.dayOfWeekLabel);
+            currTV.setText(ec.getDayOfWeek());
+            currTV = v.findViewById(R.id.eventPrice);
+            currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
+            currTV = v.findViewById(R.id.eventSourceLabel);
+            currTV.setText(ec.getSourceTag());
+            // Slightly complicated to load the image, using a 3rd party library
+            final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
+            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
+            circularProgressDrawable.setStrokeWidth(5f);
+            circularProgressDrawable.setCenterRadius(30f);
+            circularProgressDrawable.start();
+            final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
+            GlideApp.with(imageView.getContext())
+                    .load(ec.getImgURL())
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
+                    .placeholder(circularProgressDrawable)
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            imageView.setImageDrawable(resource);
+                            // Extract a colour from the image to set the overlay with
+                            Palette.from(((BitmapDrawable) resource).getBitmap()).generate(p -> {
+                                int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
+                                int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
+                                Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
+                                overlayImageView.setImageDrawable(overlayDrawable);
+                            });
+                        }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Unnecessary but required
-                    }
-                });
-        ImageView iv = v.findViewById(R.id.overlayImageView);
-        iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            // Unnecessary but required
+                        }
+                    });
+            ImageView iv = v.findViewById(R.id.overlayImageView);
+            iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
+        }
     }
 
     @Override
