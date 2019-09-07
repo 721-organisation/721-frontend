@@ -22,7 +22,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="going_to_experience">Events you\'ve liked…</string>
+    <string name="going_to_experience">Experiences I\'m going to…</string>
     <string name="price">Price: %s</string>
     <string name="event_hyperlink_text">Take me to %s for %s</string>
     <string name="reloading_app">Applying your settings and loading the latest events…</string>
@@ -40,6 +40,10 @@
     <string name="no_more_events">No more events in your area!</string>
     <string name="feedback_card_tagline">Enjoying using 721? Swipe to send us your feedback</string>
     <string name="get_started">Get Started</string>
+    <string name="title_activity_main_tabbed">activity_main_tabbed</string>
+    <string name="near_me_tab">Near Me</string>
+    <string name="discover_tab">Discover</string>
+    <string name="my_721_tab">My 721</string>
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>

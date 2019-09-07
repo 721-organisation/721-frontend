@@ -391,10 +391,12 @@ public abstract class SplashActivity extends Activity {
                                                                             }
                                                                         }
                                                                         filteredCards.add(new FeedbackCard());
+                                                                        Bundle bundle = new Bundle();
                                                                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                                                        intent.putParcelableArrayListExtra("events", filteredCards);
-                                                                        intent.putExtra("accessToken", accessToken);
-                                                                        intent.putExtra("fiid", finalIID);
+                                                                        bundle.putParcelableArrayList("events", filteredCards);
+                                                                        bundle.putString("accessToken", accessToken);
+                                                                        bundle.putString("fiid", finalIID);
+                                                                        intent.putExtra("fragment_bundle", bundle);
                                                                         startActivity(intent);
                                                                         finish();
 

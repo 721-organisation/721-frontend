@@ -1,18 +1,18 @@
 package com.travel721;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
@@ -41,24 +41,37 @@ import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileLikedSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
 
-public class ListEventsActivity extends AppCompatActivity {
+public class ListEventsActivity extends Fragment {
+    String api_access_token;
+
+    // This is where to make the bundle info
+    public static ListEventsActivity newInstance(Bundle bundle) {
+        ListEventsActivity lef = new ListEventsActivity();
+        lef.setArguments(bundle);
+        return lef;
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides title bar
-        getSupportActionBar().hide();
-        setContentView(R.layout.activity_list_events);
+        api_access_token = getArguments().getString("accessToken");
 
-        final String api_access_token = getIntent().getStringExtra("access_token");
-        final Context c = this;
-        final LinearLayout linearLayout = findViewById(R.id.eventListCardHolder);
-        Snackbar.make(linearLayout, "Loading your picks...", Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.activity_list_events, container, false);
+
+
+        final LinearLayout linearLayout = root.findViewById(R.id.eventListCardHolder);
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 // Instantiate the RequestQueue.
-                final RequestQueue queue = Volley.newRequestQueue(c);
+                final RequestQueue queue = Volley.newRequestQueue(getContext());
                 String fiid = task.getResult().getToken();
                 String url = API_ROOT_URL + "eventProfiles?access_token=" + api_access_token + "&filter=" + eventProfileLikedSearchFilter(fiid);
                 // Request a string response from the provided URL.
@@ -102,17 +115,17 @@ public class ListEventsActivity extends AppCompatActivity {
                                     AtomicInteger dealtSize = new AtomicInteger();
                                     queue.addRequestFinishedListener(request -> {
                                         dealtSize.getAndIncrement();
-                                        if (dealtSize.get() < arrSize + 1 || isDestroyed()) {
+                                        if (dealtSize.get() < arrSize + 1 || isDetached()) {
                                             return;
                                         }
                                         Collections.sort(eventCardArrayList);
-                                        if (!PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("eventListOrder", false))
+                                        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("eventListOrder", false))
                                             Collections.reverse(eventCardArrayList);
                                         String previousDateTag = "";
 
                                         for (int i = 0; i < eventCardArrayList.size(); i++) {
                                             boolean requireDateTag = false;
-                                            if (i==0) requireDateTag = true;
+                                            if (i == 0) requireDateTag = true;
 
                                             View card;
                                             card = getLayoutInflater().inflate(R.layout.event_list_card, null);
@@ -121,7 +134,7 @@ public class ListEventsActivity extends AppCompatActivity {
                                             circularProgressDrawable.setStrokeWidth(5f);
                                             circularProgressDrawable.setCenterRadius(30f);
                                             circularProgressDrawable.start();
-                                            Glide.with(c)
+                                            Glide.with(getContext())
                                                     .load(eventCardArrayList.get(i).getImgURL())
                                                     .placeholder(circularProgressDrawable)
                                                     .into(imageView);
@@ -136,15 +149,13 @@ public class ListEventsActivity extends AppCompatActivity {
                                             tv.setText(eventCardArrayList.get(i).getVenueName());
                                             int finalI = i;
                                             card.setOnClickListener(view -> {
-                                                Intent intent = new Intent(ListEventsActivity.this, EventMoreInfoActivity.class);
+                                                Intent intent = new Intent(getContext(), EventMoreInfoActivity.class);
                                                 intent.putExtra("eventCard", (Parcelable) eventCardArrayList.get(finalI));
                                                 startActivity(intent);
-                                                overridePendingTransition(R.anim.slide_in_from_top, 0);
                                             });
-                                            AnalyticsHelper.logEvent(ListEventsActivity.this, AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
+                                            AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
 
-                                            if (requireDateTag || !eventCardArrayList.get(i).getPrettyDate().equals(previousDateTag))   {
-                                                requireDateTag = false;
+                                            if (requireDateTag || !eventCardArrayList.get(i).getPrettyDate().equals(previousDateTag)) {
                                                 View dateTag = getLayoutInflater().inflate(R.layout.date_tag, null);
                                                 TextView dateTagTextView = dateTag.findViewById(R.id.dateTag);
                                                 dateTagTextView.setText(eventCardArrayList.get(i).getPrettyDate());
@@ -174,6 +185,6 @@ public class ListEventsActivity extends AppCompatActivity {
             }
         });
 
-
+        return root;
     }
 }

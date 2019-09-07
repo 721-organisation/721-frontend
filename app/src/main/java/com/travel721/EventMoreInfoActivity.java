@@ -114,4 +114,5 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
 
         customTabsIntent.launchUrl(this, Uri.parse(eventCard.getEventHyperLink()));
     }
+
 }
