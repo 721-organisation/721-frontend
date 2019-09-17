@@ -47,10 +47,17 @@
     <string name="up_to_days_from_today">Up to %1$d day(s) from today</string>
 
     <string-array name="libraries">
-        <item>OkHttp, under the Apache 2.0 license</item>
-        <item>CardStackView, under the Apache 2.0 license</item>
-        <item>Glide, </item>
-        <item></item>
+        <item>Material Components for Android, by Google, under the Apache 2.0 License</item>
+        <item>GMS Google Services, license unknown</item>
+        <item>Firebase,</item>
+        <item>Volley, by Google, under the Apache 2.0 license</item>
+        <item>CardStackView, by (github.com/)yuyakaida under the Apache 2.0 license</item>
+        <item>OkHttp3, by square(up), under the Apache 2.0 license</item>
+        <item>TSnackBar, by AndreiD, under the Apache 2.0 license</item>
+        <item>Glide, by Bumptech, under the Apache 2.0 license and other, free licenses</item>
+        <item>Glide Transformations, by Wasabeef, under the Apache 2.0 license</item>
+        <item>Crashlytics, under license from Google</item>
+        <item>RoundedBottomSheet, by Deishelon, no license asserted</item>
     </string-array>
     <string-array name="positive_terms">
         <item>Sounds Good</item>

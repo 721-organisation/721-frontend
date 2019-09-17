@@ -1,5 +1,6 @@
 package com.travel721;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -21,6 +22,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.List;
 
@@ -80,6 +84,9 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 return new ViewHolder(v);
             case 2:
                 v = inflater.inflate(R.layout.ad_card_layout, parent, false);
+                MobileAds.initialize(parent.getContext(), initializationStatus -> {
+                });
+
                 AdView mAdView = v.findViewById(R.id.adView);
                 AdRequest adRequest = new AdRequest.Builder().build();
                 mAdView.loadAd(adRequest);
@@ -118,15 +125,18 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV.setText(ec.getSourceTag());
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
-            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
-            circularProgressDrawable.setStrokeWidth(5f);
-            circularProgressDrawable.setCenterRadius(30f);
-            circularProgressDrawable.start();
+            imageView.setBackgroundResource(R.drawable.loading_dots_animation);
+
+            // Get the background, which has been compiled to an AnimationDrawable object.
+            AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
+
+            // Start the animation (looped playback by default).
+            frameAnimation.start();
             final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
             GlideApp.with(imageView.getContext())
                     .load(ec.getImgURL())
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
-                    .placeholder(circularProgressDrawable)
+                    .placeholder(frameAnimation)
                     .into(new CustomTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {

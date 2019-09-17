@@ -1,6 +1,5 @@
 package com.travel721;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -36,17 +35,11 @@ import com.yuyakaido.android.cardstackview.StackFrom;
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting;
 import com.yuyakaido.android.cardstackview.SwipeableMethod;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import uk.co.markormesher.android_fab.FloatingActionButton;
-import uk.co.markormesher.android_fab.SpeedDialMenuAdapter;
-import uk.co.markormesher.android_fab.SpeedDialMenuItem;
 
 import static com.travel721.AnalyticsHelper.USER_NEGATIVE_FEEDBACK;
 import static com.travel721.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
@@ -324,75 +317,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardStackView.swipe();
     }
 
-
-    public void overflowFabClicked(View view) {
-        if (view instanceof FloatingActionButton) {
-            if (!((FloatingActionButton) view).isSpeedDialMenuOpen()) {
-                ((FloatingActionButton) view).closeSpeedDialMenu();
-
-            } else {
-
-                ((FloatingActionButton) view).openSpeedDialMenu();
-            }
-        }
-    }
-
-
-    class CardSwipeFragmentSpeedDialAdapter extends SpeedDialMenuAdapter {
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public boolean onMenuItemClick(int position) {
-            switch (position) {
-                case 0:
-                    AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.SETTINGS_OPENED, null);
-                    Intent i = new Intent(getContext(), SettingsActivity.class);
-                    startActivity(i);
-//                    finish();
-                    break;
-                case 1:
-
-                    Intent j = new Intent(getContext(), My721Fragment.class);
-                    j.putExtra("access_token", getArguments().getString("accessToken"));
-                    startActivity(j);
-                    break;
-            }
-            return super.onMenuItemClick(position);
-        }
-
-        @Override
-        public int getBackgroundColour(int position) {
-            return Color.rgb(255, 255, 255);
-        }
-
-        @Override
-        public void onPrepareItemLabel(@NotNull Context context, int position, @NotNull TextView label) {
-            super.onPrepareItemLabel(context, position, label);
-        }
-
-        @Override
-        public float fabRotationDegrees() {
-            return 90f;
-        }
-
-        @NotNull
-        @Override
-        public SpeedDialMenuItem getMenuItem(@NotNull Context context, int i) {
-            switch (i) {
-                // Settings
-                case 0:
-                    return new SpeedDialMenuItem(context, ContextCompat.getDrawable(context, R.drawable.ic_settings), "Settings");
-                case 1:
-                    return new SpeedDialMenuItem(context, ContextCompat.getDrawable(context, R.drawable.ic_subject), "Like History");
-                default:
-                    return null;
-            }
-
-        }
-    }
 
     public static String getRandom(String[] array) {
         int rnd = new Random().nextInt(array.length);

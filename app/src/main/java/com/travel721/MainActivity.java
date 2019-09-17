@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         String accessToken = getIntent().getStringExtra("accessToken");
         String iid = getIntent().getStringExtra("IID");
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.selectTab(tabLayout.getTabAt(1));
+        tabLayout.getTabAt(1).select();
         Bundle bundle = getIntent().getBundleExtra("fragment_bundle");
         LoadingCardSwipeFragment csf = LoadingCardSwipeFragment.newInstance(accessToken, iid, bundle);
         My721Fragment lef = My721Fragment.newInstance(bundle);
