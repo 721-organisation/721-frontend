@@ -29,6 +29,6 @@ public class SlackActivity extends Activity {
             webIntent = new Intent(Intent.ACTION_VIEW, webpage);
         }
         startActivity(webIntent);
-
+        finish();
     }
 }
