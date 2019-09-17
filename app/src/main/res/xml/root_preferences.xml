@@ -21,11 +21,10 @@
         <Preference
             android:key="slackkey"
             android:summary="To leave feedback, and keep up with the 721 Community, click here!"
-            android:title="Join our Slack community here" >
-        <intent
-            android:targetClass="com.travel721.SlackActivity"
-            android:targetPackage="com.travel721">
-        </intent>
+            android:title="Join our Slack community here">
+            <intent
+                android:targetClass="com.travel721.SlackActivity"
+                android:targetPackage="com.travel721"></intent>
         </Preference>
     </PreferenceCategory>
 
@@ -58,15 +57,23 @@
             android:title="Event ordering setting"
             app:summary="By default, we'll show events you've liked starting from the furthest in the future. Check this to see the oldest first." />
     </PreferenceCategory>
-
+    <PreferenceCategory app:title="Rate 721">
+        <Preference
+            android:key="rate721"
+            android:summary="To rate 721 on Google Play, please click here"
+            android:title="We'd love to hear your feedback">
+            <intent
+                android:targetClass="com.travel721.RateOnPlayActivity"
+                android:targetPackage="com.travel721"></intent>
+        </Preference>
+    </PreferenceCategory>
     <PreferenceCategory app:title="Third Party Libraries">
         <Preference
             app:key="loadTPLIntent"
             app:title="This app relies on third-party libraries. To see them, click here.">
             <intent
                 android:targetClass="com.travel721.ListLibrariesActivity"
-                android:targetPackage="com.travel721">
-            </intent>
+                android:targetPackage="com.travel721"></intent>
         </Preference>
     </PreferenceCategory>
 

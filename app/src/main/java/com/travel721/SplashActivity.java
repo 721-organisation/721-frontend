@@ -35,8 +35,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -148,6 +146,14 @@ public abstract class SplashActivity extends Activity {
         FirebaseApp.initializeApp(this);
         MobileAds.initialize(this, initializationStatus -> {
         });
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("firstrun", true)) {
+            // Do first run stuff here then set 'firstrun' as false
+            // using the following line to edit/commit prefs
+            Intent intent = new Intent(this, TutorialActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         //Initialise FLP
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -396,11 +402,11 @@ public abstract class SplashActivity extends Activity {
                                                                                 filteredCards.add(e);
                                                                             }
                                                                         }
-                                                                        filteredCards.add(new FeedbackCard());
                                                                         Bundle bundle = new Bundle();
                                                                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                                        intent.putExtra("IID",finalIID);
+                                                                        intent.putExtra("accessToken",accessToken);
                                                                         bundle.putParcelableArrayList("events", filteredCards);
-                                                                        filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
                                                                         bundle.putString("accessToken", accessToken);
                                                                         bundle.putString("fiid", finalIID);
                                                                         intent.putExtra("fragment_bundle", bundle);

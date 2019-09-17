@@ -61,9 +61,8 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     private PageViewModel pageViewModel;
 
     // This is where to make the bundle info
-    public static CardSwipeFragment newInstance(int index, Bundle bundle) {
+    public static CardSwipeFragment newInstance(Bundle bundle) {
         CardSwipeFragment fragment = new CardSwipeFragment();
-        bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -71,6 +70,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         cardArrayList = getArguments().getParcelableArrayList("events");
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;

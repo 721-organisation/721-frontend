@@ -29,13 +29,17 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
         android:layout_weight="1"
+        android:background="@drawable/custom_button"
         android:fontFamily="@font/catamaran"
+        android:onClick="progressFromTutorial"
         android:text="@string/get_started"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColor="@android:color/white" />
 
 
 </LinearLayout>

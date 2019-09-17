@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,11 +13,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
-
+        String accessToken = getIntent().getStringExtra("accessToken");
+        String iid = getIntent().getStringExtra("IID");
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.selectTab(tabLayout.getTabAt(1));
         Bundle bundle = getIntent().getBundleExtra("fragment_bundle");
-        CardSwipeFragment csf = CardSwipeFragment.newInstance(0, bundle);
+        LoadingCardSwipeFragment csf = LoadingCardSwipeFragment.newInstance(accessToken, iid, bundle);
         My721Fragment lef = My721Fragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, csf).commit();

@@ -148,7 +148,7 @@ public class LoadingDiscoverFragment extends Fragment {
 //                                              startActivity(intent);
 //                                                                        finish();
                                                 Log.v("TEST", "Swapping fragments... ");
-                                                getFragmentManager().beginTransaction().replace(getId(), CardSwipeFragment.newInstance(0, bundle)).commit();
+                                                getFragmentManager().beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle)).commit();
                                             } catch (JSONException je) {
                                                 je.printStackTrace();
                                                 splashErrorHandler(je.getLocalizedMessage());

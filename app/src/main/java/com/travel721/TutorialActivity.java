@@ -1,6 +1,9 @@
 package com.travel721;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
@@ -54,6 +57,14 @@ public class TutorialActivity extends FragmentActivity {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
+    }
+
+    public void progressFromTutorial(View view) {
+        SharedPreferences sharedPreferences = getSharedPreferences(getPackageName(), MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean("firstrun", false).apply();
+        Intent i = new Intent(this, InitialLoadSplashActivity.class);
+        startActivity(i);
+        finish();
     }
 
     /**
