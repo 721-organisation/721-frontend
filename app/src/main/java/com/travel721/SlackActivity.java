@@ -16,7 +16,7 @@ public class SlackActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String url = "slack://channel?team=721workspace&id=CKPTZ8J00";
+        String url = "slack://channel?team=TJDFGM22C";
         Uri webpage = Uri.parse(url);
         Intent webIntent = new Intent(Intent.ACTION_VIEW, webpage);
         PackageManager packageManager = getPackageManager();
