@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/discoverTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_close"
@@ -19,11 +19,17 @@
         android:textSize="30sp"
         app:drawableTint="#8B8B8B" />
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="?android:attr/listDivider" />
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:ems="10"
         android:gravity="center"
         android:hint="Town, City or Region name"
@@ -34,19 +40,45 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:padding="5dp"
         android:text="@string/up_to_days_from_today"
         android:textAlignment="center" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/daysSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:max="31" />
+        android:max="31"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/radiusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="@string/search_x_miles" />
+
+    <SeekBar
+        android:id="@+id/radiusSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:padding="5dp" />
 
     <Button
         android:id="@+id/discover_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh" />
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/custom_button"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:text="Refresh"
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>

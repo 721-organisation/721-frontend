@@ -45,6 +45,9 @@
     <string name="discover_tab">Discover</string>
     <string name="my_721_tab">My 721</string>
     <string name="up_to_days_from_today">Up to %1$d day(s) from today</string>
+    <string name="search_x_miles">Search %1$d mile(s)</string>
+    <string name="no_events_discovered">We couldn\'t discover any events there! Double check spelling and radius, and please try again.</string>
+    <string name="no_local_events">No events in you area.</string>
 
     <string-array name="libraries">
         <item>Material Components for Android, by Google, under the Apache 2.0 License</item>

@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
@@ -54,6 +56,8 @@ public class LoadingDiscoverFragment extends Fragment {
             Bundle savedInstanceState) {
 
         View view = getLayoutInflater().inflate(R.layout.blank_layout, null);
+        TextView textView = view.findViewById(R.id.status_text);
+        textView.setText("Finding events near " + searchLocation);
         // set its background to our AnimationDrawable XML resource.
         ImageView img = (ImageView) view.findViewById(R.id.loading_dots_anim);
         img.setBackgroundResource(R.drawable.loading_dots_animation);
@@ -140,7 +144,18 @@ public class LoadingDiscoverFragment extends Fragment {
                                                         filteredCards.add(e);
                                                     }
                                                 }
-                                                filteredCards.add(new FeedbackCard());
+                                                if (filteredCards.size() > 0) {
+                                                    filteredCards.add(new FeedbackCard());
+                                                    filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
+                                                    filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
+                                                } else {
+                                                    TextView textView = getView().findViewById(R.id.status_text);
+                                                    textView.setText(getString(R.string.no_events_discovered));
+                                                    ImageView iv = getView().findViewById(R.id.loading_dots_anim);
+                                                    iv.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_warning));
+                                                    iv.setBackground(null);
+                                                    return;
+                                                }
                                                 Bundle bundle = new Bundle();
                                                 bundle.putParcelableArrayList("events", filteredCards);
                                                 bundle.putString("accessToken", accessToken);

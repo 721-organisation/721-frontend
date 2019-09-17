@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -83,12 +85,14 @@ public class LoadingCardSwipeFragment extends Fragment {
                                 filteredCards.add(e);
                             }
                         }
-                        filteredCards.add(new FeedbackCard());
-                        filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
+                        if (filteredCards.size() > 0) {
+                            filteredCards.add(new FeedbackCard());
+                            filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
+                            filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
+                        }
                         Bundle bundle = new Bundle();
                         Intent intent = new Intent(getContext(), MainActivity.class);
                         bundle.putParcelableArrayList("events", filteredCards);
-                        filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
                         bundle.putString("accessToken", accessToken);
                         bundle.putString("fiid", IID);
                         intent.putExtra("fragment_bundle", bundle);

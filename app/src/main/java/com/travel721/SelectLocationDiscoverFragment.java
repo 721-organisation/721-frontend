@@ -32,13 +32,21 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
         View view = inflater.inflate(R.layout.fragment_discover_bottom_sheet, container,
                 false);
-        SeekBar seekBar = view.findViewById(R.id.seekBar);
+        TextView title = view.findViewById(R.id.discoverTitle);
+        title.setOnClickListener(v -> {
+            dismiss();
+        });
+        SeekBar daysSeekBar = view.findViewById(R.id.daysSeekBar);
+        SeekBar radiusSeekBar = view.findViewById(R.id.radiusSeekBar);
+        TextView radTextView = view.findViewById(R.id.radiusTextView);
         EditText editText = view.findViewById(R.id.editText);
         TextView textView = view.findViewById(R.id.textView5);
         textView.setText(getString(R.string.up_to_days_from_today, 5));
-        seekBar.setProgress(5);
+        daysSeekBar.setProgress(5);
+        radiusSeekBar.setProgress(5);
+        radTextView.setText(getString(R.string.search_x_miles, 5));
         Button button = view.findViewById(R.id.discover_button);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        daysSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 textView.setText(getString(R.string.up_to_days_from_today, i));
@@ -54,10 +62,26 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
             }
         });
+        radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                radTextView.setText(getString(R.string.search_x_miles, i));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view1) {
-                LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), "5", String.valueOf(seekBar.getProgress()));
+                LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), String.valueOf(radiusSeekBar.getProgress()), String.valueOf(daysSeekBar.getProgress()));
                 getFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, loadingFragment).commit();
                 dismiss();

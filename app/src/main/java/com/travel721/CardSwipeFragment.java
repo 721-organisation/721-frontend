@@ -93,20 +93,24 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         likeButton.setOnClickListener(this::likesTopCard);
         dislikeButton.setOnClickListener(this::dislikesTopCard);
         shareEventButton.setOnClickListener(view -> {
-            Log.v("INDEX", String.valueOf(cardStackLayoutManager.getTopPosition()));
+            try {
+                Log.v("INDEX", String.valueOf(cardStackLayoutManager.getTopPosition()));
 
-            int index = cardStackLayoutManager.getTopPosition();
-            Card card = cardArrayList.get(index);
-            if (card instanceof EventCard) {
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.putExtra(Intent.EXTRA_TEXT, ((EventCard) card).getEventHyperLink());
-                i.setType("text/plain");
-                Intent shareIntent = Intent.createChooser(i, null);
-                startActivity(shareIntent);
-            } else if (card instanceof FeedbackCard) {
-                Intent i = new Intent(android.content.Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.travel721"));
-                startActivity(i);
+                int index = cardStackLayoutManager.getTopPosition();
+                Card card = cardArrayList.get(index);
+                if (card instanceof EventCard) {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.putExtra(Intent.EXTRA_TEXT, ((EventCard) card).getEventHyperLink());
+                    i.setType("text/plain");
+                    Intent shareIntent = Intent.createChooser(i, null);
+                    startActivity(shareIntent);
+                } else if (card instanceof FeedbackCard) {
+                    Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.travel721"));
+                    startActivity(i);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -165,8 +169,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     @Override
     public void onCardSwiped(Direction direction) {
         // Removes TSnackBar
-        if (cardStackLayoutManager.getChildCount() == 0)
-            root.findViewById(R.id.no_more_events_tv).setVisibility(View.VISIBLE);
+        if (cardStackLayoutManager.getChildCount() == 0) {
+            TextView tv = root.findViewById(R.id.no_more_events_tv);
+            tv.setVisibility(View.VISIBLE);
+        }
         // Gets the Card index
         int index = cardStackLayoutManager.getTopPosition() - 1;
 //        int index = cardStackLayoutManager.getTopPosition();
