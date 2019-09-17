@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -92,27 +93,28 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.fragment_event_swipe);
 
-        FloatingActionButton fab = root.findViewById(R.id.overflowFab);
-        fab.findViewById(R.id.fab_icon_wrapper).setBackground(ContextCompat.getDrawable(getContext(), R.drawable.ic_more_vert));
+
         final com.google.android.material.floatingactionbutton.FloatingActionButton likeButton = root.findViewById(R.id.thumbupButton);
         final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = root.findViewById(R.id.thumbdownButton);
-        fab.setSpeedDialMenuAdapter(new CardSwipeFragmentSpeedDialAdapter());
-        fab.setOnSpeedDialMenuOpenListener(floatingActionButton -> {
-            floatingActionButton.setContentCoverColour(0xeefe6060);
-            floatingActionButton.openSpeedDialMenu();
-            floatingActionButton.setContentCoverEnabled(true);
-            likeButton.setVisibility(View.INVISIBLE);
-            dislikeButton.setVisibility(View.INVISIBLE);
-            floatingActionButton.getContentCoverView().setVisibility(View.VISIBLE);
-        });
-        fab.setOnSpeedDialMenuCloseListener(floatingActionButton -> {
-            floatingActionButton.setContentCoverColour(0x99fe6060);
+        final com.google.android.material.floatingactionbutton.FloatingActionButton shareEventButton = root.findViewById(R.id.shareEventButton);
+        likeButton.setOnClickListener(this::likesTopCard);
+        dislikeButton.setOnClickListener(this::dislikesTopCard);
+        shareEventButton.setOnClickListener(view -> {
+            Log.v("INDEX", String.valueOf(cardStackLayoutManager.getTopPosition()));
 
-            floatingActionButton.closeSpeedDialMenu();
-            floatingActionButton.setContentCoverEnabled(false);
-            likeButton.setVisibility(View.VISIBLE);
-            dislikeButton.setVisibility(View.VISIBLE);
-            floatingActionButton.getContentCoverView().setVisibility(View.GONE);
+            int index = cardStackLayoutManager.getTopPosition();
+            Card card = cardArrayList.get(index);
+            if (card instanceof EventCard) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.putExtra(Intent.EXTRA_TEXT, ((EventCard) card).getEventHyperLink());
+                i.setType("text/plain");
+                Intent shareIntent = Intent.createChooser(i, null);
+                startActivity(shareIntent);
+            } else if (card instanceof FeedbackCard) {
+                Intent i = new Intent(android.content.Intent.ACTION_VIEW);
+                i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.travel721"));
+                startActivity(i);
+            }
         });
 
 
@@ -141,7 +143,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         // Create card stack manager
         cardStackLayoutManager = new CardStackLayoutManager(getContext(), this);
         cardStackLayoutManager.setStackFrom(StackFrom.Top);
-        cardStackLayoutManager.setVisibleCount(5);
+        cardStackLayoutManager.setVisibleCount(2);
         cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual);
         List<Direction> directions = new ArrayList<>();
         directions.add(Direction.Right);
@@ -176,7 +178,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         int index = cardStackLayoutManager.getTopPosition() - 1;
 //        int index = cardStackLayoutManager.getTopPosition();
 
-        if (buttonPushed) buttonPushed = false;
 
         if (cardArrayList.get(index) instanceof EventCard) {
             EventCard eventCard = (EventCard) cardArrayList.get(index);
@@ -210,7 +211,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     stringRequest = new StringRequest(Request.Method.POST, url,
                             response -> {
                                 // Display the first 500 characters of the response string.
-                                Log.v("SWIPE", "Successfully registered dislike");
+                                Log.v("SWIPE", "Successfully registered dislike on " + eventCard.getName());
                             }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
@@ -239,7 +240,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     stringRequest = new StringRequest(Request.Method.POST, url,
                             response -> {
                                 // Display the first 500 characters of the response string.
-                                Log.v("SWIPE", "Successfully registered like");
+                                Log.v("SWIPE", "Successfully registered like dislike on " + eventCard.getName());
                             }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
@@ -275,7 +276,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     break;
             }
         }
-        cardArrayList.remove(cardArrayList.get(index));
+//        cardArrayList.remove(cardArrayList.get(index));
     }
 
 
@@ -314,6 +315,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
     public void likesTopCard(View view) {
         buttonPushed = true;
+
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
                 .setDuration(SLIDE_ANIMATION_DURATION)
@@ -322,11 +324,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardStackView.swipe();
     }
 
-
-    public void settingsButtonClicked(View view) {
-        Intent i = new Intent(getContext(), SettingsActivity.class);
-        startActivity(i);
-    }
 
     public void overflowFabClicked(View view) {
         if (view instanceof FloatingActionButton) {
@@ -358,7 +355,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     break;
                 case 1:
 
-                    Intent j = new Intent(getContext(), ListEventsActivity.class);
+                    Intent j = new Intent(getContext(), My721Fragment.class);
                     j.putExtra("access_token", getArguments().getString("accessToken"));
                     startActivity(j);
                     break;

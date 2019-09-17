@@ -55,7 +55,10 @@
         <activity
             android:name=".TutorialActivity"
             android:exported="true" />
-
+        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
         <meta-data
             android:name="com.bumptech.glide.integration.okhttp.OkHttpGlideModule"
             tools:node="remove" />

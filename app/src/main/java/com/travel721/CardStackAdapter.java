@@ -19,6 +19,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.List;
 
@@ -48,6 +50,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             return 0;
         if (events.get(position) instanceof FeedbackCard)
             return 1;
+        if (events.get(position) instanceof AdCard)
+            return 2;
         return -1;
     }
 
@@ -66,13 +70,19 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v ;
-        switch (viewType){
+        View v;
+        switch (viewType) {
             case 0:
                 v = inflater.inflate(R.layout.event_card_layout, parent, false);
                 return new ViewHolder(v);
             case 1:
                 v = inflater.inflate(R.layout.feedback_card_layout, parent, false);
+                return new ViewHolder(v);
+            case 2:
+                v = inflater.inflate(R.layout.ad_card_layout, parent, false);
+                AdView mAdView = v.findViewById(R.id.adView);
+                AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.loadAd(adRequest);
                 return new ViewHolder(v);
         }
         // This should never happen

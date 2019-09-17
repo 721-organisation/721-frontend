@@ -44,6 +44,8 @@
     <string name="near_me_tab">Near Me</string>
     <string name="discover_tab">Discover</string>
     <string name="my_721_tab">My 721</string>
+    <string name="up_to_days_from_today">Up to %1$d day(s) from today</string>
+
     <string-array name="libraries">
         <item>OkHttp, under the Apache 2.0 license</item>
         <item>CardStackView, under the Apache 2.0 license</item>

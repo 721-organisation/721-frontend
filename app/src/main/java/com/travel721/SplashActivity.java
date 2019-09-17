@@ -34,6 +34,9 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -143,6 +146,9 @@ public abstract class SplashActivity extends Activity {
         loadingTextView.setOutAnimation(this, R.anim.fade_out_text_switch);
         // Initialise Firebase
         FirebaseApp.initializeApp(this);
+        MobileAds.initialize(this, initializationStatus -> {
+        });
+
         //Initialise FLP
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         // Review Location Settings
@@ -359,7 +365,7 @@ public abstract class SplashActivity extends Activity {
                                             Log.v("Requests", "Updating events on server...");
                                             StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
                                                 // GET REQUEST: Get events from the server
-                                                StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken, response12 -> {
+                                                StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false", response12 -> {
                                                     try {
                                                         JSONObject jo1 = new JSONObject(response12);
                                                         JSONArray events = jo1.getJSONArray("getWithinDistance");
@@ -394,6 +400,7 @@ public abstract class SplashActivity extends Activity {
                                                                         Bundle bundle = new Bundle();
                                                                         Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                                                         bundle.putParcelableArrayList("events", filteredCards);
+                                                                        filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
                                                                         bundle.putString("accessToken", accessToken);
                                                                         bundle.putString("fiid", finalIID);
                                                                         intent.putExtra("fragment_bundle", bundle);
@@ -437,7 +444,7 @@ public abstract class SplashActivity extends Activity {
                                                     Map<String, String> params = new HashMap<>();
                                                     params.put("latitude", String.valueOf(location.getLatitude()));
                                                     params.put("longitude", String.valueOf(location.getLongitude()));
-
+                                                    params.put("explore", "false");
                                                     params.put("radius", String.valueOf(radius));
                                                     params.put("daysFromNow", String.valueOf(daysFromNow));
                                                     return params;

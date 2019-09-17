@@ -25,7 +25,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -41,12 +40,12 @@ import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileLikedSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
 
-public class ListEventsActivity extends Fragment {
+public class My721Fragment extends Fragment {
     String api_access_token;
 
     // This is where to make the bundle info
-    public static ListEventsActivity newInstance(Bundle bundle) {
-        ListEventsActivity lef = new ListEventsActivity();
+    public static My721Fragment newInstance(Bundle bundle) {
+        My721Fragment lef = new My721Fragment();
         lef.setArguments(bundle);
         return lef;
     }
@@ -63,7 +62,7 @@ public class ListEventsActivity extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.activity_list_events, container, false);
+        View root = inflater.inflate(R.layout.fragment_my_721, container, false);
 
 
         final LinearLayout linearLayout = root.findViewById(R.id.eventListCardHolder);
@@ -184,7 +183,11 @@ public class ListEventsActivity extends Fragment {
 
             }
         });
+        root.findViewById(R.id.settingsButton).setOnClickListener(v -> {
+            Intent i = new Intent(getContext(), SettingsActivity.class);
+            startActivity(i);
 
+        });
         return root;
     }
 }

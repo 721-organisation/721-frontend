@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,11 +14,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.selectTab(tabLayout.getTabAt(1));
         Bundle bundle = getIntent().getBundleExtra("fragment_bundle");
         CardSwipeFragment csf = CardSwipeFragment.newInstance(0, bundle);
-        ListEventsActivity lef = ListEventsActivity.newInstance(bundle);
+        My721Fragment lef = My721Fragment.newInstance(bundle);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, csf).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -31,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, csf).commit();
+                        break;
+                    case 2:
+                        SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, getIntent().getBundleExtra("fragment_bundle").getString("accessToken"));
+                        addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                                "discover_sheet_fragment");
                         break;
                     default:
                         getSupportFragmentManager().beginTransaction()

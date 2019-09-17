@@ -25,7 +25,7 @@ public class SlackActivity extends Activity {
 
         boolean isIntentSafe = activities.size() > 0;
         if (!isIntentSafe) {
-            url = "https://721workspace.slack.com/messages/CKPTZ8J00";
+            url = "https://721workspace.slack.com/";
             webIntent = new Intent(Intent.ACTION_VIEW, webpage);
         }
         startActivity(webIntent);

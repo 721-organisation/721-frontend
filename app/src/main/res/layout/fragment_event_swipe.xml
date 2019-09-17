@@ -7,18 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.yuyakaido.android.cardstackview.CardStackView
-        android:id="@+id/card_stack_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/thumbdownButton"
+    <TextView
+        android:id="@+id/no_more_events_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="false"
+        android:gravity="center_vertical"
+        android:text="@string/no_more_events"
+        android:textAlignment="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/thumbupButton"
@@ -29,7 +41,6 @@
         android:layout_gravity="bottom|center"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="30dp"
-        android:onClick="likesTopCard"
         app:backgroundTint="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -46,7 +57,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="30dp"
         android:layout_toStartOf="@+id/thumbupButton"
-        android:onClick="dislikesTopCard"
         app:backgroundTint="#ffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
@@ -54,43 +64,32 @@
         tools:layout_conversion_wrapHeight="147"
         tools:layout_conversion_wrapWidth="147" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/shareEventButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        android:layout_marginBottom="28dp"
+        android:clickable="true"
+        app:backgroundTint="#ffff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintStart_toEndOf="@+id/thumbupButton"
+        app:srcCompat="@drawable/ic_share" />
 
-    <uk.co.markormesher.android_fab.FloatingActionButton
-        android:id="@+id/overflowFab"
-        android:layout_width="match_parent"
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/card_stack_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/thumbdownButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        android:layout_height="match_parent"
-        android:onClick="overflowFabClicked"
-
-        app:buttonBackgroundColour="#FFFFFF"
-        app:internalOffsetBottom="15dp"
-        app:internalOffsetEnd="15dp"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="637dp">
-
-        <TextView
-            android:id="@+id/no_more_events_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_centerVertical="false"
-            android:layout_marginStart="100dp"
-            android:layout_marginTop="100dp"
-            android:layout_marginEnd="100dp"
-            android:layout_marginBottom="100dp"
-            android:gravity="center_vertical"
-            android:text="@string/no_more_events"
-            android:textAlignment="center"
-            android:visibility="gone" />
-    </uk.co.markormesher.android_fab.FloatingActionButton>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
