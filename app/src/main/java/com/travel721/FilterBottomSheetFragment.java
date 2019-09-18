@@ -28,6 +28,12 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
         View root = inflater.inflate(R.layout.fragment_filter_bottom_sheet, null);
 //        getFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment()).commit();
         getChildFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment(callingLoader)).commit();
+        root.findViewById(R.id.filterTitle).setOnClickListener(view -> {
+            dismiss();
+        });
+        root.findViewById(R.id.filter_go_button).setOnClickListener(view -> {
+            dismiss();
+        });
         return root;
     }
 
@@ -50,8 +56,8 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
             super.onDetach();
             Log.v("YO", "DETACHED");
             if (settingsChanged) {
-                String newdays = String.valueOf(getPreferenceManager().getSharedPreferences().getInt("daysFromNow", 0));
-                String newradius = String.valueOf(getPreferenceManager().getSharedPreferences().getInt("radius", 0));
+                String newdays = String.valueOf(getPreferenceManager().getSharedPreferences().getInt("daysFromNow", 1));
+                String newradius = String.valueOf(getPreferenceManager().getSharedPreferences().getInt("radius", 1));
                 if (callingLoader instanceof LoadingNearMeFragment) {
                     ((LoadingNearMeFragment) callingLoader).radius = newradius;
                     ((LoadingNearMeFragment) callingLoader).daysFromNow = newdays;

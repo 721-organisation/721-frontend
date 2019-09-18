@@ -64,12 +64,30 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageView
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/imageView4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="4"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/ic_info" />
+         >
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_info" />
+
+        <ImageView
+            android:id="@+id/deleteImgView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_delete" />
+    </LinearLayout>
 
 </LinearLayout>

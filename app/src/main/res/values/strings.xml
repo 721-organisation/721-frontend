@@ -48,6 +48,8 @@
     <string name="no_local_events">No events in you area.</string>
     <string name="filter_tab">Filter</string>
     <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
+    <string name="remove_event">Remove event?</string>
+    <string name="delete">Delete</string>
 
     <string-array name="libraries">
         <item>Material Components for Android, by Google, under the Apache 2.0 License</item>

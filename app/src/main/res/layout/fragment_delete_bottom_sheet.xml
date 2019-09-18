@@ -1,37 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-
     <TextView
-        android:id="@+id/filterTitle"
+        android:id="@+id/deleteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableEnd="@drawable/ic_close"
         android:foregroundGravity="center_vertical"
         android:gravity="center_vertical"
         android:padding="25dp"
-        android:text="@string/filter_tab"
+        android:text="@string/remove_event"
         android:textAlignment="center"
         android:textSize="30sp"
         app:drawableTint="#8B8B8B" />
-
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="?android:attr/listDivider" />
 
-    <FrameLayout
-        android:id="@android:id/content"
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:text="Are you sure you would like to remove this event?"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/delEventTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="14sp" />
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
@@ -39,12 +47,19 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/filter_go_button"
+            android:id="@+id/cancel_delete"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="OK" />
+            android:text="@android:string/cancel" />
 
+        <Button
+            android:id="@+id/proceed_delete"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete" />
     </LinearLayout>
 </LinearLayout>

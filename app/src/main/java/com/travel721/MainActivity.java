@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 Log.v("TAG1", "SELECT");
 
-                String prefRadius = getPreferences(MODE_PRIVATE).getString("radius", "0");
-                String prefDaysFromNow = getPreferences(MODE_PRIVATE).getString("daysFromNow", "0");
+                String prefRadius = String.valueOf(getSharedPreferences("com.travel721_preferences", MODE_PRIVATE).getInt("radius", 1));
+                String prefDaysFromNow = String.valueOf(getSharedPreferences("com.travel721_preferences", MODE_PRIVATE).getInt("daysFromNow", 1));
                 switch (tab.getPosition()) {
                     case 0:
                         my721Fragment = My721Fragment.newInstance(accessToken);
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 Log.v("TAG2", "UNSELECT");
+
 
             }
 
