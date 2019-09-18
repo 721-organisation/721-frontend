@@ -15,6 +15,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main_tabbed"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".EventMoreInfoActivity"
@@ -51,7 +52,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ListLibrariesActivity" />
-        <activity android:name=".SlackActivity" />
         <activity android:name=".RateOnPlayActivity" />
         <activity
             android:name=".TutorialActivity"

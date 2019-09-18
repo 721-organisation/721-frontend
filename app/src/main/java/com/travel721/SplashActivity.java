@@ -26,7 +26,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -66,7 +65,6 @@ import java.util.Map;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.REQUEST_CHECK_LOCATION_SETTINGS;
 import static com.travel721.Constants.REQUEST_LOCATION_PERMISSIONS;
-import static com.travel721.Constants.eventProfileAllSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
@@ -82,7 +80,6 @@ import static com.travel721.Constants.testRadius;
  */
 
 public abstract class SplashActivity extends Activity {
-
     LocationRequest mLocationRequestHighAccuracy;
     //TextSwitcher statusText;
     // Private fields
@@ -336,7 +333,7 @@ public abstract class SplashActivity extends Activity {
                                     StringRequest stringRequest1 = new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
                                         try {
                                             JSONArray profilesResponse = new JSONArray(response15);
-                                            boolean userExists = false;
+
                                             if (profilesResponse.isNull(0)) {
                                                 loadingTextView.setText("Registering with 721...");
                                                 // User does not exist. This condition definitely needs testing
@@ -345,7 +342,7 @@ public abstract class SplashActivity extends Activity {
 
                                                 }) {
                                                     @Override
-                                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                                    protected Map<String, String> getParams() {
                                                         Map<String, String> map = new HashMap<>();
                                                         map.put("profileId", finalIID);
                                                         return map;
@@ -354,110 +351,29 @@ public abstract class SplashActivity extends Activity {
                                                 stringRequest2.setRetryPolicy(splashRetryPolicy);
                                                 queue.add(stringRequest2);
                                             } else {
-                                                userExists = true;
+
                                             }
                                             try {
                                                 List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                                 String city = address.get(0).getSubAdminArea();
-                                                loadingTextView.setText(userExists ?
-                                                        SplashActivity.this.getString(R.string.returning_user_geocoded_welcome, city) :
-                                                        SplashActivity.this.getString(R.string.new_user_geocoded_message, city));
+                                                loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
                                             } catch (IOException e) {
-                                                loadingTextView.setText(userExists ?
-                                                        SplashActivity.this.getString(R.string.returning_user_failed_geocoding) :
-                                                        SplashActivity.this.getString(R.string.new_user_failed_geocoding));
+                                                loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));
                                             }
-                                            // PUT REQUEST: Update events on server
-                                            Log.v("Requests", "Updating events on server...");
-                                            StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
-                                                // GET REQUEST: Get events from the server
-                                                StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + location.getLatitude() + "&longitude=" + location.getLongitude() + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false", response12 -> {
-                                                    try {
-                                                        JSONObject jo1 = new JSONObject(response12);
-                                                        JSONArray events = jo1.getJSONArray("getWithinDistance");
-
-                                                        for (int i = 0; i < events.length(); i++) {
-                                                            JSONObject event = events.getJSONObject(i);
-                                                            eventsFound.add(EventCard.unpackFromJson(event));
-
-                                                        }
-
-                                                        // Filter events already swiped through
-                                                        // Request a string response from the provided URL.
-                                                        Log.v("Requests", "Filtering through events already swiped through");
-                                                        StringRequest stringRequest5 = new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileAllSearchFilter(finalIID),
-                                                                response1 -> {
-                                                                    try {
-                                                                        final JSONArray eventProfileArray = new JSONArray(response1);
-                                                                        JSONObject jsonObject;
-                                                                        ArrayList<String> alreadySwipedIDs = new ArrayList<>();
-                                                                        for (int i = 0; i < eventProfileArray.length(); i++) {
-                                                                            jsonObject = eventProfileArray.getJSONObject(i);
-                                                                            String eventID = jsonObject.getString("eventSourceId");
-                                                                            alreadySwipedIDs.add(eventID);
-                                                                        }
-                                                                        ArrayList<Card> filteredCards = new ArrayList<>();
-                                                                        for (EventCard e : eventsFound) {
-                                                                            if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
-                                                                                filteredCards.add(e);
-                                                                            }
-                                                                        }
-                                                                        Bundle bundle = new Bundle();
-                                                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                                                        intent.putExtra("IID",finalIID);
-                                                                        intent.putExtra("accessToken",accessToken);
-                                                                        bundle.putParcelableArrayList("events", filteredCards);
-                                                                        bundle.putString("accessToken", accessToken);
-                                                                        bundle.putString("fiid", finalIID);
-                                                                        intent.putExtra("fragment_bundle", bundle);
-                                                                        startActivity(intent);
-                                                                        finish();
-
-                                                                    } catch (JSONException je) {
-                                                                        je.printStackTrace();
-                                                                        splashErrorHandler(je.getLocalizedMessage());
-                                                                    }
-                                                                },
-                                                                error -> {
-                                                                    error.printStackTrace();
-                                                                    splashErrorHandler(error.toString());
-                                                                });
-                                                        stringRequest5.setRetryPolicy(splashRetryPolicy);
-                                                        queue.add(stringRequest5);
-                                                    } catch (
-                                                            JSONException e) {
-                                                        e.printStackTrace();
-                                                        splashErrorHandler(e.getLocalizedMessage());
-                                                    }
 
 
-                                                }, error -> {
-                                                    error.printStackTrace();
-                                                    splashErrorHandler(error.toString());
-                                                });
-                                                stringRequest4.setRetryPolicy(splashRetryPolicy);
-                                                queue.add(stringRequest4);
-                                            },
-                                                    error -> {
-                                                        error.printStackTrace();
-                                                        splashErrorHandler(error.toString());
-                                                    }) {
-                                                @Override
-                                                protected Map<String, String> getParams
-                                                        () throws
-                                                        AuthFailureError {
+                                            //
+                                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                            intent.putExtra("IID", finalIID);
+                                            intent.putExtra("accessToken", accessToken);
+                                            intent.putExtra("radius", String.valueOf(radius));
+                                            intent.putExtra("daysfromnow", String.valueOf(daysFromNow));
+                                            intent.putExtra("longitude", String.valueOf(location.getLongitude()));
+                                            intent.putExtra("latitude", String.valueOf(location.getLatitude()));
+                                            startActivity(intent);
+                                            finish();
+                                            //
 
-                                                    Map<String, String> params = new HashMap<>();
-                                                    params.put("latitude", String.valueOf(location.getLatitude()));
-                                                    params.put("longitude", String.valueOf(location.getLongitude()));
-                                                    params.put("explore", "false");
-                                                    params.put("radius", String.valueOf(radius));
-                                                    params.put("daysFromNow", String.valueOf(daysFromNow));
-                                                    return params;
-                                                }
-                                            };
-                                            stringRequest3.setRetryPolicy(splashRetryPolicy);
-                                            queue.add(stringRequest3);
                                         } catch (
                                                 JSONException e) {
                                             e.printStackTrace();

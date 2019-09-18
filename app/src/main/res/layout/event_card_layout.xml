@@ -11,6 +11,7 @@
     app:cardUseCompatPadding="true">
 
     <LinearLayout
+        android:id="@+id/eventCardTopLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -68,14 +69,13 @@
                 tools:text="EventSource#" />
         </RelativeLayout>
 
-
         <LinearLayout
-            android:orientation="vertical"
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="32dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/eventTitle"
@@ -142,5 +142,23 @@
 
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginStart="2dp"
+            android:layout_marginBottom="2dp"
+            android:drawableEnd="@drawable/ic_info"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="Tap event for more info"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

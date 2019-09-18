@@ -33,10 +33,8 @@
     <string name="no_location_error_message">We couldn\'t get your location, please check location settings and try again.</string>
     <string name="loading_app_tooltip">Loading…</string>
     <string name="event_provided_by_placeholder">Event provided by %s</string>
-    <string name="returning_user_geocoded_welcome">Welcome back to 721! Loading the latest experiences in %s…</string>
-    <string name="new_user_geocoded_message">Welcome to 721! Loading the latest experiences in %s…</string>
-    <string name="returning_user_failed_geocoding">Welcome back to 721! Loading the latest experiences</string>
-    <string name="new_user_failed_geocoding">Welcome to 721! Loading the latest experiences in</string>
+    <string name="geocoded_welcome">Loading the latest experiences in %s…</string>
+    <string name="failed_geocoding_welcome">Welcome back to 721! Loading the latest experiences</string>
     <string name="no_more_events">No more events in your area!</string>
     <string name="feedback_card_tagline">Enjoying using 721? Swipe to send us your feedback</string>
     <string name="get_started">Get Started</string>
@@ -48,6 +46,8 @@
     <string name="search_x_miles">Search %1$d mile(s)</string>
     <string name="no_events_discovered">We couldn\'t discover any events there! Double check spelling and radius, and please try again.</string>
     <string name="no_local_events">No events in you area.</string>
+    <string name="filter_tab">Filter</string>
+    <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
 
     <string-array name="libraries">
         <item>Material Components for Android, by Google, under the Apache 2.0 License</item>

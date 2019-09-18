@@ -1,6 +1,7 @@
 package com.travel721;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,11 @@ import com.google.android.material.tabs.TabLayout;
 public class MainActivity extends AppCompatActivity {
 
     @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
@@ -17,26 +23,36 @@ public class MainActivity extends AppCompatActivity {
         String iid = getIntent().getStringExtra("IID");
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.getTabAt(1).select();
-        Bundle bundle = getIntent().getBundleExtra("fragment_bundle");
-        LoadingCardSwipeFragment csf = LoadingCardSwipeFragment.newInstance(accessToken, iid, bundle);
-        My721Fragment lef = My721Fragment.newInstance(bundle);
+        String longitude = getIntent().getStringExtra("longitude");
+        String latitude = getIntent().getStringExtra("latitude");
+        String radius = getIntent().getStringExtra("radius");
+        String daysFromNow = getIntent().getStringExtra("daysfromnow");
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, csf).commit();
+                .replace(R.id.fragmentContainer, LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow)).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            LoadingNearMeFragment loadingNearMeFragment;
+            My721Fragment my721Fragment;
+
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                Log.v("TAG1", "SELECT");
+
+                String prefRadius = getPreferences(MODE_PRIVATE).getString("radius", "0");
+                String prefDaysFromNow = getPreferences(MODE_PRIVATE).getString("daysFromNow", "0");
                 switch (tab.getPosition()) {
                     case 0:
+                        my721Fragment = My721Fragment.newInstance(accessToken);
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragmentContainer, lef).commit();
+                                .replace(R.id.fragmentContainer, my721Fragment).commit();
                         break;
                     case 1:
+                        loadingNearMeFragment = LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, prefRadius, prefDaysFromNow);
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragmentContainer, csf).commit();
+                                .replace(R.id.fragmentContainer, loadingNearMeFragment).commit();
                         break;
                     case 2:
                         SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, getIntent().getBundleExtra("fragment_bundle").getString("accessToken"));
+                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken);
                         addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                                 "discover_sheet_fragment");
                         break;
@@ -49,13 +65,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                Log.v("TAG2", "UNSELECT");
 
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                Log.v("TAG3", "RESELECT");
             }
+
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v("PAUSED", "aef");
     }
 }

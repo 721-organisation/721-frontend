@@ -1,6 +1,8 @@
 package com.travel721;
 
 import android.graphics.drawable.AnimationDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
@@ -24,41 +27,47 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 
-public class LoadingDiscoverFragment extends LoadingFragment {
+public class LoadingNearMeFragment extends LoadingFragment {
     String accessToken;
-    String searchLocation;
+    String IID;
+    String longitude;
+    String latitude;
     String radius;
     String daysFromNow;
     private DefaultRetryPolicy splashRetryPolicy = new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
-    public static LoadingDiscoverFragment newInstance(String accessToken, String searchLocation, String radius, String daysFromNow) {
-        LoadingDiscoverFragment fragment = new LoadingDiscoverFragment();
+
+    // This is where to make the bundle info
+    public static LoadingNearMeFragment newInstance(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow) {
+        LoadingNearMeFragment fragment = new LoadingNearMeFragment();
         fragment.accessToken = accessToken;
-        fragment.searchLocation = searchLocation;
+        fragment.IID = IID;
+        fragment.longitude = longitude;
+        fragment.latitude = latitude;
         fragment.radius = radius;
         fragment.daysFromNow = daysFromNow;
-
         return fragment;
     }
 
-    @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.blank_layout, null);
-        TextView textView = view.findViewById(R.id.status_text);
-        textView.setText("Finding events near " + searchLocation);
+
         // set its background to our AnimationDrawable XML resource.
-        ImageView img = (ImageView) view.findViewById(R.id.loading_dots_anim);
+        ImageView img = view.findViewById(R.id.loading_dots_anim);
         img.setBackgroundResource(R.drawable.loading_dots_animation);
 
         // Get the background, which has been compiled to an AnimationDrawable object.
@@ -66,11 +75,14 @@ public class LoadingDiscoverFragment extends LoadingFragment {
 
         // Start the animation (looped playback by default).
         frameAnimation.start();
+
         doLoad();
+        TextView statusText = view.findViewById(R.id.status_text);
+        statusText.setText("Waiting for geocoder..");
         return view;
     }
 
-    void doLoad() {
+    private void doLoad() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
 
             final ArrayList<EventCard> eventsFound = new ArrayList<>();
@@ -107,12 +119,20 @@ public class LoadingDiscoverFragment extends LoadingFragment {
                     } else {
                         userExists = true;
                     }
-
+                    TextView statusTextView = getView().findViewById(R.id.status_text);
+                    final Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                    try {
+                        List<Address> address = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), 1);
+                        String city = address.get(0).getSubAdminArea();
+                        statusTextView.setText(getContext().getString(R.string.geocoded_welcome, city));
+                    } catch (IOException e) {
+                        statusTextView.setText(getContext().getString(R.string.failed_geocoding_welcome));
+                    }
                     // PUT REQUEST: Update events on server
                     Log.v("Requests", "Updating events on server...");
                     StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
                         // GET REQUEST: Get events from the server
-                        StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=0&longitude=0&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=true&location=" + searchLocation, response12 -> {
+                        StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false", response12 -> {
                             try {
                                 JSONObject jo1 = new JSONObject(response12);
                                 JSONArray events = jo1.getJSONArray("getWithinDistance");
@@ -148,8 +168,12 @@ public class LoadingDiscoverFragment extends LoadingFragment {
                                                     filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
                                                     filteredCards.add((filteredCards.size() / 2) + 1, new AdCard());
                                                 } else {
-                                                    TextView textView = getView().findViewById(R.id.status_text);
-                                                    textView.setText(getString(R.string.no_events_discovered));
+                                                    statusTextView.setText(getString(R.string.nno_events_near_you));
+                                                    statusTextView.setOnClickListener(view -> {
+                                                        FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(this);
+                                                        filterBottomSheetFragment.show(getFragmentManager(),
+                                                                "filter_sheet_fragment");
+                                                    });
                                                     ImageView iv = getView().findViewById(R.id.loading_dots_anim);
                                                     iv.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_warning));
                                                     iv.setBackground(null);
@@ -199,10 +223,9 @@ public class LoadingDiscoverFragment extends LoadingFragment {
                                 AuthFailureError {
 
                             Map<String, String> params = new HashMap<>();
-                            params.put("latitude", String.valueOf(0));
-                            params.put("longitude", String.valueOf(0));
-                            params.put("explore", "true");
-                            params.put("location", searchLocation);
+                            params.put("latitude", latitude);
+                            params.put("longitude", longitude);
+                            params.put("explore", "false");
                             params.put("radius", String.valueOf(radius));
                             params.put("daysFromNow", String.valueOf(daysFromNow));
                             return params;
@@ -230,8 +253,7 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         Log.v("HANDLEDERROR", error);
     }
 
-    public static LoadingDiscoverFragment clone(LoadingDiscoverFragment toClone) {
-        return LoadingDiscoverFragment.newInstance(toClone.accessToken, toClone.searchLocation, toClone.radius, toClone.daysFromNow);
+    public static LoadingNearMeFragment clone(LoadingNearMeFragment toClone) {
+        return LoadingNearMeFragment.newInstance(toClone.accessToken, toClone.IID, toClone.longitude, toClone.latitude, toClone.radius, toClone.daysFromNow);
     }
 }
-

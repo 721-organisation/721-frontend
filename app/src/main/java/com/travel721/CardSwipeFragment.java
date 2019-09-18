@@ -26,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
@@ -52,11 +53,13 @@ import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 public class CardSwipeFragment extends Fragment implements CardStackListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private PageViewModel pageViewModel;
+    private LoadingFragment callingLoader;
 
     // This is where to make the bundle info
-    public static CardSwipeFragment newInstance(Bundle bundle) {
+    public static CardSwipeFragment newInstance(Bundle bundle, LoadingFragment callingLoader) {
         CardSwipeFragment fragment = new CardSwipeFragment();
         fragment.setArguments(bundle);
+        fragment.callingLoader = callingLoader;
         return fragment;
     }
 
@@ -87,9 +90,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 //        setContentView(R.layout.fragment_event_swipe);
 
 
-        final com.google.android.material.floatingactionbutton.FloatingActionButton likeButton = root.findViewById(R.id.thumbupButton);
-        final com.google.android.material.floatingactionbutton.FloatingActionButton dislikeButton = root.findViewById(R.id.thumbdownButton);
-        final com.google.android.material.floatingactionbutton.FloatingActionButton shareEventButton = root.findViewById(R.id.shareEventButton);
+        FloatingActionButton likeButton = root.findViewById(R.id.thumbupButton);
+        FloatingActionButton dislikeButton = root.findViewById(R.id.thumbdownButton);
+        FloatingActionButton shareEventButton = root.findViewById(R.id.shareEventButton);
         likeButton.setOnClickListener(this::likesTopCard);
         dislikeButton.setOnClickListener(this::dislikesTopCard);
         shareEventButton.setOnClickListener(view -> {
@@ -113,7 +116,12 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 e.printStackTrace();
             }
         });
-
+        FloatingActionButton filterButton = root.findViewById(R.id.filterButton);
+        filterButton.setOnClickListener(view -> {
+            FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader);
+            filterBottomSheetFragment.show(getFragmentManager(),
+                    "filter_sheet_fragment");
+        });
 
         cardStackView = root.findViewById(R.id.card_stack_view);
 

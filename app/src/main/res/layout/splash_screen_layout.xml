@@ -24,6 +24,7 @@
         android:textColor="@android:color/white"
         android:textSize="120sp"
         android:textStyle="bold"
+        android:typeface="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

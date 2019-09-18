@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.android.volley.Request;
@@ -44,19 +43,12 @@ public class My721Fragment extends Fragment {
     String api_access_token;
 
     // This is where to make the bundle info
-    public static My721Fragment newInstance(Bundle bundle) {
+    public static My721Fragment newInstance(String api_access_token) {
         My721Fragment lef = new My721Fragment();
-        lef.setArguments(bundle);
+        lef.api_access_token = api_access_token;
         return lef;
     }
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        api_access_token = getArguments().getString("accessToken");
-
-    }
 
     @Override
     public View onCreateView(
@@ -118,8 +110,7 @@ public class My721Fragment extends Fragment {
                                             return;
                                         }
                                         Collections.sort(eventCardArrayList);
-                                        if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("eventListOrder", false))
-                                            Collections.reverse(eventCardArrayList);
+                                        Collections.reverse(eventCardArrayList);
                                         String previousDateTag = "";
 
                                         for (int i = 0; i < eventCardArrayList.size(); i++) {

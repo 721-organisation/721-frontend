@@ -1,6 +1,5 @@
 package com.travel721;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -45,7 +44,6 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     private String time;
     private String minimumAge;
     private String price;
-    private Bitmap imgBitmap = null;
     private String description;
     private String sourceTag;
 
@@ -233,13 +231,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         this.price = price;
     }
 
-    public Bitmap getImgBitmap() {
-        return imgBitmap;
-    }
 
-    public void setImgBitmap(Bitmap imgBitmap) {
-        this.imgBitmap = imgBitmap;
-    }
 
     public String getImgURL() {
         return imgURL;

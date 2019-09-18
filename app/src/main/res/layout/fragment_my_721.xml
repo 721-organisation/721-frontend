@@ -17,11 +17,14 @@
             android:id="@+id/listTag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autoText="true"
             android:background="@color/colorAccent"
-            android:padding="32dp"
+            android:lines="1"
+            android:padding="30dp"
             android:text="@string/going_to_experience"
             android:textColor="#FFFFFF"
-            android:textSize="36sp" />
+            android:textSize="30sp"
+            app:autoSizeTextType="uniform" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -47,5 +50,5 @@
         android:backgroundTint="#FFFFFFFF"
         android:clickable="true"
         android:foregroundGravity="bottom"
-        android:src="@drawable/ic_settings" />
+        android:src="@drawable/ic_info" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

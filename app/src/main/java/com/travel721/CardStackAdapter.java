@@ -1,5 +1,6 @@
 package com.travel721;
 
+import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
@@ -23,8 +24,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.List;
 
@@ -109,6 +108,14 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             // Set TextView values
             TextView currTV;
             View v = holder.itemView;
+            LinearLayout linearLayout2 = v.findViewById(R.id.eventCardTopLinearLayout);
+            linearLayout2.setOnClickListener(view -> {
+                AnalyticsHelper.logEvent(v.getContext(), AnalyticsHelper.USER_SWIPED_DOWN, null);
+                Intent i = new Intent(v.getContext(), EventMoreInfoActivity.class);
+                i.putExtra("eventCard", events.get(position));
+                v.getContext().startActivity(i);
+            });
+
             currTV = v.findViewById(R.id.eventTitle);
             currTV.setText(ec.getName());
             currTV = v.findViewById(R.id.eventCardVenue);
