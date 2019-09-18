@@ -40,7 +40,7 @@ public class DeleteEventBottomSheetDialogFragment extends
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_delete_bottom_sheet, null);
-        TextView eventTitle = v.findViewById(R.id.deleteTitle);
+        TextView eventTitle = v.findViewById(R.id.delEventTitle);
         eventTitle.setText(eventName);
         Button cancel = v.findViewById(R.id.cancel_delete);
         cancel.setOnClickListener(view -> {

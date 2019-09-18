@@ -31,6 +31,9 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
         root.findViewById(R.id.filterTitle).setOnClickListener(view -> {
             dismiss();
         });
+        root.findViewById(R.id.filterCloseButton).setOnClickListener(view -> {
+            dismiss();
+        });
         root.findViewById(R.id.filter_go_button).setOnClickListener(view -> {
             dismiss();
         });
