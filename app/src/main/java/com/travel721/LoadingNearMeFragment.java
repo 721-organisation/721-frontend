@@ -39,6 +39,7 @@ import static com.travel721.Constants.eventProfileAllSearchFilter;
 import static com.travel721.Constants.profileSearchURL;
 
 public class LoadingNearMeFragment extends LoadingFragment {
+    public static final String LOADING_NEAR_ME_REQUEST_TAG = "LOADING_NEAR_ME_REQUEST_TAG";
     String accessToken;
     String IID;
     String longitude;
@@ -65,7 +66,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.blank_layout, null);
-
+        queue = Volley.newRequestQueue(getContext());
         // set its background to our AnimationDrawable XML resource.
         ImageView img = view.findViewById(R.id.loading_dots_anim);
         img.setBackgroundResource(R.drawable.loading_dots_animation);
@@ -82,11 +83,13 @@ public class LoadingNearMeFragment extends LoadingFragment {
         return view;
     }
 
+    RequestQueue queue;
+
     private void doLoad() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
 
             final ArrayList<EventCard> eventsFound = new ArrayList<>();
-            final RequestQueue queue = Volley.newRequestQueue(getContext());
+
             final String finalIID = task.getResult().getToken();
             Log.v("FIID", finalIID);
 
@@ -98,13 +101,21 @@ public class LoadingNearMeFragment extends LoadingFragment {
             Log.v("REQUEST", "Checking profile");
             // GET REQUEST: Does profile exist?
             StringRequest stringRequest1 = new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
+                if (isDetached()) {
+                    return;
+                }
                 try {
                     JSONArray profilesResponse = new JSONArray(response15);
                     boolean userExists = false;
                     if (profilesResponse.isNull(0)) {
                         // User does not exist. This condition definitely needs testing
                         Log.v("USERS", "User not found, creating...");
-                        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
+                        StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> {
+                            if (isDetached()) {
+                                return;
+                            }
+                            Log.v("USERS", "User created");
+                        }, error -> {
 
                         }) {
                             @Override
@@ -114,10 +125,15 @@ public class LoadingNearMeFragment extends LoadingFragment {
                                 return map;
                             }
                         };
+
                         stringRequest2.setRetryPolicy(splashRetryPolicy);
+                        stringRequest2.setTag(LOADING_NEAR_ME_REQUEST_TAG);
                         queue.add(stringRequest2);
                     } else {
                         userExists = true;
+                    }
+                    if (isDetached()) {
+                        return;
                     }
                     TextView statusTextView = getView().findViewById(R.id.status_text);
                     final Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -131,8 +147,14 @@ public class LoadingNearMeFragment extends LoadingFragment {
                     // PUT REQUEST: Update events on server
                     Log.v("Requests", "Updating events on server...");
                     StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
+                        if (isDetached()) {
+                            return;
+                        }
                         // GET REQUEST: Get events from the server
                         StringRequest stringRequest4 = new StringRequest(Request.Method.GET, API_ROOT_URL + "events/getWithinDistance?latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false", response12 -> {
+                            if (isDetached()) {
+                                return;
+                            }
                             try {
                                 JSONObject jo1 = new JSONObject(response12);
                                 JSONArray events = jo1.getJSONArray("getWithinDistance");
@@ -148,6 +170,9 @@ public class LoadingNearMeFragment extends LoadingFragment {
                                 Log.v("Requests", "Filtering through events already swiped through");
                                 StringRequest stringRequest5 = new StringRequest(Request.Method.GET, API_ROOT_URL + "eventProfiles?access_token=" + accessToken + "&filter=" + eventProfileAllSearchFilter(finalIID),
                                         response1 -> {
+                                            if (isDetached()) {
+                                                return;
+                                            }
                                             try {
                                                 final JSONArray eventProfileArray = new JSONArray(response1);
                                                 JSONObject jsonObject;
@@ -183,8 +208,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
                                                 bundle.putParcelableArrayList("events", filteredCards);
                                                 bundle.putString("accessToken", accessToken);
                                                 bundle.putString("fiid", finalIID);
-//                                              startActivity(intent);
-//                                                                        finish();
+
                                                 Log.v("TEST", "Swapping fragments... ");
                                                 getFragmentManager().beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
                                             } catch (JSONException je) {
@@ -198,7 +222,9 @@ public class LoadingNearMeFragment extends LoadingFragment {
                                             splashErrorHandler(error.toString());
                                         });
                                 stringRequest5.setRetryPolicy(splashRetryPolicy);
+                                stringRequest5.setTag(LOADING_NEAR_ME_REQUEST_TAG);
                                 queue.add(stringRequest5);
+
                             } catch (
                                     JSONException e) {
                                 e.printStackTrace();
@@ -211,7 +237,9 @@ public class LoadingNearMeFragment extends LoadingFragment {
                             splashErrorHandler(error.toString());
                         });
                         stringRequest4.setRetryPolicy(splashRetryPolicy);
+                        stringRequest4.setTag(LOADING_NEAR_ME_REQUEST_TAG);
                         queue.add(stringRequest4);
+
                     },
                             error -> {
                                 error.printStackTrace();
@@ -232,7 +260,9 @@ public class LoadingNearMeFragment extends LoadingFragment {
                         }
                     };
                     stringRequest3.setRetryPolicy(splashRetryPolicy);
+                    stringRequest3.setTag(LOADING_NEAR_ME_REQUEST_TAG);
                     queue.add(stringRequest3);
+
                 } catch (
                         JSONException e) {
                     e.printStackTrace();
@@ -243,10 +273,15 @@ public class LoadingNearMeFragment extends LoadingFragment {
                 splashErrorHandler(error.toString());
             });
             stringRequest1.setRetryPolicy(splashRetryPolicy);
+            stringRequest1.setTag(LOADING_NEAR_ME_REQUEST_TAG);
             queue.add(stringRequest1);
 
 
         });
+        if (isDetached()) {
+            queue.cancelAll(LOADING_NEAR_ME_REQUEST_TAG);
+            queue.stop();
+        }
     }
 
     static void splashErrorHandler(String error) {
@@ -256,4 +291,32 @@ public class LoadingNearMeFragment extends LoadingFragment {
     public static LoadingNearMeFragment clone(LoadingNearMeFragment toClone) {
         return LoadingNearMeFragment.newInstance(toClone.accessToken, toClone.IID, toClone.longitude, toClone.latitude, toClone.radius, toClone.daysFromNow);
     }
+
+    String TAG = "DBUGGING DETACH";
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        queue.cancelAll(LOADING_NEAR_ME_REQUEST_TAG);
+        queue.stop();
+        Log.d(TAG, "onDetach() called in " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        queue.cancelAll(LOADING_NEAR_ME_REQUEST_TAG);
+        queue.stop();
+        Log.d(TAG, "onDestroyView() called" + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        queue.cancelAll(LOADING_NEAR_ME_REQUEST_TAG);
+        queue.stop();
+        Log.d(TAG, "onDestroy() called" + this.getClass().getSimpleName());
+    }
+
+
 }

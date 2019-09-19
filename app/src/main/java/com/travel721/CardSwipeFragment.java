@@ -143,6 +143,28 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     private CardStackLayoutManager cardStackLayoutManager;
     ArrayList<Card> cardArrayList;
 
+    String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.stop();
+    }
 
     void initialise() {
         // Create card stack manager
@@ -155,7 +177,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         directions.add(Direction.Left);
         directions.add(Direction.Bottom);
         cardStackLayoutManager.setDirections(directions);
-
+        queue = Volley.newRequestQueue(getContext());
         // Create card stack adapter
         CardStackAdapter cardStackAdapter = new CardStackAdapter(cardArrayList);
 
@@ -173,6 +195,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         }
     }
 
+    RequestQueue queue;
 
     @Override
     public void onCardSwiped(Direction direction) {
@@ -188,7 +211,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
         if (cardArrayList.get(index) instanceof EventCard) {
             EventCard eventCard = (EventCard) cardArrayList.get(index);
-            RequestQueue queue = Volley.newRequestQueue(getContext());
+
             StringRequest stringRequest;
             String url = API_ROOT_URL + "eventProfiles?access_token=" + getArguments().getString("accessToken");
             // Each case makes a call to the Analytics API
@@ -231,6 +254,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     };
 
                     // Add the request to the RequestQueue.
+                    stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
                     queue.add(stringRequest);
                     // TODO make a request to the API
                     break;
@@ -260,6 +284,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     };
 
                     // Add the request to the RequestQueue.
+                    stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
                     queue.add(stringRequest);
                     // TODO make a request to the API
                     break;

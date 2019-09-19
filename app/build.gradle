@@ -26,8 +26,8 @@ android {
         applicationId "com.travel721"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 11
-        versionName "1.01 ReleaseBuild"
+        versionCode 12
+        versionName "1.02 ReleaseBuild"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
     }

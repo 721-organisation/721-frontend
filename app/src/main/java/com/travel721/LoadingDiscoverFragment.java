@@ -45,15 +45,35 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         fragment.searchLocation = searchLocation;
         fragment.radius = radius;
         fragment.daysFromNow = daysFromNow;
-
         return fragment;
+    }
+
+    String LOADING_DISCOVER_REQUEST_TAG = "DBUGGING DETACH";
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        queue.cancelAll(LOADING_DISCOVER_REQUEST_TAG);
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        queue.stop();
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-
+        queue = Volley.newRequestQueue(getContext());
         View view = getLayoutInflater().inflate(R.layout.blank_layout, null);
         TextView textView = view.findViewById(R.id.status_text);
         textView.setText("Finding events near " + searchLocation);
@@ -70,11 +90,13 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         return view;
     }
 
+    RequestQueue queue;
+
     void doLoad() {
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
 
             final ArrayList<EventCard> eventsFound = new ArrayList<>();
-            final RequestQueue queue = Volley.newRequestQueue(getContext());
+
             final String finalIID = task.getResult().getToken();
             Log.v("FIID", finalIID);
 

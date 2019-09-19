@@ -22,10 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,18 +47,19 @@ public class My721Fragment extends Fragment {
         return lef;
     }
 
+    RequestQueue queue;
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_my_721, container, false);
-
+        queue = Volley.newRequestQueue(getContext());
 
         final LinearLayout linearLayout = root.findViewById(R.id.eventListCardHolder);
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
             // Instantiate the RequestQueue.
-            final RequestQueue queue = Volley.newRequestQueue(getContext());
+
             String fiid = task.getResult().getToken();
             String url = API_ROOT_URL + "eventProfiles?access_token=" + api_access_token + "&filter=" + eventProfileLikedSearchFilter(fiid);
             // Request a string response from the provided URL.
@@ -77,6 +75,7 @@ public class My721Fragment extends Fragment {
                                 JSONArray eventProfileArray = new JSONArray(response);
                                 int arrSize = eventProfileArray.length();
                                 JSONObject jsonObject;
+                                queue.cancelAll(MY_721_FRAGMENT_REQUEST_TAG);
                                 queue.stop();
                                 ArrayList<EventCard> eventCardArrayList = new ArrayList<>();
                                 HashMap<String, String> eventToProfile = new HashMap<>();
@@ -103,6 +102,7 @@ public class My721Fragment extends Fragment {
                                             }, error -> {
 
                                     });
+                                    stringRequest1.setTag(MY_721_FRAGMENT_REQUEST_TAG);
                                     queue.add(stringRequest1);
                                 }
                                 AtomicInteger dealtSize = new AtomicInteger();
@@ -179,6 +179,8 @@ public class My721Fragment extends Fragment {
             });
 
             // Add the request to the RequestQueue.
+
+            stringRequest.setTag(MY_721_FRAGMENT_REQUEST_TAG);
             queue.add(stringRequest);
 
 
@@ -189,5 +191,29 @@ public class My721Fragment extends Fragment {
 
         });
         return root;
+    }
+
+
+    String MY_721_FRAGMENT_REQUEST_TAG = "My721RequestTag";
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        queue.cancelAll(MY_721_FRAGMENT_REQUEST_TAG);
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        queue.cancelAll(MY_721_FRAGMENT_REQUEST_TAG);
+        queue.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        queue.cancelAll(MY_721_FRAGMENT_REQUEST_TAG);
+        queue.stop();
     }
 }
