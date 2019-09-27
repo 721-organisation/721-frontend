@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
@@ -90,7 +91,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
 
             final ArrayList<EventCard> eventsFound = new ArrayList<>();
 
-            final String finalIID = task.getResult().getToken();
+            final String finalIID = Objects.requireNonNull(task.getResult()).getToken();
             Log.v("FIID", finalIID);
 
 
