@@ -54,6 +54,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private PageViewModel pageViewModel;
     private LoadingFragment callingLoader;
+    private String access_token;
 
     // This is where to make the bundle info
     public static CardSwipeFragment newInstance(Bundle bundle, LoadingFragment callingLoader) {
@@ -117,12 +118,19 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             }
         });
         FloatingActionButton filterButton = root.findViewById(R.id.filterButton);
-        filterButton.setOnClickListener(view -> {
-            FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader);
-            filterBottomSheetFragment.show(getFragmentManager(),
-                    "filter_sheet_fragment");
-        });
-
+        if (callingLoader instanceof LoadingNearMeFragment) {
+            filterButton.setOnClickListener(view -> {
+                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader);
+                filterBottomSheetFragment.show(getFragmentManager(),
+                        "filter_sheet_fragment");
+            });
+        }
+        if (callingLoader instanceof LoadingDiscoverFragment) {
+            SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, getArguments().getString("accessToken"));
+            addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                    "discover_sheet_fragment");
+        }
         cardStackView = root.findViewById(R.id.card_stack_view);
 
         if (cardArrayList.isEmpty())
