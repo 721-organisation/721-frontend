@@ -46,7 +46,6 @@
     <string name="search_x_miles">Search %1$d mile(s)</string>
     <string name="no_events_discovered">We couldn\'t discover any events there! Double check spelling and radius, and please try again.</string>
     <string name="no_local_events">No events in you area.</string>
-    <string name="filter_tab">Filter</string>
     <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
     <string name="remove_event">Delete event?</string>
     <string name="delete">Delete</string>

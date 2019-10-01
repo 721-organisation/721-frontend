@@ -23,7 +23,7 @@
         android:foregroundGravity="center_vertical"
         android:gravity="center_vertical"
         android:padding="10dp"
-        android:text="@string/filter_tab"
+        android:text="@string/near_me_tab"
         android:textAlignment="center"
         android:textSize="30sp"
         app:drawableTint="#8B8B8B" />
