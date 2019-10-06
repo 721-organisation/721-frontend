@@ -43,6 +43,21 @@
             android:name=".UpdatedSettingsSplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
+            android:name=".OpenDeepLinkActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="721go.co.uk"
+                    android:pathPrefix="/share/" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".InitialLoadSplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
