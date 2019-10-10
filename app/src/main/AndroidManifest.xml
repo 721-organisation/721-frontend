@@ -53,9 +53,20 @@
 
                 <data
                     android:scheme="https"
-                    android:host="721go.co.uk"
-                    android:pathPrefix="/share/" />
+                    android:host="share721.appspot.com"
+                    android:pathPrefix="/event/" />
             </intent-filter>
+            <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:scheme="http"
+                android:host="share721.appspot.com"
+                android:pathPrefix="/event/" />
+        </intent-filter>
         </activity>
         <activity
             android:name=".InitialLoadSplashActivity"

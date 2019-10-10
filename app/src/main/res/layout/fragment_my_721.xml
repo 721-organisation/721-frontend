@@ -52,5 +52,5 @@
         android:backgroundTint="#FFFFFFFF"
         android:clickable="true"
         android:foregroundGravity="bottom"
-        android:src="@drawable/ic_info" />
+        android:src="@drawable/ic_settings" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

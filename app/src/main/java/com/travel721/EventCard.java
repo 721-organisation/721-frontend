@@ -46,6 +46,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     private String price;
     private String description;
     private String sourceTag;
+    private String dateFormatString = "dd-MM-yy";
 
     @Override
     public boolean equals(Object obj) {
@@ -172,9 +173,9 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
 
     public String getDayOfWeek() {
         try {
-            Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
+            Date realDateOfEvent = new SimpleDateFormat(dateFormatString).parse(formattedDate);
             Date realCurrentDate = new Date();
-            String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(realCurrentDate);
+            String currentDate = new SimpleDateFormat(dateFormatString).format(realCurrentDate);
 
             if (formattedDate.equals(currentDate)) {
                 return "Today";
@@ -190,7 +191,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public String getPrettyDate() {
         try {
             if (getDayOfWeek().equals("Today")) return "Today";
-            Date realDateOfEvent = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
+            Date realDateOfEvent = new SimpleDateFormat(dateFormatString).parse(formattedDate);
             return new SimpleDateFormat("EEE, MMM d").format(realDateOfEvent);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -279,8 +280,8 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     @Override
     public int compareTo(EventCard eventCard) {
         try {
-            Date dateOfThis = new SimpleDateFormat("yyyy-MM-dd").parse(formattedDate);
-            Date dateOfTo = new SimpleDateFormat("yyyy-MM-dd").parse(eventCard.formattedDate);
+            Date dateOfThis = new SimpleDateFormat(dateFormatString).parse(formattedDate);
+            Date dateOfTo = new SimpleDateFormat(dateFormatString).parse(eventCard.formattedDate);
 
             return dateOfThis.compareTo(dateOfTo);
         } catch (ParseException e) {
