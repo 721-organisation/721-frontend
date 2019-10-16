@@ -112,7 +112,7 @@ public class My721Fragment extends Fragment {
                                         return;
                                     }
                                     Collections.sort(eventCardArrayList);
-                                    Collections.reverse(eventCardArrayList);
+//                                    Collections.reverse(eventCardArrayList);
                                     String previousDateTag = "";
 
                                     for (int i = 0; i < eventCardArrayList.size(); i++) {
