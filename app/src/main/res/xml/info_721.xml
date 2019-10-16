@@ -25,16 +25,29 @@
             android:title="We'd love to hear your feedback">
             <intent
                 android:targetClass="com.travel721.RateOnPlayActivity"
-                android:targetPackage="com.travel721"></intent>
+                android:targetPackage="com.travel721" />
         </Preference>
     </PreferenceCategory>
+
+
+    <PreferenceCategory app:title="Contact 721 Team">
+        <Preference
+            android:key="contact721"
+            android:summary="Click here to contact 721"
+            android:title="Drop us an email with a message, feedback or suggestions!">
+            <intent
+                android:targetClass="com.travel721.Contact721Class"
+                android:targetPackage="com.travel721" />
+        </Preference>
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="Third Party Libraries">
         <Preference
             app:key="loadTPLIntent"
             app:title="This app relies on third-party libraries. To see them, click here.">
             <intent
                 android:targetClass="com.travel721.ListLibrariesActivity"
-                android:targetPackage="com.travel721"></intent>
+                android:targetPackage="com.travel721" />
         </Preference>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
