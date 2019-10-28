@@ -147,7 +147,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
                     }
                     // PUT REQUEST: Update events on server
                     Log.v("Requests", "Updating events on server...");
-                    StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, response13 -> {
+                    StringRequest stringRequest3 = new StringRequest(Request.Method.PUT, API_ROOT_URL + "events/updateNew?access_token=" + accessToken, (String response13) -> {
                         if (isDetached()) {
                             return;
                         }

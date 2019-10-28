@@ -2,25 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
-// Create a variable called keystorePropertiesFile, and initialize it to your
-// keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
-
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 android {
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
-    }
+
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.travel721"
@@ -29,7 +12,6 @@ android {
         versionCode 12
         versionName "1.02 ReleaseBuild"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
     buildTypes {
         debug {
@@ -70,9 +52,9 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.android.volley:volley:1.1.1'
     implementation "com.yuyakaido.android:card-stack-view:2.3.4"
-    implementation "com.squareup.okhttp3:okhttp:4.0.0"
+    implementation "com.squareup.okhttp3:okhttp:4.2.2"
     implementation 'com.androidadvance:topsnackbar:1.1.1'
-    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'androidx.browser:browser:1.0.0'
@@ -80,15 +62,26 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.0'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta05'
+    implementation 'androidx.viewpager2:viewpager2:1.0.0-rc01'
     implementation 'com.github.Deishelon:RoundedBottomSheet:1.0.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     implementation 'com.google.firebase:firebase-ads:18.2.0'
+    def room_version = "2.2.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+    // optional - RxJava support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+    // Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
+    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
 }
 repositories {
     mavenCentral()

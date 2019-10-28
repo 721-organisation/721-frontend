@@ -4,6 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Entity
 public class EventCard extends Card implements Parcelable, Serializable, Comparable<EventCard> {
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
         @Override
@@ -24,51 +28,21 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             return new EventCard[size];
         }
     };
-    private String name;
-    private String eventSourceID;
-    private String venueName;
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    private String latitude;
-    private String longitude;
-    private String imgURL;
-    private String eventHyperLink;
-    private String formattedDate;
-    private String time;
-    private String minimumAge;
-    private String price;
-    private String description;
-    private String sourceTag;
-    private String dateFormatString = "dd-MM-yy";
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof EventCard) {
-            EventCard eventCard = (EventCard) obj;
-            return
-                    this.name.equals(eventCard.name) &&
-                            this.eventSourceID.equals(eventCard.eventSourceID) &&
-                            this.venueName.equals(eventCard.venueName) &&
-                            this.latitude.equals(eventCard.latitude) &&
-                            this.longitude.equals(eventCard.longitude) &&
-                            this.imgURL.equals(eventCard.imgURL) &&
-                            this.eventHyperLink.equals(eventCard.eventHyperLink) &&
-                            this.formattedDate.equals(eventCard.formattedDate) &&
-                            this.minimumAge.equals(eventCard.minimumAge) &&
-                            this.price.equals(eventCard.price) &&
-                            this.description.equals(eventCard.description) &&
-                            this.sourceTag.equals(eventCard.sourceTag);
-        } else {
-            return false;
-        }
-    }
+    public String name;
+    @PrimaryKey
+    public String eventSourceID;
+    public String venueName;
+    public String latitude;
+    public String longitude;
+    public String imgURL;
+    public String eventHyperLink;
+    public String formattedDate;
+    public String time;
+    public String minimumAge;
+    public String price;
+    public String description;
+    public String sourceTag;
+    public String dateFormatString = "dd-MM-yy";
 
     protected EventCard(Parcel in) {
         name = in.readString();
@@ -120,6 +94,36 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             return "No " + prop + " provided by " + eventSource;
         }
 
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof EventCard) {
+            EventCard eventCard = (EventCard) obj;
+            return
+                    this.name.equals(eventCard.name) &&
+                            this.eventSourceID.equals(eventCard.eventSourceID) &&
+                            this.venueName.equals(eventCard.venueName) &&
+                            this.latitude.equals(eventCard.latitude) &&
+                            this.longitude.equals(eventCard.longitude) &&
+                            this.imgURL.equals(eventCard.imgURL) &&
+                            this.eventHyperLink.equals(eventCard.eventHyperLink) &&
+                            this.formattedDate.equals(eventCard.formattedDate) &&
+                            this.minimumAge.equals(eventCard.minimumAge) &&
+                            this.price.equals(eventCard.price) &&
+                            this.description.equals(eventCard.description) &&
+                            this.sourceTag.equals(eventCard.sourceTag);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -231,7 +235,6 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public void setPrice(String price) {
         this.price = price;
     }
-
 
 
     public String getImgURL() {
