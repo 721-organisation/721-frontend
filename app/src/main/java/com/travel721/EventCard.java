@@ -4,7 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.json.JSONException;
@@ -29,6 +31,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         }
     };
     public String name;
+    @NonNull
     @PrimaryKey
     public String eventSourceID;
     public String venueName;
@@ -42,6 +45,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public String price;
     public String description;
     public String sourceTag;
+    @Ignore
     public String dateFormatString = "dd-MM-yy";
 
     protected EventCard(Parcel in) {

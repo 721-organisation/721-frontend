@@ -17,6 +17,8 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
         setContentView(R.layout.blank_layout);
-        Toast.makeText(this, "ALA is " + appLinkAction + " \n ALD is " + appLinkData.toString(), Toast.LENGTH_LONG).show();
+        String eventIdToDeepLink = appLinkData.getPathSegments().get(appLinkData.getPathSegments().size() - 1);
+        Toast.makeText(this, "Opening event id: " + eventIdToDeepLink, Toast.LENGTH_LONG).show();
+
     }
 }
