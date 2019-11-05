@@ -1,21 +1,28 @@
-package com.travel721;
+package com.instant721;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.travel721.CardSwipeFragment;
+import com.travel721.EventCard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,19 +38,19 @@ import java.util.Map;
 
 import static com.travel721.Constants.API_ROOT_URL;
 
-public class OpenDeepLinkActivity extends AppCompatActivity {
+public class Instant721 extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_link_event_fragment);
+        setContentView(com.travel721.R.layout.app_link_event_fragment);
         RequestQueue requestQueue;
         DefaultRetryPolicy splashRetryPolicy = new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
         Intent appLinkIntent = getIntent();
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
-        setContentView(R.layout.blank_layout);
+        setContentView(com.travel721.R.layout.blank_layout);
         String eventIdToDeepLink = appLinkData.getPathSegments().get(appLinkData.getPathSegments().size() - 1);
         Log.d("EID", "onCreate: EIDTDL + " + eventIdToDeepLink);
         requestQueue = Volley.newRequestQueue(this);
@@ -52,8 +59,8 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
             final String finalIID = task.getResult().getToken();
 
             try {
-                InputStream uis = getResources().openRawResource(R.raw.gravestones);
-                InputStream pis = getResources().openRawResource(R.raw.mouthpiece);
+                InputStream uis = Instant721.this.getResources().openRawResource(com.travel721.R.raw.gravestones);
+                InputStream pis = Instant721.this.getResources().openRawResource(com.travel721.R.raw.mouthpiece);
                 BufferedReader ubr = new BufferedReader(new InputStreamReader(uis));
                 BufferedReader pbr = new BufferedReader(new InputStreamReader(pis));
                 String u = ubr.readLine();
@@ -81,8 +88,8 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
                                         bundle.putString("mode", "applink");
                                         bundle.putString("fiid", finalIID);
 
-                                        setContentView(R.layout.app_link_event_fragment);
-                                        getSupportFragmentManager().beginTransaction().replace(R.id.app_link_cardswipefragment, CardSwipeFragment.newNonBoundInstance(bundle)).commit();
+                                        Instant721.this.setContentView(com.travel721.R.layout.app_link_event_fragment);
+                                        Instant721.this.getSupportFragmentManager().beginTransaction().replace(com.travel721.R.id.app_link_cardswipefragment, CardSwipeFragment.newNonBoundInstance(bundle)).commit();
 
 
                                     } catch (JSONException e) {
@@ -105,8 +112,8 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }, (VolleyError response) -> {
-                }) {
+                        }, response -> {
+                        }) {
                     @Override
                     protected Map<String, String> getParams() {
                         // Auth params

@@ -1,1 +1,1 @@
-include ':app', ':instant721', ':721Instant'
+include ':app', ':instant721'

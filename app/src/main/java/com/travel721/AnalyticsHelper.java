@@ -9,7 +9,9 @@ import androidx.annotation.Nullable;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 /**
- * This class is restrictively designed for refined reporting of events to Firebase.
+ * This class is designed to provide compile-time safety
+ * for the types of events we like to be reported to
+ * Firebase Analytics
  *
  * @author Bhav
  * @see ReleaseAnalyticsEvent Events reportable in release mode only

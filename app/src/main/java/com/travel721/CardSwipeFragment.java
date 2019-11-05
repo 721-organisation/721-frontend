@@ -70,13 +70,12 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    View root;
-    ArrayList<Card> cardArrayList;
-    CardStackAdapter cardStackAdapter;
-    String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
-    RequestQueue queue;
-    boolean buttonPushed = false;
-    private PageViewModel pageViewModel;
+    private View root;
+    private ArrayList<Card> cardArrayList;
+    private CardStackAdapter cardStackAdapter;
+    private String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
+    private RequestQueue queue;
+    private boolean buttonPushed = false;
     private LoadingFragment callingLoader;
     private String access_token;
     // Keep a track of the CardView and it's adapter
@@ -92,6 +91,13 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         return fragment;
     }
 
+    // This is where to make the bundle info
+    public static CardSwipeFragment newNonBoundInstance(Bundle bundle) {
+        CardSwipeFragment fragment = new CardSwipeFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public static String getRandom(String[] array) {
         int rnd = new Random().nextInt(array.length);
         return array[rnd];
@@ -102,24 +108,32 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         super.onCreate(savedInstanceState);
 
         cardArrayList = getArguments().getParcelableArrayList("events");
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+        PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
-
-        if (getArguments().getString("mode").equals("nearme")) {
-            String accessToken = getArguments().getString("accessToken");
-            String IID = getArguments().getString("IID");
-            String longitude = getArguments().getString("longitude");
-            String latitude = getArguments().getString("latitude");
-            String radius = getArguments().getString("radius");
-            String daysFromNow = getArguments().getString("daysFromNow");
-
-            EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
-            eventCuratorAsyncTask.execute();
+        String mode = getArguments().getString("mode");
+        switch (Objects.requireNonNull(mode)) {
+            case "nearme":
+                String accessToken = getArguments().getString("accessToken");
+                String IID = getArguments().getString("IID");
+                String longitude = getArguments().getString("longitude");
+                String latitude = getArguments().getString("latitude");
+                String radius = getArguments().getString("radius");
+                String daysFromNow = getArguments().getString("daysFromNow");
+                EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
+                eventCuratorAsyncTask.execute();
+                break;
+            case "applink":
+                break;
+            case "discover":
+                break;
+            default:
+                Toast.makeText(getContext(), "721 launched in invalid mode", Toast.LENGTH_LONG).show();
         }
+
 
     }
 
@@ -147,7 +161,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 Card card = cardArrayList.get(index);
                 if (card instanceof EventCard) {
                     Intent i = new Intent(Intent.ACTION_SEND);
-                    i.putExtra(Intent.EXTRA_TEXT, ((EventCard) card).getEventHyperLink());
+                    i.putExtra(Intent.EXTRA_TEXT, "share721.appspot.com/event/" + ((EventCard) card).getEventSourceID());
                     i.setType("text/plain");
                     Intent shareIntent = Intent.createChooser(i, null);
                     startActivity(shareIntent);
@@ -181,6 +195,18 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
         initialise();
 
+        String mode = getArguments().getString("mode");
+        switch (Objects.requireNonNull(mode)) {
+            case "applink":
+                TextView tv = root.findViewById(R.id.no_more_events_tv);
+                tv.setText("To return to 721; click here");
+                tv.setOnClickListener(v -> {
+                    Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
+                    startActivity(i);
+                    getActivity().finish();
+                });
+                break;
+        }
 
         return root;
     }
@@ -307,7 +333,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     stringRequest = new StringRequest(Request.Method.POST, url,
                             response -> {
                                 // Display the first 500 characters of the response string.
-                                Log.v("SWIPE", "Successfully registered like dislike on " + eventCard.getName());
+                                Log.v("SWIPE", "Successfully registered like on " + eventCard.getName());
                             }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
@@ -546,12 +572,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                         filteredCards.add(e);
                                     }
                                 }
-                                // TODO cache events
                                 for (EventCard ec : filteredCards) {
                                     CacheDatabase.getInstance(dbAccessContext).eventCardDao().insert(ec);
                                     cardStackAdapter.getEvents().add(ec);
                                 }
-                                CacheDatabase.getInstance(dbAccessContext).close();
                                 return filteredCards;
                             }
 

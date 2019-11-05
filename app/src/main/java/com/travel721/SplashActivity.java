@@ -316,82 +316,79 @@ public abstract class SplashActivity extends Activity {
                 // Get access token
                 // POST REQUEST: Authenticate
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, API_ROOT_URL + "Users/login",
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
+                        response -> {
 
-                                try {
-                                    // Parse JSON and get access token
-                                    JSONObject jo = new JSONObject(response);
-                                    final String accessToken = String.valueOf(jo.get("id"));
-                                    // Encoded URL for profile search
+                            try {
+                                // Parse JSON and get access token
+                                JSONObject jo = new JSONObject(response);
+                                final String accessToken = String.valueOf(jo.get("id"));
+                                // Encoded URL for profile search
 
-                                    Log.v("API access Token ", accessToken);
-                                    Log.v("IID", finalIID);
-                                    Log.v("REQUEST", "Checking profile");
-                                    // GET REQUEST: Does profile exist?
-                                    StringRequest stringRequest1 = new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
-                                        try {
-                                            JSONArray profilesResponse = new JSONArray(response15);
+                                Log.v("API access Token ", accessToken);
+                                Log.v("IID", finalIID);
+                                Log.v("REQUEST", "Checking profile");
+                                // GET REQUEST: Does profile exist?
+                                StringRequest stringRequest1 = new StringRequest(Request.Method.GET, API_ROOT_URL + "profiles" + profileSearchURL(finalIID) + "&access_token=" + accessToken, response15 -> {
+                                    try {
+                                        JSONArray profilesResponse = new JSONArray(response15);
 
-                                            if (profilesResponse.isNull(0)) {
-                                                loadingTextView.setText("Registering with 721...");
-                                                // User does not exist. This condition definitely needs testing
-                                                Log.v("USERS", "User not found, creating...");
-                                                StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
+                                        if (profilesResponse.isNull(0)) {
+                                            loadingTextView.setText("Registering with 721...");
+                                            // User does not exist. This condition definitely needs testing
+                                            Log.v("USERS", "User not found, creating...");
+                                            StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
 
-                                                }) {
-                                                    @Override
-                                                    protected Map<String, String> getParams() {
-                                                        Map<String, String> map = new HashMap<>();
-                                                        map.put("profileId", finalIID);
-                                                        return map;
-                                                    }
-                                                };
-                                                stringRequest2.setRetryPolicy(splashRetryPolicy);
-                                                queue.add(stringRequest2);
-                                            } else {
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() {
+                                                    Map<String, String> map = new HashMap<>();
+                                                    map.put("profileId", finalIID);
+                                                    return map;
+                                                }
+                                            };
+                                            stringRequest2.setRetryPolicy(splashRetryPolicy);
+                                            queue.add(stringRequest2);
+                                        } else {
 
-                                            }
-                                            try {
-                                                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                                String city = address.get(0).getSubAdminArea();
-                                                loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
-                                            } catch (IOException e) {
-                                                loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));
-                                            }
-
-
-                                            //
-                                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                            intent.putExtra("IID", finalIID);
-                                            intent.putExtra("accessToken", accessToken);
-                                            intent.putExtra("radius", String.valueOf(radius));
-                                            intent.putExtra("daysfromnow", String.valueOf(daysFromNow));
-                                            intent.putExtra("longitude", String.valueOf(location.getLongitude()));
-                                            intent.putExtra("latitude", String.valueOf(location.getLatitude()));
-                                            startActivity(intent);
-                                            finish();
-                                            //
-
-                                        } catch (
-                                                JSONException e) {
-                                            e.printStackTrace();
-                                            SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
                                         }
-                                    }, error -> {
-                                        error.printStackTrace();
-                                        SplashActivity.this.splashErrorHandler(error.toString());
-                                    });
-                                    stringRequest1.setRetryPolicy(splashRetryPolicy);
-                                    queue.add(stringRequest1);
+                                        try {
+                                            List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                            String city = address.get(0).getSubAdminArea();
+                                            loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
+                                        } catch (IOException e) {
+                                            loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));
+                                        }
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
-                                }
 
+                                        //
+                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                        intent.putExtra("IID", finalIID);
+                                        intent.putExtra("accessToken", accessToken);
+                                        intent.putExtra("radius", String.valueOf(radius));
+                                        intent.putExtra("daysfromnow", String.valueOf(daysFromNow));
+                                        intent.putExtra("longitude", String.valueOf(location.getLongitude()));
+                                        intent.putExtra("latitude", String.valueOf(location.getLatitude()));
+                                        startActivity(intent);
+                                        finish();
+                                        //
+
+                                    } catch (
+                                            JSONException e) {
+                                        e.printStackTrace();
+                                        SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
+                                    }
+                                }, error -> {
+                                    error.printStackTrace();
+                                    SplashActivity.this.splashErrorHandler(error.toString());
+                                });
+                                stringRequest1.setRetryPolicy(splashRetryPolicy);
+                                queue.add(stringRequest1);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                SplashActivity.this.splashErrorHandler(e.getLocalizedMessage());
                             }
+
                         }, error -> {
                     error.printStackTrace();
                     splashErrorHandler(error.toString());

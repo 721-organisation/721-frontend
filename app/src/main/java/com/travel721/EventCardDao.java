@@ -10,6 +10,10 @@ import androidx.room.Query;
 
 import java.util.List;
 
+/**
+ * Room interface to accessing EventCards
+ * Provides compile-time safety for SQL queries
+ */
 @Dao
 public interface EventCardDao {
 

@@ -1,7 +1,6 @@
 package com.travel721;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -132,18 +131,12 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV.setText(ec.getSourceTag());
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
-            imageView.setBackgroundResource(R.drawable.loading_dots_animation);
 
-            // Get the background, which has been compiled to an AnimationDrawable object.
-            AnimationDrawable frameAnimation = (AnimationDrawable) imageView.getBackground();
 
-            // Start the animation (looped playback by default).
-            frameAnimation.start();
             final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
             GlideApp.with(imageView.getContext())
                     .load(ec.getImgURL())
                     .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
-                    .placeholder(frameAnimation)
                     .into(new CustomTarget<Drawable>() {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {

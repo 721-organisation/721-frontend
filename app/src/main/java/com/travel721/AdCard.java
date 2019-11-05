@@ -3,7 +3,10 @@ package com.travel721;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
+/**
+ * Special type of card to represent Ads
+ * @author Bhav
+ */
 public class AdCard extends Card implements Parcelable {
 
     public static final Creator<AdCard> CREATOR = new Creator<AdCard>() {
