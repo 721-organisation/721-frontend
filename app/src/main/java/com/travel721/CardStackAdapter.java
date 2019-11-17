@@ -20,6 +20,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -72,23 +73,30 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v;
         switch (viewType) {
             case 0:
-                v = inflater.inflate(R.layout.event_card_layout, parent, false);
-                return new ViewHolder(v);
+                return new ViewHolder(inflater.inflate(R.layout.event_card_layout, parent, false));
             case 1:
-                v = inflater.inflate(R.layout.feedback_card_layout, parent, false);
-                return new ViewHolder(v);
+                return new ViewHolder(inflater.inflate(R.layout.feedback_card_layout, parent, false));
             case 2:
-                v = inflater.inflate(R.layout.ad_card_layout, parent, false);
+                ViewHolder vh = new ViewHolder(inflater.inflate(R.layout.ad_card_layout, parent, false));
                 MobileAds.initialize(parent.getContext(), initializationStatus -> {
                 });
 
-                AdView mAdView = v.findViewById(R.id.adView);
+                AdView mAdView = vh.itemView.findViewById(R.id.adView);
                 AdRequest adRequest = new AdRequest.Builder().build();
+                mAdView.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(int i) {
+                        super.onAdFailedToLoad(i);
+                        getEvents().remove(vh.getAdapterPosition());
+                        notifyDataSetChanged();
+                    }
+
+                });
                 mAdView.loadAd(adRequest);
-                return new ViewHolder(v);
+
+                return vh;
         }
         // This should never happen
         return new ViewHolder(inflater.inflate(R.layout.event_card_layout, parent, false));

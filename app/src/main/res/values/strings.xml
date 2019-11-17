@@ -35,7 +35,7 @@
     <string name="event_provided_by_placeholder">Event provided by %s</string>
     <string name="geocoded_welcome">Loading the latest experiences in %s…</string>
     <string name="failed_geocoding_welcome">Welcome back to 721! Loading the latest experiences</string>
-    <string name="no_more_events">No more events in your area!</string>
+    <string name="loading_721_bgd_tv">Loading 721..</string>
     <string name="feedback_card_tagline">Enjoying using 721? Swipe to send us your feedback</string>
     <string name="get_started">Get Started</string>
     <string name="title_activity_main_tabbed">activity_main_tabbed</string>

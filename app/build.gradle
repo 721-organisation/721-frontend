@@ -36,10 +36,6 @@ android {
         targetCompatibility = '1.8'
     }
 
-
-    dynamicFeatures = [":instant721"]
-
-
 }
 
 dependencies {
@@ -49,7 +45,7 @@ dependencies {
     api 'com.google.android.material:material:1.0.0'
     api 'androidx.preference:preference:1.1.0'
     api 'androidx.cardview:cardview:1.0.0'
-    api 'com.google.gms:google-services:4.3.2'
+    api 'com.google.gms:google-services:4.3.3'
     api 'com.google.android.gms:play-services-maps:17.0.0'
     api 'com.google.firebase:firebase-core:17.2.1'
     implementation 'androidx.annotation:annotation:1.1.0'
@@ -62,7 +58,6 @@ dependencies {
     api 'jp.wasabeef:glide-transformations:4.0.1'
     api 'androidx.browser:browser:1.0.0'
     api 'androidx.palette:palette:1.0.0'
-    implementation 'androidx.annotation:annotation:1.1.0'
     api 'com.google.firebase:firebase-analytics:17.2.1'
     api 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     api 'androidx.viewpager2:viewpager2:1.0.0-rc01'

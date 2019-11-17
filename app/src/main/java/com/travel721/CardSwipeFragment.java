@@ -75,9 +75,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     private CardStackAdapter cardStackAdapter;
     private String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
     private RequestQueue queue;
-    private boolean buttonPushed = false;
     private LoadingFragment callingLoader;
-    private String access_token;
     // Keep a track of the CardView and it's adapter
     private CardStackView cardStackView;
     private CardStackLayoutManager cardStackLayoutManager;
@@ -191,14 +189,14 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardStackView = root.findViewById(R.id.card_stack_view);
 
         if (cardArrayList != null && cardArrayList.isEmpty())
-            root.findViewById(R.id.no_more_events_tv).setVisibility(View.VISIBLE);
+            root.findViewById(R.id.background_textview).setVisibility(View.VISIBLE);
 
         initialise();
 
         String mode = getArguments().getString("mode");
         switch (Objects.requireNonNull(mode)) {
             case "applink":
-                TextView tv = root.findViewById(R.id.no_more_events_tv);
+                TextView tv = root.findViewById(R.id.background_textview);
                 tv.setText("To return to 721; click here");
                 tv.setOnClickListener(v -> {
                     Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
@@ -263,7 +261,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public void onCardSwiped(Direction direction) {
         // Removes TSnackBar
         if (cardStackLayoutManager.getChildCount() == 0) {
-            TextView tv = root.findViewById(R.id.no_more_events_tv);
+            TextView tv = root.findViewById(R.id.background_textview);
             tv.setVisibility(View.VISIBLE);
         }
         // Gets the Card index
@@ -310,7 +308,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             Map<String, String> map = new HashMap<>();
                             map.put("swipe", "false");
                             map.put("eventSourceId", eventCard.getEventSourceID());
-                            map.put("profileId", getArguments().getString("fiid"));
+                            map.put("profileId", Objects.requireNonNull(getArguments()).getString("IID"));
                             return map;
                         }
                     };
@@ -340,7 +338,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             Map<String, String> map = new HashMap<>();
                             map.put("swipe", "true");
                             map.put("eventSourceId", eventCard.getEventSourceID());
-                            map.put("profileId", getArguments().getString("fiid"));
+                            map.put("profileId", Objects.requireNonNull(getArguments()).getString("IID"));
                             return map;
                         }
                     };
@@ -393,7 +391,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     }
 
     public void dislikesTopCard(View view) {
-        buttonPushed = true;
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Left)
                 .setDuration(SLIDE_ANIMATION_DURATION)
@@ -405,7 +402,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
 
     public void likesTopCard(View view) {
-        buttonPushed = true;
 
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
