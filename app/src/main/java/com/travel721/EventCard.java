@@ -13,9 +13,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @Entity
 public class EventCard extends Card implements Parcelable, Serializable, Comparable<EventCard> {
@@ -208,7 +210,17 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     }
 
     public String getFormattedDate() {
-        return formattedDate;
+        try {
+            DateFormat originalFormat = new SimpleDateFormat(dateFormatString, Locale.ENGLISH);
+            DateFormat targetFormat = new SimpleDateFormat("EEEE, MMM dd");
+            Date date = originalFormat.parse(formattedDate);
+            String formattedDate = targetFormat.format(date);
+
+            return formattedDate;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return formattedDate;
+        }
     }
 
     public void setFormattedDate(String formattedDate) {

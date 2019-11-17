@@ -267,7 +267,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         // Gets the Card index
         int index = cardStackLayoutManager.getTopPosition() - 1;
 //        int index = cardStackLayoutManager.getTopPosition();
-
+        if (getArguments().getString("mode").equals("applink")) {
+            cardStackView.setVisibility(View.GONE);
+            cardStackView.setVisibility(View.GONE);
+        }
 
         if (cardArrayList.get(index) instanceof EventCard) {
             EventCard eventCard = (EventCard) cardArrayList.get(index);
