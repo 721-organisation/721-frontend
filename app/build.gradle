@@ -35,7 +35,9 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    buildToolsVersion = '29.0.2'
 
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/layout/fragment'] } }
 }
 
 dependencies {
@@ -71,7 +73,7 @@ dependencies {
     // optional - RxJava support for Room
     api "androidx.room:room-rxjava2:$room_version"
     //    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "androidx.room:room-guava:$room_version"
+    api "androidx.room:room-guava:$room_version"
     // Test helpers
     api 'com.google.firebase:firebase-messaging:20.0.1'
     testImplementation "androidx.room:room-testing:$room_version"

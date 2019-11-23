@@ -15,6 +15,7 @@ public class Constants {
     /*
         The following items are not necessarily constants, but are ugly to keep inline
      */
+
     /**
      * Returns an encoded URL for Profile Search
      *
@@ -28,6 +29,7 @@ public class Constants {
     public static final String eventProfileLikedSearchFilter(String profileID) {
         return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%2C%22swipe%22%3Atrue%7D%7D";
     }
+
     public static final String eventProfileAllSearchFilter(String profileID) {
         return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%7D%7D";
     }
@@ -52,12 +54,11 @@ public class Constants {
                 return R.drawable.ic_overlay_navy;
             case 5:
                 return R.drawable.ic_overlay_pink;
-            case 6:
-                return R.drawable.ic_overlay_purple;
             case 7:
                 return R.drawable.ic_overlay_red;
             case 8:
                 return R.drawable.ic_overlay_teal;
+            case 6:
             default:
                 return R.drawable.ic_overlay_purple;
         }

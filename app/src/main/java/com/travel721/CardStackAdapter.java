@@ -24,6 +24,12 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.travel721.activity.EventMoreInfoActivity;
+import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.card.AdCard;
+import com.travel721.card.Card;
+import com.travel721.card.EventCard;
+import com.travel721.card.FeedbackCard;
 
 import java.util.List;
 
@@ -75,11 +81,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
             case 0:
-                return new ViewHolder(inflater.inflate(R.layout.event_card_layout, parent, false));
+                return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
             case 1:
-                return new ViewHolder(inflater.inflate(R.layout.feedback_card_layout, parent, false));
+                return new ViewHolder(inflater.inflate(R.layout.card_feedback, parent, false));
             case 2:
-                ViewHolder vh = new ViewHolder(inflater.inflate(R.layout.ad_card_layout, parent, false));
+                ViewHolder vh = new ViewHolder(inflater.inflate(R.layout.card_ad, parent, false));
                 MobileAds.initialize(parent.getContext(), initializationStatus -> {
                 });
 
@@ -99,7 +105,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 return vh;
         }
         // This should never happen
-        return new ViewHolder(inflater.inflate(R.layout.event_card_layout, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
     }
 
     /**

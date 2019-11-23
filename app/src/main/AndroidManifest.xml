@@ -20,26 +20,26 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <service
-            android:name=".FCMService"
+            android:name=".utility.MessagingService"
             android:enabled="true"
             android:exported="true"></service>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:label="@string/title_activity_main_tabbed"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".EventMoreInfoActivity"
+            android:name=".activity.EventMoreInfoActivity"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/Theme.AppCompat">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.travel721.MainActivity" />
+                android:value="com.travel721.activity.MainActivity" />
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -50,13 +50,13 @@
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:theme="@style/SplashTheme" />
         <activity
-            android:name=".UpdatedSettingsSplashActivity"
+            android:name=".activity.UpdatedSettingsSplashActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".OpenDeepLinkActivity"
+            android:name=".activity.OpenDeepLinkActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -104,7 +104,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InitialLoadSplashActivity"
+            android:name=".activity.InitialLoadSplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -112,10 +112,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ListLibrariesActivity" />
-        <activity android:name=".RateOnPlayActivity" />
+        <activity android:name=".activity.ListLibrariesActivity" />
+        <activity android:name=".activity.RateOnPlayActivity" />
         <activity
-            android:name=".TutorialActivity"
+            android:name=".activity.TutorialActivity"
             android:exported="true" /> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
