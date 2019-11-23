@@ -48,6 +48,7 @@
     <string name="no_local_events">No events in you area.</string>
     <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
     <string name="remove_event">Delete event?</string>
+    <string name="remove_event">Delete event?</string>
     <string name="delete">Delete</string>
 
     <string name="title_instant721">721 Instant</string>

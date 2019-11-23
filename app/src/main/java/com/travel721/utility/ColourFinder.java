@@ -1,4 +1,4 @@
-package com.travel721;
+package com.travel721.utility;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,6 +6,8 @@ import android.util.SparseIntArray;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
+import com.travel721.R;
 
 /**
  * This class is designed to match an overlay colour to a specified colour.
@@ -23,14 +25,6 @@ public class ColourFinder {
      * SVG/XML files. See /res/drawable/ic_overlay_*.xml
      * and /res/values/colors.xml for more insight.
      */
-//    public static int[] colourSwatch = {R.color.darkgreen5,
-//            R.color.bronze5,
-//            R.color.green5,
-//            R.color.navy5,
-//            R.color.pink5,
-//            R.color.purple5,
-//            R.color.red5,
-//            R.color.teal5};
     public static SparseIntArray colourSwatch() {
         SparseIntArray sparseIntArray = new SparseIntArray();
         sparseIntArray.put(R.color.darkgreen5, R.drawable.ic_overlay_dark_green);

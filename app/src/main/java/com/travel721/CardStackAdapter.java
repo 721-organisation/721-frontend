@@ -33,7 +33,7 @@ import com.travel721.card.FeedbackCard;
 
 import java.util.List;
 
-import static com.travel721.ColourFinder.getColourMatchedOverlay;
+import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
 import static com.travel721.Constants.getRandomOverlay;
 
 /**
