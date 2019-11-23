@@ -22,7 +22,7 @@ public class InitialLoadSplashActivity extends SplashActivity {
         super.onCreate(savedInstanceState);
 // Load the ImageView that will host the animation and
         // set its background to our AnimationDrawable XML resource.
-        ImageView img = (ImageView) findViewById(R.id.loading_dots);
+        ImageView img = findViewById(R.id.loading_dots);
         img.setBackgroundResource(R.drawable.loading_dots_animation);
 
         // Get the background, which has been compiled to an AnimationDrawable object.

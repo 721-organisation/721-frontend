@@ -38,7 +38,7 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         TextView textView = view.findViewById(R.id.status_text);
         textView.setText("Finding events near " + searchLocation);
         // set its background to our AnimationDrawable XML resource.
-        ImageView img = (ImageView) view.findViewById(R.id.loading_dots_anim);
+        ImageView img = view.findViewById(R.id.loading_dots_anim);
         img.setBackgroundResource(R.drawable.loading_dots_animation);
 
         // Get the background, which has been compiled to an AnimationDrawable object.

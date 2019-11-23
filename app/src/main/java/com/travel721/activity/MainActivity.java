@@ -12,6 +12,8 @@ import com.travel721.R;
 import com.travel721.fragment.LoadingNearMeFragment;
 import com.travel721.fragment.SelectLocationDiscoverFragment;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -20,8 +22,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_tabbed);
         String accessToken = getIntent().getStringExtra("accessToken");
         String iid = getIntent().getStringExtra("IID");
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        tabLayout.getTabAt(1).select();
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
         String longitude = getIntent().getStringExtra("longitude");
         String latitude = getIntent().getStringExtra("latitude");
         String radius = getIntent().getStringExtra("radius");
@@ -75,11 +77,5 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.v("PAUSED", "aef");
     }
 }

@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
@@ -30,16 +29,15 @@ import com.android.volley.toolbox.Volley;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.travel721.analytics.AnalyticsHelper;
-import com.travel721.eventcaching.CacheDatabase;
 import com.travel721.CardStackAdapter;
-import com.travel721.activity.EventMoreInfoActivity;
-import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.PageViewModel;
 import com.travel721.R;
+import com.travel721.activity.InitialLoadSplashActivity;
+import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.Card;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
+import com.travel721.eventcaching.CacheDatabase;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
 import com.yuyakaido.android.cardstackview.CardStackView;
@@ -66,11 +64,11 @@ import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-import static com.travel721.analytics.AnalyticsHelper.USER_NEGATIVE_FEEDBACK;
-import static com.travel721.analytics.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
+import static com.travel721.analytics.AnalyticsHelper.USER_NEGATIVE_FEEDBACK;
+import static com.travel721.analytics.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -161,7 +159,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 }
                 break;
             case "applink":
-                break;
             case "discover":
                 break;
             default:
@@ -176,11 +173,11 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        root = inflater.inflate(R.layout.fragment_event_swipe, container, false);
+        root = inflater.inflate(R.layout.fragment_card_swipe, container, false);
 
         AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.TEST_RELEASE_ANALYTICS_EVENT, null);
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.fragment_event_swipe);
+//        setContentView(R.layout.fragment_card_swipe);
 
 
         FloatingActionButton likeButton = root.findViewById(R.id.thumbupButton);
@@ -213,15 +210,15 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         if (callingLoader instanceof LoadingNearMeFragment) {
             filterButton.setOnClickListener(view -> {
                 FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags);
-                filterBottomSheetFragment.show(getFragmentManager(),
+                filterBottomSheetFragment.show(Objects.requireNonNull(getFragmentManager()),
                         "filter_sheet_fragment");
 
             });
         }
         if (callingLoader instanceof LoadingDiscoverFragment) {
             SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, getArguments().getString("accessToken"));
-            addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"));
+            addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
                     "discover_sheet_fragment");
         }
         cardStackView = root.findViewById(R.id.card_stack_view);
@@ -231,17 +228,15 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
         initialise();
 
-        String mode = getArguments().getString("mode");
-        switch (Objects.requireNonNull(mode)) {
-            case "applink":
-                TextView tv = root.findViewById(R.id.background_textview);
-                tv.setText("To return to 721; click here");
-                tv.setOnClickListener(v -> {
-                    Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
-                    startActivity(i);
-                    getActivity().finish();
-                });
-                break;
+        String mode = Objects.requireNonNull(getArguments()).getString("mode");
+        if ("applink".equals(Objects.requireNonNull(mode))) {
+            TextView tv = root.findViewById(R.id.background_textview);
+            tv.setText("To return to 721; click here");
+            tv.setOnClickListener(v -> {
+                Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
+                startActivity(i);
+                Objects.requireNonNull(getActivity()).finish();
+            });
         }
 
         return root;
@@ -277,9 +272,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         List<Direction> directions = new ArrayList<>();
         directions.add(Direction.Right);
         directions.add(Direction.Left);
-        directions.add(Direction.Bottom);
+        directions.add(Direction.Left);
         cardStackLayoutManager.setDirections(directions);
-        queue = Volley.newRequestQueue(getContext());
+        queue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
         // Create card stack adapter
         cardStackAdapter = new CardStackAdapter(cardArrayList);
 
@@ -291,7 +286,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public void onCardDragging(Direction direction, float ratio) {
         if (!snackShown) {
             snackShown = true;
-            Snackbar.make(cardStackView, "Pulldown on an event to show more information", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(cardStackView, getResources().getString(R.string.tap_to_see_more_info), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -305,7 +300,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         // Gets the Card index
         int index = cardStackLayoutManager.getTopPosition() - 1;
 //        int index = cardStackLayoutManager.getTopPosition();
-        if (getArguments().getString("mode").equals("applink")) {
+        if (Objects.requireNonNull(Objects.requireNonNull(getArguments()).getString("mode")).equals("applink")) {
             cardStackView.setVisibility(View.GONE);
             cardStackView.setVisibility(View.GONE);
         }
@@ -322,19 +317,20 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             snackbar.setActionTextColor(Color.WHITE);
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(Color.WHITE);
-            TextView textView = (TextView) snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
+            TextView textView = snackbarView.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text);
             textView.setTextColor(Color.WHITE);
             textView.setPadding(0, 50, 0, 50);
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setGravity(View.TEXT_ALIGNMENT_CENTER);
             textView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             textView.setTypeface(textView.getTypeface(), Typeface.BOLD);
+            final Runnable runnable = () -> CacheDatabase.getInstance(getContext()).eventCardDao().delete(eventCard);
             switch (direction) {
                 case Left:
                     snackbar.dismiss();
                     String[] negative_terms = getResources().getStringArray(R.array.negative_terms);
                     textView.setText(getRandom(negative_terms));
-                    textView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                    textView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorAccent));
                     snackbar.show();
                     AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_SWIPED_LEFT, null);
                     // Dislikes
@@ -345,7 +341,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                 Log.v("SWIPE", "Successfully registered dislike on " + eventCard.getName());
                             }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                         @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
+                        protected Map<String, String> getParams() {
                             Map<String, String> map = new HashMap<>();
                             map.put("swipe", "false");
                             map.put("eventSourceId", eventCard.getEventSourceID());
@@ -353,7 +349,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             return map;
                         }
                     };
-                    new Thread(() -> CacheDatabase.getInstance(getContext()).eventCardDao().delete(eventCard)).start();
+                    new Thread(runnable).start();
                     // Add the request to the RequestQueue.
                     stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
                     queue.add(stringRequest);
@@ -375,7 +371,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                 Log.v("SWIPE", "Successfully registered like on " + eventCard.getName());
                             }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
                         @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
+                        protected Map<String, String> getParams() {
                             Map<String, String> map = new HashMap<>();
                             map.put("swipe", "true");
                             map.put("eventSourceId", eventCard.getEventSourceID());
@@ -383,18 +379,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             return map;
                         }
                     };
-                    new Thread(() -> CacheDatabase.getInstance(getContext()).eventCardDao().delete(eventCard)).start();                    // Add the request to the RequestQueue.
+                    new Thread(runnable).start();                    // Add the request to the RequestQueue.
                     stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
                     queue.add(stringRequest);
                     // TODO make a request to the API
-                    break;
-                case Bottom:
-                    AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_SWIPED_DOWN, null);
-                    Intent i = new Intent(getContext(), EventMoreInfoActivity.class);
-                    i.putExtra("eventCard", cardArrayList.get(cardStackLayoutManager.getTopPosition() - 1));
-                    startActivity(i);
-//                    overridePendingTransition(R.anim.slide_in_from_top, 0);
-
                     break;
             }
         }
@@ -512,7 +500,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         @Override
         protected void onPostExecute(List<EventCard> eventCards) {
             super.onPostExecute(eventCards);
-            updateCards();
+            if (!eventCards.isEmpty()) updateCards();
         }
 
         @Override
@@ -603,15 +591,18 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                     String eventID = jsonObject.getString("eventSourceId");
                                     alreadySwipedIDs.add(eventID);
                                 }
+
                                 ArrayList<EventCard> filteredCards = new ArrayList<>();
                                 for (EventCard e : eventsFound) {
-                                    if (!alreadySwipedIDs.contains(e.getEventSourceID())) {
+                                    if (!alreadySwipedIDs.contains(e.getEventSourceID()) && !cardStackAdapter.getEvents().contains(e)) {
                                         filteredCards.add(e);
                                     }
                                 }
+
                                 for (EventCard ec : filteredCards) {
                                     CacheDatabase.getInstance(dbAccessContext).eventCardDao().insert(ec);
                                     cardStackAdapter.getEvents().add(ec);
+                                    Log.v("ASYNC", "added card to stack");
                                 }
                                 return filteredCards;
                             }

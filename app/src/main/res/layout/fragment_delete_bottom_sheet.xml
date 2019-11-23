@@ -16,6 +16,7 @@
         android:textAlignment="center"
         android:textSize="30sp"
         app:drawableTint="#8B8B8B" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -44,32 +45,33 @@
     <View
         android:id="@+id/divider2"
         android:layout_width="match_parent"
+        android:layout_height="1dp"
         android:layout_marginBottom="10dp"
-        android:background="?android:attr/listDivider"
-        android:layout_height="1dp" />
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_delete"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@android:string/cancel" />
+            android:backgroundTint="@color/white"
+            android:text="@android:string/cancel"
+            android:textColor="@color/colorAccent" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/proceed_delete"
-
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@drawable/custom_button"
+            android:backgroundTint="@color/colorAccent"
             android:text="@string/delete"
-            android:textColor="@android:color/white" />
+            android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

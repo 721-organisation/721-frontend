@@ -51,6 +51,7 @@ import com.travel721.R;
 import com.travel721.error.SplashScreenLoadFailure;
 import com.travel721.card.EventCard;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +65,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.REQUEST_CHECK_LOCATION_SETTINGS;
@@ -99,26 +101,23 @@ public abstract class SplashActivity extends Activity {
      * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, @NotNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // This needs to be kept as a switch statement in case the API changes
-        switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSIONS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    // Location permission was granted, yay!
-                    loadingTextView.setText("Thanks! Getting your location now...");
-                    Log.v("DOLOAD", "Called from onRPR");
-                    doLoad();
-                } else {
-                    // Location permission denied, boo!
-                    // Lazy way of asking again
-                    Intent intent = getIntent();
-                    finish();
-                    startActivity(intent);
-                }
+        if (requestCode == REQUEST_LOCATION_PERMISSIONS) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                // Location permission was granted, yay!
+                loadingTextView.setText("Thanks! Getting your location now...");
+                Log.v("DOLOAD", "Called from onRPR");
+                doLoad();
+            } else {
+                // Location permission denied, boo!
+                // Lazy way of asking again
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
             }
             // other 'case' lines to check for other permissions this app might request go here.
         }
@@ -264,7 +263,7 @@ public abstract class SplashActivity extends Activity {
             fusedLocationClient.requestLocationUpdates(mLocationRequestHighAccuracy,
                     locationCallback,
                     null);
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
+            Objects.requireNonNull(locationManager).requestSingleUpdate(LocationManager.GPS_PROVIDER, locationListener, null);
         }
     }
 
@@ -308,7 +307,7 @@ public abstract class SplashActivity extends Activity {
                 String p = pbr.readLine();
                 final ArrayList<EventCard> eventsFound = new ArrayList<>();
                 final RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                final String finalIID = task.getResult().getToken();
+                final String finalIID = Objects.requireNonNull(task.getResult()).getToken();
                 Log.v("FIID", finalIID);
                 // Get an access token for the API
 
@@ -351,8 +350,6 @@ public abstract class SplashActivity extends Activity {
                                             };
                                             stringRequest2.setRetryPolicy(splashRetryPolicy);
                                             queue.add(stringRequest2);
-                                        } else {
-
                                         }
                                         try {
                                             List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);

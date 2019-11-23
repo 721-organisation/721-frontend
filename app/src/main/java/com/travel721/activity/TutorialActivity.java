@@ -16,6 +16,8 @@ import com.travel721.R;
 import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.fragment.TutorialSlideFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 
 public class TutorialActivity extends FragmentActivity {
     private static final int NUM_PAGES = 3;
@@ -81,6 +83,7 @@ public class TutorialActivity extends FragmentActivity {
             super(fa);
         }
 
+        @NotNull
         @Override
         public Fragment createFragment(int position) {
             return new TutorialSlideFragment(position);

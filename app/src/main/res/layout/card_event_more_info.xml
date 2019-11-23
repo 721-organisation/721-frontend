@@ -14,12 +14,12 @@
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="1"
         map:layout_constraintBottom_toTopOf="@+id/guideline"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        map:liteMode="true" />
+         />
 
 
     <TextView
@@ -68,13 +68,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        map:layout_constraintGuide_percent="0.5" />
+        map:layout_constraintGuide_percent="0.35" />
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         map:layout_constraintBottom_toTopOf="@+id/eventHyperlink"
@@ -88,13 +88,61 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/eventMoreInfoName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="15dp"
+                android:text="Event Name"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                map:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/eventMoreInfoLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Event Location"
+                android:textStyle="bold"
+                map:layout_constraintStart_toStartOf="parent"
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoName" />
+
+            <TextView
+                android:id="@+id/eventMoreInfoDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
+                android:text="Event Date"
+                map:layout_constraintStart_toStartOf="parent"
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoLocation" />
+
+            <TextView
+                android:id="@+id/eventMoreInfoTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Event Time"
+                map:layout_constraintStart_toEndOf="@+id/eventMoreInfoDate"
+                map:layout_constraintTop_toTopOf="@+id/eventMoreInfoDate" />
+
+            <TextView
+                android:id="@+id/eventMoreInfoPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="Event Price"
+                map:layout_constraintStart_toStartOf="parent"
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoDate" />
+
+            <TextView
                 android:id="@+id/eventLongDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:padding="10dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/event_info_placeholder"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#FF000000"
@@ -102,5 +150,7 @@
                 tools:text="Insert Event Long Description Here" />
         </LinearLayout>
     </ScrollView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

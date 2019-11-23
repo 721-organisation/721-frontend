@@ -21,6 +21,7 @@ import com.google.android.material.chip.ChipGroup;
 import com.travel721.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment {
     private LoadingFragment callingLoader;
@@ -30,7 +31,7 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
     public static FilterBottomSheetFragment newInstance(LoadingFragment callingLoader, ArrayList<String> tags) {
         FilterBottomSheetFragment filterBottomSheetFragment = new FilterBottomSheetFragment();
         filterBottomSheetFragment.callingLoader = callingLoader;
-        filterBottomSheetFragment.tags = tags;
+        FilterBottomSheetFragment.tags = tags;
 
         return filterBottomSheetFragment;
     }
@@ -40,22 +41,18 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_filter_bottom_sheet, null);
         tagsToFilterBy = new ArrayList<>();
-        getDialog().setOnShowListener(dialog -> {
+        Objects.requireNonNull(getDialog()).setOnShowListener(dialog -> {
             BottomSheetDialog d = (BottomSheetDialog) dialog;
-            FrameLayout bottomSheet = (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-            BottomSheetBehavior.from(bottomSheet)
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(Objects.requireNonNull(bottomSheet))
                     .setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 //        getFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment()).commit();
         getChildFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment(callingLoader)).commit();
-        root.findViewById(R.id.filterTitle).setOnClickListener(view -> {
-            dismiss();
-        });
-        root.findViewById(R.id.filterCloseButton).setOnClickListener(view -> {
-            dismiss();
-        });
+        root.findViewById(R.id.filterTitle).setOnClickListener(view -> dismiss());
+        root.findViewById(R.id.filterCloseButton).setOnClickListener(view -> dismiss());
         root.findViewById(R.id.filter_ok_button).setOnClickListener(view -> {
-            ChipGroup chipGroup = getView().findViewById(R.id.near_me_filters_chip_group);
+            ChipGroup chipGroup = Objects.requireNonNull(getView()).findViewById(R.id.near_me_filters_chip_group);
             for (int i : chipGroup.getCheckedChipIds()) {
                 tagsToFilterBy.add(tags.get(i));
             }
@@ -65,7 +62,7 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
         chipGroup.setChipSpacing(10);
 
         for (int i = 0; i < tags.size(); i++) {
-            Chip chip = new Chip(getContext());
+            Chip chip = new Chip(Objects.requireNonNull(getContext()));
             chip.setId(i);
             chip.setTag(i);
             chip.setChipBackgroundColor(ResourcesCompat.getColorStateList(getResources(), R.color.chip_selector_state_list, null));
@@ -107,12 +104,12 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
                     ((LoadingNearMeFragment) callingLoader).radius = newradius;
                     ((LoadingNearMeFragment) callingLoader).daysFromNow = newdays;
                     ((LoadingNearMeFragment) callingLoader).tagsToFilterBy = tagsToFilterBy;
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, LoadingNearMeFragment.clone((LoadingNearMeFragment) callingLoader)).commit();
+                    Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, LoadingNearMeFragment.clone((LoadingNearMeFragment) callingLoader)).commit();
                 }
                 if (callingLoader instanceof LoadingDiscoverFragment) {
                     ((LoadingDiscoverFragment) callingLoader).radius = newradius;
                     ((LoadingDiscoverFragment) callingLoader).daysFromNow = newdays;
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, LoadingDiscoverFragment.clone((LoadingDiscoverFragment) callingLoader)).commit();
+                    Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, LoadingDiscoverFragment.clone((LoadingDiscoverFragment) callingLoader)).commit();
 
                 }
 

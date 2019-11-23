@@ -8,7 +8,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,6 +30,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.travel721.Constants.API_ROOT_URL;
 
@@ -47,12 +47,12 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
         String appLinkAction = appLinkIntent.getAction();
         Uri appLinkData = appLinkIntent.getData();
         setContentView(R.layout.blank);
-        String eventIdToDeepLink = appLinkData.getPathSegments().get(appLinkData.getPathSegments().size() - 1);
+        String eventIdToDeepLink = Objects.requireNonNull(appLinkData).getPathSegments().get(appLinkData.getPathSegments().size() - 1);
         Log.d("EID", "onCreate: EIDTDL + " + eventIdToDeepLink);
         requestQueue = Volley.newRequestQueue(this);
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
-            final String finalIID = task.getResult().getToken();
+            final String finalIID = Objects.requireNonNull(task.getResult()).getToken();
 
             try {
                 InputStream uis = getResources().openRawResource(R.raw.gravestones);
@@ -95,7 +95,7 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
 
                                 }) {
                                     @Override
-                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                    public Map<String, String> getHeaders() {
                                         HashMap<String, String> reqHeaders = new HashMap<>();
                                         reqHeaders.put("content-type", "application/json; charset=utf-8");
                                         return reqHeaders;

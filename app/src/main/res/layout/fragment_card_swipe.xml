@@ -34,6 +34,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/thumbupButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -43,14 +44,17 @@
         android:layout_marginBottom="30dp"
         android:tint="#00FF00"
         app:backgroundTint="#FFFFFF"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:srcCompat="@drawable/ic_done"
+        app:tint="#00FF00"
         tools:layout_conversion_wrapHeight="147"
         tools:layout_conversion_wrapWidth="147" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/thumbdownButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -59,20 +63,23 @@
         android:layout_marginBottom="30dp"
         android:layout_toStartOf="@+id/thumbupButton"
         app:backgroundTint="#ffff"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:srcCompat="@drawable/ic_close"
+        app:tint="#FF0000"
         tools:layout_conversion_wrapHeight="147"
         tools:layout_conversion_wrapWidth="147" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/shareEventButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
-        android:clickable="true"
         app:backgroundTint="#ffff"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.7"
@@ -81,17 +88,19 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/filterButton"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="28dp"
         android:clickable="true"
+        android:focusable="true"
         app:backgroundTint="#ffff"
+        app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/thumbdownButton"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_filter"
-        android:focusable="true" />
+        app:srcCompat="@drawable/ic_filter" />
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack_view"
@@ -103,6 +112,7 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/thumbdownButton"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

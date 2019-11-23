@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <ImageView
@@ -37,7 +38,7 @@
         android:layout_margin="10dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="Enter a Town, City or Region name"
+        android:hint="@string/discover_hint"
         android:inputType="textPersonName" />
 
     <TextView
@@ -46,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:padding="5dp"
-        android:text="@string/up_to_days_from_today"
+        tools:text="Up to n days from today"
         android:textAlignment="center" />
 
     <SeekBar
@@ -67,13 +68,13 @@
         android:foregroundGravity="center"
         android:gravity="center"
         android:padding="5dp"
-        android:text="@string/search_x_miles" />
+        tools:text="Search n miles away" />
 
     <SeekBar
         android:id="@+id/radiusSeekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="10"
+        android:max="9"
         android:padding="5dp"
         android:progressTint="@color/colorAccent"
         android:thumbTint="@color/colorAccent"
@@ -90,7 +91,7 @@
         android:gravity="center"
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
-        android:text="Discover Now"
+        android:text="@string/discover_button"
         android:textColor="#FFFFFF" />
 
 </LinearLayout>

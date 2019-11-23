@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.travel721.ItemClickListener;
 import com.travel721.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ListLibrariesActivity extends AppCompatActivity implements ItemClickListener {
     MyRecyclerViewAdapter adapter;
 
@@ -54,8 +56,10 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
         }
 
         // inflates the row layout from xml when needed
+
+        @NotNull
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
             View view = mInflater.inflate(R.layout.item_third_party_library, parent, false);
             return new ViewHolder(view);
         }

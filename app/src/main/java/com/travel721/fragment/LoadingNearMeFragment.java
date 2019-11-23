@@ -17,6 +17,7 @@ import com.travel721.eventcaching.CacheDatabase;
 import com.travel721.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LoadingNearMeFragment extends LoadingFragment {
     public static final String LOADING_NEAR_ME_REQUEST_TAG = "LOADING_NEAR_ME_REQUEST_TAG";
@@ -75,7 +76,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
             bundle.putString("daysFromNow", daysFromNow);
             bundle.putParcelableArrayList("events", eventCardList);
             Log.v("TEST", "Swapping fragments... ");
-            getFragmentManager().beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
+            Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
         }).start();
         return view;
     }

@@ -9,6 +9,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 @Entity
 public class EventCard extends Card implements Parcelable, Serializable, Comparable<EventCard> {
@@ -35,6 +37,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         }
     };
     public String name;
+    @SuppressWarnings("NullableProblems")
     @NonNull
     @PrimaryKey
     public String eventSourceID;
@@ -55,7 +58,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
 
     protected EventCard(Parcel in) {
         name = in.readString();
-        eventSourceID = in.readString();
+        eventSourceID = Objects.requireNonNull(in.readString());
         venueName = in.readString();
         latitude = in.readString();
         longitude = in.readString();
@@ -99,7 +102,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     private void setTags(String tag) {
         try {
             JSONArray jsonArray = new JSONArray(tag);
-            ArrayList<String> listdata = new ArrayList<String>();
+            ArrayList<String> listdata = new ArrayList<>();
             for (int i = 0; i < jsonArray.length(); i++) {
                 listdata.add(jsonArray.getString(i));
             }
@@ -135,19 +138,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public boolean equals(Object obj) {
         if (obj instanceof EventCard) {
             EventCard eventCard = (EventCard) obj;
-            return
-                    this.name.equals(eventCard.name) &&
-                            this.eventSourceID.equals(eventCard.eventSourceID) &&
-                            this.venueName.equals(eventCard.venueName) &&
-                            this.latitude.equals(eventCard.latitude) &&
-                            this.longitude.equals(eventCard.longitude) &&
-                            this.imgURL.equals(eventCard.imgURL) &&
-                            this.eventHyperLink.equals(eventCard.eventHyperLink) &&
-                            this.formattedDate.equals(eventCard.formattedDate) &&
-                            this.minimumAge.equals(eventCard.minimumAge) &&
-                            this.price.equals(eventCard.price) &&
-                            this.description.equals(eventCard.description) &&
-                            this.sourceTag.equals(eventCard.sourceTag);
+            return this.eventSourceID.equals(eventCard.eventSourceID);
         } else {
             return false;
         }
@@ -179,11 +170,12 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         this.name = name;
     }
 
+    @NotNull
     public String getEventSourceID() {
         return eventSourceID;
     }
 
-    public void setEventSourceID(String eventSourceID) {
+    public void setEventSourceID(@NotNull String eventSourceID) {
         this.eventSourceID = eventSourceID;
     }
 
@@ -212,7 +204,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             if (formattedDate.equals(currentDate)) {
                 return "Today";
             } else {
-                return new SimpleDateFormat("EEEE").format(realDateOfEvent);
+                return new SimpleDateFormat("EEEE").format(Objects.requireNonNull(realDateOfEvent));
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -224,7 +216,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         try {
             if (getDayOfWeek().equals("Today")) return "Today";
             Date realDateOfEvent = new SimpleDateFormat(dateFormatString).parse(formattedDate);
-            return new SimpleDateFormat("EEE, MMM d").format(realDateOfEvent);
+            return new SimpleDateFormat("EEE, MMM d").format(Objects.requireNonNull(realDateOfEvent));
         } catch (ParseException e) {
             e.printStackTrace();
             return "";
@@ -236,9 +228,8 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             DateFormat originalFormat = new SimpleDateFormat(dateFormatString, Locale.ENGLISH);
             DateFormat targetFormat = new SimpleDateFormat("EEEE, MMM dd");
             Date date = originalFormat.parse(formattedDate);
-            String formattedDate = targetFormat.format(date);
 
-            return formattedDate;
+            return targetFormat.format(Objects.requireNonNull(date));
         } catch (ParseException e) {
             e.printStackTrace();
             return formattedDate;
@@ -324,7 +315,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             Date dateOfThis = new SimpleDateFormat(dateFormatString).parse(formattedDate);
             Date dateOfTo = new SimpleDateFormat(dateFormatString).parse(eventCard.formattedDate);
 
-            return dateOfThis.compareTo(dateOfTo);
+            return Objects.requireNonNull(dateOfThis).compareTo(dateOfTo);
         } catch (ParseException e) {
             e.printStackTrace();
             return 0;

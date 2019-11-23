@@ -18,11 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_721_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="@xml/backup_descriptor">
         <service
             android:name=".utility.MessagingService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".activity.MainActivity"
@@ -116,7 +117,8 @@
         <activity android:name=".activity.RateOnPlayActivity" />
         <activity
             android:name=".activity.TutorialActivity"
-            android:exported="true" /> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+            android:exported="true"
+            android:theme="@style/SplashTheme" /> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5100184739122195~6203900445" />

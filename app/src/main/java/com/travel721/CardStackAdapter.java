@@ -3,6 +3,7 @@ package com.travel721;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,18 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.card.MaterialCardView;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
@@ -32,9 +36,10 @@ import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
 import static com.travel721.Constants.getRandomOverlay;
+import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
 
 /**
  * This is the adapter for the Event Card
@@ -142,23 +147,46 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV = v.findViewById(R.id.eventPrice);
             currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
             currTV = v.findViewById(R.id.eventSourceLabel);
+            MaterialCardView mcv = (MaterialCardView) v;
+            if (ec.getSourceTag().equals("BUSINESS")) {
+                mcv.setStrokeColor(v.getResources().getColor(R.color.gold));
+                mcv.setStrokeWidth(5);
+            }else{
+                mcv.setStrokeWidth(0);
+            }
             currTV.setText(ec.getSourceTag());
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
-
+            imageView.setImageDrawable(null);
 
             final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
-            GlideApp.with(imageView.getContext())
+            CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
+            circularProgressDrawable.setStrokeWidth(15f);
+            circularProgressDrawable.setCenterRadius(90f);
+            circularProgressDrawable.start();
+
+            Log.v("Glide", ec.getImgURL());
+            Glide.with(v.getContext())
                     .load(ec.getImgURL())
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(25)))
+                    .placeholder(circularProgressDrawable)
+                    .signature(new ObjectKey(ec.getEventSourceID()))
+                    .transition(DrawableTransitionOptions.withCrossFade(300))
+                    .error(Glide.with(imageView).load(R.drawable.ic_broken_img_bmp))
                     .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onLoadStarted(@Nullable Drawable placeholder) {
+                            super.onLoadStarted(placeholder);
+                            imageView.setImageDrawable(circularProgressDrawable);
+                        }
+
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             imageView.setImageDrawable(resource);
+
                             // Extract a colour from the image to set the overlay with
                             Palette.from(((BitmapDrawable) resource).getBitmap()).generate(p -> {
                                 int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
-                                int drawable = getColourMatchedOverlay(p.getDominantColor(defaultColour), overlayImageView.getContext());
+                                int drawable = getColourMatchedOverlay(Objects.requireNonNull(p).getDominantColor(defaultColour), overlayImageView.getContext());
                                 Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
                                 overlayImageView.setImageDrawable(overlayDrawable);
                             });
@@ -169,8 +197,10 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                             // Unnecessary but required
                         }
                     });
+
             ImageView iv = v.findViewById(R.id.overlayImageView);
             iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
+
         }
     }
 

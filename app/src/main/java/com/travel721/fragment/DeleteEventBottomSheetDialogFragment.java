@@ -20,14 +20,15 @@ import com.travel721.R;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.travel721.Constants.API_ROOT_URL;
 
 public class DeleteEventBottomSheetDialogFragment extends
         RoundedBottomSheetDialogFragment {
-    String eventProfileId;
-    String eventName;
-    String accessToken;
+    private String eventProfileId;
+    private String eventName;
+    private String accessToken;
 
     public static DeleteEventBottomSheetDialogFragment newInstance(String eventProfileId, String eventName, String accessToken) {
         DeleteEventBottomSheetDialogFragment deleteEventBottomSheetDialogFragment = new DeleteEventBottomSheetDialogFragment();
@@ -44,15 +45,13 @@ public class DeleteEventBottomSheetDialogFragment extends
         TextView eventTitle = v.findViewById(R.id.delEventTitle);
         eventTitle.setText(eventName);
         Button cancel = v.findViewById(R.id.cancel_delete);
-        cancel.setOnClickListener(view -> {
-            dismiss();
-        });
+        cancel.setOnClickListener(view -> dismiss());
         Button delete = v.findViewById(R.id.proceed_delete);
         delete.setOnClickListener(view -> {
-            RequestQueue queue = Volley.newRequestQueue(getContext());
+            RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
             StringRequest stringRequest = new StringRequest(Request.Method.DELETE, API_ROOT_URL + "eventProfiles/" + eventProfileId + "?access_token=" + accessToken, response -> {
                 Toast.makeText(getContext(), "Successfully deleted event " + eventName + ".", Toast.LENGTH_SHORT).show();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, My721Fragment.newInstance(accessToken)).commit();
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, My721Fragment.newInstance(accessToken)).commit();
                 dismiss();
             }, error -> {
                 Toast.makeText(getContext(), "There was an error while deleting that event. Please try again later.", Toast.LENGTH_SHORT).show();

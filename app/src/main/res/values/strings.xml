@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">721</string>
-    <string name="loading_events_tip">Things to do in 48 hrs</string>
     <string name="event_title_placeholder">This is a sample event</string>
-    <string name="event_line_one">Insert Something Here</string>
-    <string name="swipe_up_to_dismiss">Swipe up to dismiss</string>
-    <string name="event_image_placeholder_text">Event Image</string>
     <string name="event_info_placeholder">Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here, Insert some extra event information text here,</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -42,12 +38,17 @@
     <string name="near_me_tab">Near Me</string>
     <string name="discover_tab">Discover</string>
     <string name="my_721_tab">My 721</string>
-    <string name="up_to_days_from_today">Up to %1$d day(s) from today</string>
-    <string name="search_x_miles">Search %1$d mile(s)</string>
+    <plurals name="up_to_days_from_today">
+        <item quantity="one">Up to %1$d day from today</item>
+        <item quantity="other">Up to %1$d days from today</item>
+    </plurals>
+    <plurals name="search_x_miles">
+        <item quantity="one">Search %1$d mile</item>
+        <item quantity="other">Search %1$d miles</item>
+    </plurals>
     <string name="no_events_discovered">We couldn\'t discover any events there! Double check spelling and radius, and please try again.</string>
     <string name="no_local_events">No events in you area.</string>
     <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
-    <string name="remove_event">Delete event?</string>
     <string name="remove_event">Delete event?</string>
     <string name="delete">Delete</string>
 
@@ -61,6 +62,9 @@
     <string name="popular_events">Popular Events</string>
     <string name="filters">Filters</string>
     <string name="google_maps_key" />
+    <string name="discover_hint">Enter a Town, City or Region name</string>
+    <string name="discover_button">Discover Now</string>
+    <string name="tap_to_see_more_info">Tap on an event to show more information</string>
     <string-array name="libraries">
         <item>Material Components for Android, by Google, under the Apache 2.0 License</item>
         <item>GMS Google Services, license unknown</item>

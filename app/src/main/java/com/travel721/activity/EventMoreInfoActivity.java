@@ -19,8 +19,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.R;
+import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.EventCard;
 
 public class EventMoreInfoActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -61,6 +61,16 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         tv.setText(eventCard.getDescription());
         tv = findViewById(R.id.eventProvidedBy);
         tv.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
+        tv = findViewById(R.id.eventMoreInfoDate);
+        tv.setText(eventCard.getFormattedDate());
+        tv = findViewById(R.id.eventMoreInfoTime);
+        tv.setText(eventCard.getTime());
+        tv = findViewById(R.id.eventMoreInfoLocation);
+        tv.setText(eventCard.getVenueName());
+        tv = findViewById(R.id.eventMoreInfoName);
+        tv.setText(eventCard.getName());
+        tv = findViewById(R.id.eventMoreInfoPrice);
+        tv.setText(eventCard.getPrice());
     }
 
     private int _yDelta;
@@ -86,7 +96,6 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                break;
             case MotionEvent.ACTION_POINTER_UP:
                 break;
             case MotionEvent.ACTION_MOVE:
