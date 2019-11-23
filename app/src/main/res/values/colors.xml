@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#FE6060</color>
     <color name="colorPrimaryDark">#DF5151</color>
+    <color name="colorPrimaryEvenDarker">#A53C3C</color>
     <color name="colorAccent">#FE6060</color>
     <color name="darkgreen6">#2D876E</color>
     <color name="bronze6">#9B813A</color>
@@ -19,4 +20,5 @@
     <color name="purple5">#4F31B3</color>
     <color name="red5">#E54747</color>
     <color name="teal5">#83AAB3</color>
+    <color name="light_gray">#E0E0E0</color>
 </resources>

@@ -14,9 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class LoadingNearMeFragment extends LoadingFragment {
     public static final String LOADING_NEAR_ME_REQUEST_TAG = "LOADING_NEAR_ME_REQUEST_TAG";
+    public volatile ArrayList<String> tagsToFilterBy;
     String accessToken;
     String IID;
     String longitude;
@@ -26,7 +28,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
     ArrayList<? extends Parcelable> eventCardList = new ArrayList<>();
 
     // This is where to make the bundle info
-    public static LoadingNearMeFragment newInstance(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow) {
+    public static LoadingNearMeFragment newInstance(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow, ArrayList<String> tagsToFilterBy) {
         LoadingNearMeFragment fragment = new LoadingNearMeFragment();
         fragment.accessToken = accessToken;
         fragment.IID = IID;
@@ -34,6 +36,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
         fragment.latitude = latitude;
         fragment.radius = radius;
         fragment.daysFromNow = daysFromNow;
+        fragment.tagsToFilterBy = tagsToFilterBy;
         return fragment;
     }
 
@@ -58,9 +61,10 @@ public class LoadingNearMeFragment extends LoadingFragment {
         statusText.setText("Loading cached events..");
         new Thread(() -> {
             eventCardList = (ArrayList<? extends Parcelable>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
+
             Bundle bundle = new Bundle();
             bundle.putString("mode", "nearme");
-
+            bundle.putStringArrayList("tagsToFilterBy", tagsToFilterBy);
             bundle.putString("accessToken", accessToken);
             bundle.putString("IID", IID);
             bundle.putString("longitude", longitude);
@@ -80,7 +84,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
     }
 
     public static LoadingNearMeFragment clone(LoadingNearMeFragment toClone) {
-        return LoadingNearMeFragment.newInstance(toClone.accessToken, toClone.IID, toClone.longitude, toClone.latitude, toClone.radius, toClone.daysFromNow);
+        return LoadingNearMeFragment.newInstance(toClone.accessToken, toClone.IID, toClone.longitude, toClone.latitude, toClone.radius, toClone.daysFromNow, toClone.tagsToFilterBy);
     }
 
 

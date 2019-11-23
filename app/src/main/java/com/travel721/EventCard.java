@@ -9,6 +9,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,7 +17,9 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 @Entity
@@ -36,6 +39,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     @NonNull
     @PrimaryKey
     public String eventSourceID;
+    public ArrayList<String> tags;
     public String venueName;
     public String latitude;
     public String longitude;
@@ -64,6 +68,9 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         price = in.readString();
         description = in.readString();
         sourceTag = in.readString();
+        tags = new ArrayList<>();
+        in.readList(tags, String.class.getClassLoader());
+
     }
 
     public EventCard() {
@@ -86,7 +93,22 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         eventCard.setMinimumAge(checkHasAndReturnData(jo, "minAge", eventCard.getSourceTag().toLowerCase()));
         eventCard.setPrice(checkHasAndReturnData(jo, "price", eventCard.getSourceTag().toLowerCase()));
         eventCard.setDescription(checkHasAndReturnData(jo, "description", eventCard.getSourceTag().toLowerCase()));
+        eventCard.setTags(checkHasAndReturnData(jo, "tag", eventCard.getSourceTag().toLowerCase()));
         return eventCard;
+    }
+
+    private void setTags(String tag) {
+        try {
+            JSONArray jsonArray = new JSONArray(tag);
+            ArrayList<String> listdata = new ArrayList<String>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                listdata.add(jsonArray.getString(i));
+            }
+            this.tags = listdata;
+        } catch (JSONException e) {
+            this.tags = new ArrayList<>();
+        }
+
     }
 
     private static String checkHasAndReturnData(JSONObject jo, String prop, String eventSource) throws JSONException {
@@ -147,6 +169,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         parcel.writeString(price);
         parcel.writeString(description);
         parcel.writeString(sourceTag);
+        parcel.writeList(tags);
     }
 
     public String getName() {

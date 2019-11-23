@@ -53,7 +53,7 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
         // inflates the row layout from xml when needed
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = mInflater.inflate(R.layout.library_item, parent, false);
+            View view = mInflater.inflate(R.layout.third_party_library_item, parent, false);
             return new ViewHolder(view);
         }
 
@@ -77,7 +77,7 @@ public class ListLibrariesActivity extends AppCompatActivity implements ItemClic
 
             ViewHolder(View itemView) {
                 super(itemView);
-                myTextView = itemView.findViewById(R.id.libray);
+                myTextView = itemView.findViewById(R.id.third_party_library);
                 itemView.setOnClickListener(this);
             }
 

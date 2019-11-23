@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         String radius = getIntent().getStringExtra("radius");
         String daysFromNow = getIntent().getStringExtra("daysfromnow");
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow)).commit();
+                .replace(R.id.fragmentContainer, LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow, null)).commit();
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             LoadingNearMeFragment loadingNearMeFragment;
             My721Fragment my721Fragment;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                                 .replace(R.id.fragmentContainer, my721Fragment).commit();
                         break;
                     case 1:
-                        loadingNearMeFragment = LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, prefRadius, prefDaysFromNow);
+                        loadingNearMeFragment = LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, prefRadius, prefDaysFromNow, null);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, loadingNearMeFragment).commit();
                         break;

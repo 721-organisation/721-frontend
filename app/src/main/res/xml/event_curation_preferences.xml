@@ -17,28 +17,31 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="Event Curation">
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Event Curation">
         <SeekBarPreference
             android:max="@integer/radius_max"
             app:defaultValue="@integer/radius_default"
+            app:iconSpaceReserved="false"
             app:key="radius"
             app:min="@integer/radius_min"
             app:showSeekBarValue="true"
-            app:summary="We will curate events this many miles away fom your current location">
+            app:summary="721 will curate events this many miles away fom your current location">
 
         </SeekBarPreference>
         <SeekBarPreference
             android:max="7"
             app:defaultValue="2"
+            app:iconSpaceReserved="false"
             app:key="daysFromNow"
             app:min="1"
             app:showSeekBarValue="true"
-            app:summary="We will curate events this many days from now">
+            app:summary="721 will curate events this many days from now">
 
         </SeekBarPreference>
 
     </PreferenceCategory>
-
 
 
 </androidx.preference.PreferenceScreen>

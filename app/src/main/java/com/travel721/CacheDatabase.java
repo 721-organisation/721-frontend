@@ -5,11 +5,13 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 /**
  * This class provides access to the Cache Database
  */
-@Database(entities = {EventCard.class}, version = 1)
+@Database(entities = {EventCard.class}, version = 2)
+@TypeConverters(com.travel721.TypeConverters.class)
 public abstract class CacheDatabase extends RoomDatabase {
     // Singleton class structure for database access
     private static CacheDatabase thisInstance = null;
@@ -21,7 +23,7 @@ public abstract class CacheDatabase extends RoomDatabase {
      */
 
     public static CacheDatabase getInstance(Context context) {
-        return thisInstance == null ? Room.databaseBuilder(context, CacheDatabase.class, "cache-database").build() : thisInstance;
+        return thisInstance == null ? Room.databaseBuilder(context, CacheDatabase.class, "cache-database").fallbackToDestructiveMigration().build() : thisInstance;
     }
 
     public abstract EventCardDao eventCardDao();

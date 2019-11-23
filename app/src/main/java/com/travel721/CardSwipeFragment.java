@@ -45,10 +45,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -65,6 +67,7 @@ import static com.travel721.Constants.eventProfileAllSearchFilter;
  */
 public class CardSwipeFragment extends Fragment implements CardStackListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
+    static ArrayList<String> tags = new ArrayList<>();
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -105,7 +108,28 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        cardArrayList = getArguments().getParcelableArrayList("events");
+        cardArrayList = Objects.requireNonNull(getArguments()).getParcelableArrayList("events");
+        ArrayList<String> tagsToFilterBy = getArguments().getStringArrayList("tagsToFilterBy");
+        ArrayList<Card> cardsToRemove = new ArrayList<>();
+        for (Card c : cardArrayList) {
+            if (c instanceof EventCard) {
+                if (tagsToFilterBy != null && !tagsToFilterBy.isEmpty()) {
+                    for (String s : tagsToFilterBy) {
+                        boolean relevant = false;
+                        if (((EventCard) c).tags.contains(s)) {
+                            relevant = true;
+                        }
+                        if (!relevant) cardsToRemove.add(c);
+                    }
+                }
+                Set<String> fooSet = new LinkedHashSet<>(tags);
+                fooSet.addAll(((EventCard) c).tags);
+                fooSet.addAll(tags);
+                tags = new ArrayList<>();
+                tags.addAll(fooSet);
+            }
+        }
+        cardArrayList.removeAll(cardsToRemove);
         PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
@@ -121,8 +145,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 String latitude = getArguments().getString("latitude");
                 String radius = getArguments().getString("radius");
                 String daysFromNow = getArguments().getString("daysFromNow");
-                EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
-                eventCuratorAsyncTask.execute();
+                if (tagsToFilterBy == null || tagsToFilterBy.isEmpty()) {
+                    EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
+                    eventCuratorAsyncTask.execute();
+                }
                 break;
             case "applink":
                 break;
@@ -139,6 +165,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
         root = inflater.inflate(R.layout.fragment_event_swipe, container, false);
 
         AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.TEST_RELEASE_ANALYTICS_EVENT, null);
@@ -175,9 +202,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         FloatingActionButton filterButton = root.findViewById(R.id.filterButton);
         if (callingLoader instanceof LoadingNearMeFragment) {
             filterButton.setOnClickListener(view -> {
-                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader);
+                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags);
                 filterBottomSheetFragment.show(getFragmentManager(),
                         "filter_sheet_fragment");
+
             });
         }
         if (callingLoader instanceof LoadingDiscoverFragment) {

@@ -41,7 +41,8 @@
         android:layout_gravity="bottom|center"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="30dp"
-        app:backgroundTint="#ffff"
+        android:tint="#00FF00"
+        app:backgroundTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:srcCompat="@drawable/ic_done"
@@ -89,7 +90,8 @@
         app:layout_constraintEnd_toStartOf="@+id/thumbdownButton"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_filter" />
+        app:srcCompat="@drawable/ic_filter"
+        android:focusable="true" />
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack_view"

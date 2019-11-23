@@ -52,6 +52,14 @@
 
     <string name="title_instant721">721 Instant</string>
     <string name="title_a721instant">721 Instant</string>
+    <string name="food_and_drink_filter"><![CDATA[Food & Drink]]></string>
+    <string name="music_and_nightlife"><![CDATA[Music & Nightlife]]></string>
+    <string name="travel">Travel</string>
+    <string name="fitness">Fitness</string>
+    <string name="christmas">Christmas</string>
+    <string name="popular_events">Popular Events</string>
+    <string name="filters">Filters</string>
+    <string name="google_maps_key" />
     <string-array name="libraries">
         <item>Material Components for Android, by Google, under the Apache 2.0 License</item>
         <item>GMS Google Services, license unknown</item>
