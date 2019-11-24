@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
-import com.travel721.fragment.My721Fragment;
 import com.travel721.R;
 import com.travel721.fragment.LoadingNearMeFragment;
+import com.travel721.fragment.My721Fragment;
 import com.travel721.fragment.SelectLocationDiscoverFragment;
 
 import java.util.Objects;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken);
+                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, iid);
                         addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                                 "discover_sheet_fragment");
                         break;

@@ -19,13 +19,13 @@ import java.util.Objects;
 
 public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFragment {
     boolean discovering = false;
-    int discoverFragmentId;
-    String accessToken;
+    private String accessToken;
+    private String IID;
 
-    public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken) {
+    public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken, String IID) {
         SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
-        discoverFragmentSelectLocation.discoverFragmentId = discoverFragment;
         discoverFragmentSelectLocation.accessToken = accessToken;
+        discoverFragmentSelectLocation.IID = IID;
         return discoverFragmentSelectLocation;
     }
 
@@ -62,7 +62,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         daysSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textView.setText(getResources().getQuantityString(R.plurals.up_to_days_from_today, i+1, i+1));
+                textView.setText(getResources().getQuantityString(R.plurals.up_to_days_from_today, i + 1, i + 1));
             }
 
             @Override
@@ -78,7 +78,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                radTextView.setText(getResources().getQuantityString(R.plurals.search_x_miles, i+1, i+1));
+                radTextView.setText(getResources().getQuantityString(R.plurals.search_x_miles, i + 1, i + 1));
             }
 
             @Override
@@ -94,7 +94,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
         button.setOnClickListener(view1 -> {
             discovering = true;
-            LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), String.valueOf(radiusSeekBar.getProgress()+1), String.valueOf(daysSeekBar.getProgress()+1));
+            LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), String.valueOf(radiusSeekBar.getProgress() + 1), String.valueOf(daysSeekBar.getProgress() + 1), IID);
             Objects.requireNonNull(getFragmentManager()).beginTransaction()
                     .replace(R.id.fragmentContainer, loadingFragment).commit();
             dismiss();

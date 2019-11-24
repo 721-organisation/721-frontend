@@ -23,17 +23,17 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.travel721.CardStackAdapter;
 import com.travel721.PageViewModel;
 import com.travel721.R;
+import com.travel721.VolleyRequestQueue;
 import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.card.AdCard;
 import com.travel721.card.Card;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
@@ -76,6 +76,8 @@ import static com.travel721.analytics.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
 public class CardSwipeFragment extends Fragment implements CardStackListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
     static ArrayList<String> tags = new ArrayList<>();
+    private static final int HTTP_STATUS_OK = 200;
+    private Context dbAccessContext;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -85,7 +87,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     private ArrayList<Card> cardArrayList;
     private CardStackAdapter cardStackAdapter;
     private String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
-    private RequestQueue queue;
+    private VolleyRequestQueue queue;
     private LoadingFragment callingLoader;
     // Keep a track of the CardView and it's adapter
     private CardStackView cardStackView;
@@ -116,50 +118,67 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ArrayList<String> tagsToFilterBy = null;
         cardArrayList = Objects.requireNonNull(getArguments()).getParcelableArrayList("events");
-        ArrayList<String> tagsToFilterBy = getArguments().getStringArrayList("tagsToFilterBy");
-        ArrayList<Card> cardsToRemove = new ArrayList<>();
-        for (Card c : cardArrayList) {
-            if (c instanceof EventCard) {
-                if (tagsToFilterBy != null && !tagsToFilterBy.isEmpty()) {
-                    for (String s : tagsToFilterBy) {
-                        boolean relevant = false;
-                        if (((EventCard) c).tags.contains(s)) {
-                            relevant = true;
+        if (cardArrayList != null) {
+            tagsToFilterBy = getArguments().getStringArrayList("tagsToFilterBy");
+            ArrayList<Card> cardsToRemove = new ArrayList<>();
+            for (Card c : cardArrayList) {
+                if (c instanceof EventCard) {
+                    if (tagsToFilterBy != null && !tagsToFilterBy.isEmpty()) {
+                        for (String s : tagsToFilterBy) {
+                            boolean relevant = false;
+                            if (((EventCard) c).tags.contains(s)) {
+                                relevant = true;
+                            }
+                            if (!relevant) cardsToRemove.add(c);
                         }
-                        if (!relevant) cardsToRemove.add(c);
                     }
+                    Set<String> fooSet = new LinkedHashSet<>(tags);
+                    fooSet.addAll(((EventCard) c).tags);
+                    fooSet.addAll(tags);
+                    tags = new ArrayList<>();
+                    tags.addAll(fooSet);
                 }
-                Set<String> fooSet = new LinkedHashSet<>(tags);
-                fooSet.addAll(((EventCard) c).tags);
-                fooSet.addAll(tags);
-                tags = new ArrayList<>();
-                tags.addAll(fooSet);
             }
+            cardArrayList.removeAll(cardsToRemove);
+        } else {
+            cardArrayList = new ArrayList<>();
         }
-        cardArrayList.removeAll(cardsToRemove);
         PageViewModel pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
         String mode = getArguments().getString("mode");
+        String accessToken = getArguments().getString("accessToken");
+        String IID = getArguments().getString("IID");
+        String radius = getArguments().getString("radius");
+        String daysFromNow = getArguments().getString("daysFromNow");
         switch (Objects.requireNonNull(mode)) {
             case "nearme":
-                String accessToken = getArguments().getString("accessToken");
-                String IID = getArguments().getString("IID");
                 String longitude = getArguments().getString("longitude");
                 String latitude = getArguments().getString("latitude");
-                String radius = getArguments().getString("radius");
-                String daysFromNow = getArguments().getString("daysFromNow");
                 if (tagsToFilterBy == null || tagsToFilterBy.isEmpty()) {
+                    // TODO Asynchronously load more events
+                    VolleyRequestQueue requestQueue = VolleyRequestQueue.getInstance(getContext());
+
+                    // TODO show user that 721 is updating events
+
+
                     EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
                     eventCuratorAsyncTask.execute();
+
                 }
                 break;
-            case "applink":
             case "discover":
+                String searchLocation = getArguments().getString("searchLocation");
+                EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, radius, daysFromNow, searchLocation);
+                eventCuratorAsyncTask.execute();
+                break;
+            case "applink":
                 break;
             default:
                 Toast.makeText(getContext(), "721 launched in invalid mode", Toast.LENGTH_LONG).show();
@@ -215,12 +234,12 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
             });
         }
-        if (callingLoader instanceof LoadingDiscoverFragment) {
-            SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"));
-            addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
-                    "discover_sheet_fragment");
-        }
+//        if (callingLoader instanceof LoadingDiscoverFragment) {
+//            SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+//                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"));
+//            addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
+//                    "discover_sheet_fragment");
+//        }
         cardStackView = root.findViewById(R.id.card_stack_view);
 
         if (cardArrayList != null && cardArrayList.isEmpty())
@@ -245,22 +264,22 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     @Override
     public void onDetach() {
         super.onDetach();
-        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
-        queue.stop();
+        queue.getRequestQueue().cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.getRequestQueue().stop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
-        queue.stop();
+        queue.getRequestQueue().cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.getRequestQueue().stop();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        queue.cancelAll(CARD_SWIPE_REQUEST_TAG);
-        queue.stop();
+        queue.getRequestQueue().cancelAll(CARD_SWIPE_REQUEST_TAG);
+        queue.getRequestQueue().stop();
     }
 
     void initialise() {
@@ -274,7 +293,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         directions.add(Direction.Left);
         directions.add(Direction.Left);
         cardStackLayoutManager.setDirections(directions);
-        queue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
+        queue = VolleyRequestQueue.getInstance(getContext());
         // Create card stack adapter
         cardStackAdapter = new CardStackAdapter(cardArrayList);
 
@@ -352,8 +371,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     new Thread(runnable).start();
                     // Add the request to the RequestQueue.
                     stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
-                    queue.add(stringRequest);
-                    // TODO make a request to the API
+                    queue.addToRequestQueue(stringRequest);
                     break;
                 case Right:
                     snackbar.dismiss();
@@ -381,8 +399,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     };
                     new Thread(runnable).start();                    // Add the request to the RequestQueue.
                     stringRequest.setTag(CARD_SWIPE_REQUEST_TAG);
-                    queue.add(stringRequest);
-                    // TODO make a request to the API
+                    queue.addToRequestQueue(stringRequest);
                     break;
             }
         }
@@ -445,7 +462,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     }
 
     public class EventCuratorAsyncTask extends AsyncTask<Void, String, List<EventCard>> {
-        private static final int HTTP_STATUS_OK = 200;
         private String accessToken;
         private String IID;
         private String longitude;
@@ -454,7 +470,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         private String daysFromNow;
         private boolean discoverMode;
         private String searchLocation;
-        private Context dbAccessContext;
 
         /**
          * This constructor is for the 'Near Me' mode only
@@ -501,6 +516,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         protected void onPostExecute(List<EventCard> eventCards) {
             super.onPostExecute(eventCards);
             if (!eventCards.isEmpty()) updateCards();
+            cardStackAdapter.getEvents().add((int) (cardStackAdapter.getItemCount() * 0.4), new AdCard());
+            cardStackAdapter.getEvents().add((int) (cardStackAdapter.getItemCount() * 0.6), new AdCard());
+            updateCards();
         }
 
         @Override
@@ -528,10 +546,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 FormBody formBody;
                 if (discoverMode) {
                     formBody = new FormBody.Builder()
-                            .add("latitude", latitude)
-                            .add("longitude", longitude)
+                            .add("latitude", "0")
+                            .add("longitude", "0")
                             .add("location", searchLocation)
-                            .add("explore", "false")
+                            .add("explore", "true")
                             .add("radius", String.valueOf(radius))
                             .add("daysFromNow", String.valueOf(daysFromNow))
                             .build();
@@ -600,10 +618,12 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                 }
 
                                 for (EventCard ec : filteredCards) {
-                                    CacheDatabase.getInstance(dbAccessContext).eventCardDao().insert(ec);
+                                    if (!discoverMode)
+                                        CacheDatabase.getInstance(dbAccessContext).eventCardDao().insert(ec);
                                     cardStackAdapter.getEvents().add(ec);
                                     Log.v("ASYNC", "added card to stack");
                                 }
+
                                 return filteredCards;
                             }
 

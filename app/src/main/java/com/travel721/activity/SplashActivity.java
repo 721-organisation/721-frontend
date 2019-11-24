@@ -75,10 +75,12 @@ import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
 
 /**
- * This splash activity does all loading (location, api requests)
- * for the MainActivity
- * <p>
- * It is not designed to be instantiated by itself as setContentView is not called.
+ * Splash Activity to load SOME but not all information
+ * required by the MainActivity in order to load
+ *
+ * No events curation is done here.
+ *
+ * This class is not designed to be instantiated by itself as setContentView is not called.
  * See Initial App Loader and UpdatedSettingsSplashActivity to see why.
  *
  * @author Bhav

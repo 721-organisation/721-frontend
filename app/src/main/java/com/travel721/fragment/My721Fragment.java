@@ -21,12 +21,14 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.R;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.activity.SettingsActivity;
+import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.EventCard;
 
 import org.json.JSONArray;
@@ -180,7 +182,7 @@ public class My721Fragment extends Fragment {
                         }
                     }, error -> {
 
-                    });
+            });
 
             // Add the request to the RequestQueue.
 

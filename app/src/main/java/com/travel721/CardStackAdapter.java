@@ -8,18 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
@@ -27,7 +29,6 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.material.card.MaterialCardView;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
@@ -126,7 +127,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             // Set TextView values
             TextView currTV;
             View v = holder.itemView;
-            LinearLayout linearLayout2 = v.findViewById(R.id.eventCardTopLinearLayout);
+            ConstraintLayout linearLayout2 = v.findViewById(R.id.eventCardTopLinearLayout);
             linearLayout2.setOnClickListener(view -> {
                 AnalyticsHelper.logEvent(v.getContext(), AnalyticsHelper.USER_SWIPED_DOWN, null);
                 Intent i = new Intent(v.getContext(), EventMoreInfoActivity.class);
@@ -147,13 +148,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV = v.findViewById(R.id.eventPrice);
             currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
             currTV = v.findViewById(R.id.eventSourceLabel);
-            MaterialCardView mcv = (MaterialCardView) v;
-            if (ec.getSourceTag().equals("BUSINESS")) {
-                mcv.setStrokeColor(v.getResources().getColor(R.color.gold));
-                mcv.setStrokeWidth(5);
-            }else{
-                mcv.setStrokeWidth(0);
-            }
             currTV.setText(ec.getSourceTag());
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
@@ -169,6 +163,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             Glide.with(v.getContext())
                     .load(ec.getImgURL())
                     .placeholder(circularProgressDrawable)
+                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
                     .signature(new ObjectKey(ec.getEventSourceID()))
                     .transition(DrawableTransitionOptions.withCrossFade(300))
                     .error(Glide.with(imageView).load(R.drawable.ic_broken_img_bmp))
@@ -188,7 +183,9 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                                 int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
                                 int drawable = getColourMatchedOverlay(Objects.requireNonNull(p).getDominantColor(defaultColour), overlayImageView.getContext());
                                 Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
-                                overlayImageView.setImageDrawable(overlayDrawable);
+                                Glide.with(v.getContext())
+                                        .load(overlayDrawable)
+                                        .into(overlayImageView);
                             });
                         }
 
