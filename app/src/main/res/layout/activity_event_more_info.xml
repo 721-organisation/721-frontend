@@ -48,7 +48,8 @@
         android:text="@string/event_hyperlink_text"
         android:textColor="@android:color/white"
         map:layout_constraintBottom_toTopOf="@+id/eventProvidedBy"
-        tools:layout_editor_absoluteX="19dp" />
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/swipeUpToDismissBar"
@@ -68,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        map:layout_constraintGuide_percent="0.35" />
+        map:layout_constraintGuide_percent="0.55" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -93,20 +94,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
-                android:text="Event Name"
                 android:textColor="@color/colorAccent"
                 android:textStyle="bold"
-                map:layout_constraintStart_toStartOf="parent" />
+                map:layout_constraintStart_toStartOf="parent"
+                tools:text="Event Name" />
 
             <TextView
                 android:id="@+id/eventMoreInfoLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Event Location"
                 android:textStyle="bold"
                 map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoName" />
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoName"
+                tools:text="Event Location" />
 
             <TextView
                 android:id="@+id/eventMoreInfoDate"
@@ -114,27 +115,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="5dp"
-                android:text="Event Date"
                 map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoLocation" />
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoLocation"
+                tools:text="Event Date" />
 
             <TextView
                 android:id="@+id/eventMoreInfoTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Event Time"
                 map:layout_constraintStart_toEndOf="@+id/eventMoreInfoDate"
-                map:layout_constraintTop_toTopOf="@+id/eventMoreInfoDate" />
+                map:layout_constraintTop_toTopOf="@+id/eventMoreInfoDate"
+                tools:text="Event time" />
 
             <TextView
                 android:id="@+id/eventMoreInfoPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Event Price"
                 map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoDate" />
+                map:layout_constraintTop_toBottomOf="@+id/eventMoreInfoDate"
+                tools:text="Event Price" />
 
             <TextView
                 android:id="@+id/eventLongDescription"
@@ -144,10 +145,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="@string/event_info_placeholder"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#FF000000"
-                map:autoSizeTextType="uniform"
-                tools:text="Insert Event Long Description Here" />
+                tools:text="Insert Event Long Description" />
         </LinearLayout>
     </ScrollView>
 

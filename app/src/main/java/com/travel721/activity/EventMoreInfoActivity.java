@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,21 +39,21 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         super.onCreate(savedInstanceState);
         eventCard = getIntent().getParcelableExtra("eventCard");
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.card_event_more_info);
+        setContentView(R.layout.activity_event_more_info);
         _root = findViewById(R.id.moreInfoConstraintLayout);
         _root.setOnTouchListener(this);
         // Initialise maps
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapView);
         if (mapFragment != null) {
             mapFragment.getMapAsync(googleMap -> {
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
                 double latitude = Double.parseDouble(eventCard.getLocationLatitude());
                 double longitude = Double.parseDouble(eventCard.getLocationLongitude());
                 googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(latitude, longitude))
                         .title(eventCard.getName()));
-                // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17));
-                // Sets the center of the map to Mountain View
+                // Construct a CameraPosition focusing on event location and animate the camera to that position.
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 17));
             });
         }
         Button button = findViewById(R.id.eventHyperlink);
