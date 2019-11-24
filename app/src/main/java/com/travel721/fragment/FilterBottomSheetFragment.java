@@ -61,17 +61,18 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
         ChipGroup chipGroup = root.findViewById(R.id.near_me_filters_chip_group);
         chipGroup.setChipSpacing(10);
 
-        for (int i = 0; i < tags.size(); i++) {
-            Chip chip = new Chip(Objects.requireNonNull(getContext()));
-            chip.setId(i);
-            chip.setTag(i);
-            chip.setChipBackgroundColor(ResourcesCompat.getColorStateList(getResources(), R.color.chip_selector_state_list, null));
-            chip.setTextColor(ResourcesCompat.getColor(getResources(), R.color.chip_text_selector_state_list, null));
-            chip.setText(tags.get(i));
-            chip.setCheckable(true);
-            chipGroup.addView(chip);
-
-        }
+        // Temporarily disable filters
+//        for (int i = 0; i < tags.size(); i++) {
+//            Chip chip = new Chip(Objects.requireNonNull(getContext()));
+//            chip.setId(i);
+//            chip.setTag(i);
+//            chip.setChipBackgroundColor(ResourcesCompat.getColorStateList(getResources(), R.color.chip_selector_state_list, null));
+//            chip.setTextColor(ResourcesCompat.getColor(getResources(), R.color.chip_text_selector_state_list, null));
+//            chip.setText(tags.get(i));
+//            chip.setCheckable(true);
+//            chipGroup.addView(chip);
+//
+//        }
         chipGroup.setOnCheckedChangeListener((chipGroup1, i) -> {
 
         });

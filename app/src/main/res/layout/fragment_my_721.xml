@@ -45,12 +45,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        app:fabSize="auto"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:backgroundTint="#FFFFFFFF"
-        android:foregroundGravity="bottom"
-        android:src="@drawable/ic_settings" />
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/ic_settings"
+        app:fabSize="auto" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
