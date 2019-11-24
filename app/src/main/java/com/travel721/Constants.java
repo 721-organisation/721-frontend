@@ -3,6 +3,16 @@ package com.travel721;
 import java.util.Random;
 
 public class Constants {
+    // 721 TAGS
+
+    public static final String WHATS_HOT_TAG = "What's Hot".toUpperCase();
+    public static final String FITNESS_TAG = "Fitness".toUpperCase();
+    public static final String TRAVEL_TAG = "Travel".toUpperCase();
+    public static final String XMAS_TAG = "Christmas".toUpperCase();
+    public static final String FOOD_AND_DRINK_TAG = "Food and Drink".toUpperCase();
+    public static final String MUSIC_TAG = "Music".toUpperCase();
+
+
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 999;
     public static final int REQUEST_LOCATION_PERMISSIONS = 999;
 

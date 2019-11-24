@@ -29,6 +29,8 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
@@ -199,6 +201,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
 
         }
+
     }
 
     @Override

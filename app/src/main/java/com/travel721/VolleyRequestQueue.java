@@ -2,12 +2,10 @@ package com.travel721;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.util.LruCache;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
 public class VolleyRequestQueue {
@@ -16,6 +14,10 @@ public class VolleyRequestQueue {
     private RequestQueue requestQueue;
     @SuppressLint("StaticFieldLeak")
     private static Context ctx;
+
+    public static final int DEFAULT_TIMEOUT_MS = 2500;
+    public static DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     private VolleyRequestQueue(Context context) {
         ctx = context;
@@ -39,6 +41,7 @@ public class VolleyRequestQueue {
     }
 
     public <T> void addToRequestQueue(Request<T> req) {
+        req.setRetryPolicy(retryPolicy);
         getRequestQueue().add(req);
     }
 }

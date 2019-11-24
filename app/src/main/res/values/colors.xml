@@ -28,4 +28,5 @@
     <color name="textLightDisabledDEPRECATED">#4CFFFFFF</color>
     <color name="white">#FFFFFF</color> <!--4C for %30 opacity-->
     <color name="gold">#FFD700</color>
+    <color name="black">#00000000</color>
 </resources>

@@ -27,7 +27,7 @@
             app:key="radius"
             app:min="@integer/radius_min"
             app:showSeekBarValue="true"
-            app:summary="721 will curate events this many miles away fom your current location">
+            app:summary="@string/miles_away_hint">
 
         </SeekBarPreference>
         <SeekBarPreference
@@ -37,7 +37,7 @@
             app:key="daysFromNow"
             app:min="1"
             app:showSeekBarValue="true"
-            app:summary="721 will curate events this many days from now">
+            app:summary="@string/days_away_hint">
 
         </SeekBarPreference>
 

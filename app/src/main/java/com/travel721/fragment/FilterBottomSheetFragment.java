@@ -7,21 +7,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
 
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.travel721.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static com.travel721.Constants.FITNESS_TAG;
+import static com.travel721.Constants.FOOD_AND_DRINK_TAG;
+import static com.travel721.Constants.MUSIC_TAG;
+import static com.travel721.Constants.TRAVEL_TAG;
+import static com.travel721.Constants.WHATS_HOT_TAG;
+import static com.travel721.Constants.XMAS_TAG;
 
 public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment {
     private LoadingFragment callingLoader;
@@ -53,15 +61,29 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
         root.findViewById(R.id.filterCloseButton).setOnClickListener(view -> dismiss());
         root.findViewById(R.id.filter_ok_button).setOnClickListener(view -> {
             ChipGroup chipGroup = Objects.requireNonNull(getView()).findViewById(R.id.near_me_filters_chip_group);
-            for (int i : chipGroup.getCheckedChipIds()) {
-                tagsToFilterBy.add(tags.get(i));
-            }
+            // Logic for determining tags to filter by go here
+//            for (int i : chipGroup.getCheckedChipIds()) {
+//                tagsToFilterBy.add(tags.get(i));
+//            }
+            ToggleButton whatsHotToggleButton = root.findViewById(R.id.whatshot_tag);
+            ToggleButton travelToggleButton = root.findViewById(R.id.travel_tag);
+            ToggleButton xmasToggleButton = root.findViewById(R.id.xmas_tag);
+            ToggleButton foodAndDrinkToggleButton = root.findViewById(R.id.food_drink_tag);
+            ToggleButton fitnessToggleButton = root.findViewById(R.id.fitness_tag);
+            ToggleButton musicToggleButton = root.findViewById(R.id.music_tag);
+
+            if (whatsHotToggleButton.isChecked()) tagsToFilterBy.add(WHATS_HOT_TAG);
+            if (xmasToggleButton.isChecked()) tagsToFilterBy.add(XMAS_TAG);
+            if (travelToggleButton.isChecked()) tagsToFilterBy.add(TRAVEL_TAG);
+            if (fitnessToggleButton.isChecked()) tagsToFilterBy.add(FITNESS_TAG);
+            if (musicToggleButton.isChecked()) tagsToFilterBy.add(MUSIC_TAG);
+            if (foodAndDrinkToggleButton.isChecked()) tagsToFilterBy.add(FOOD_AND_DRINK_TAG);
             dismiss();
         });
         ChipGroup chipGroup = root.findViewById(R.id.near_me_filters_chip_group);
         chipGroup.setChipSpacing(10);
 
-        // Temporarily disable filters
+        // Temporarily disable enumerating of all filters
 //        for (int i = 0; i < tags.size(); i++) {
 //            Chip chip = new Chip(Objects.requireNonNull(getContext()));
 //            chip.setId(i);
@@ -113,8 +135,6 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
                     Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, LoadingDiscoverFragment.clone((LoadingDiscoverFragment) callingLoader)).commit();
 
                 }
-
-
             }
 
         }

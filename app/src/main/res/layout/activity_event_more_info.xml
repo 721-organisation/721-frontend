@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        map:layout_constraintGuide_percent="0.55" />
+        map:layout_constraintGuide_percent="0.5" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -147,6 +147,20 @@
                 android:text="@string/event_info_placeholder"
                 android:textColor="#FF000000"
                 tools:text="Insert Event Long Description" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/eventTagChipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                map:layout_constraintBottom_toBottomOf="parent"
+                map:layout_constraintEnd_toStartOf="@+id/textView7"
+                map:layout_constraintHorizontal_bias="0.0"
+                map:layout_constraintStart_toStartOf="parent"
+                map:layout_constraintTop_toTopOf="@+id/textView7"
+                map:singleLine="true" />
         </LinearLayout>
     </ScrollView>
 

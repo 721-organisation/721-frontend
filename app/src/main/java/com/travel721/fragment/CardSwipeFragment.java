@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DiffUtil;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
@@ -163,7 +164,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 String latitude = getArguments().getString("latitude");
                 if (tagsToFilterBy == null || tagsToFilterBy.isEmpty()) {
                     // TODO Asynchronously load more events
-                    VolleyRequestQueue requestQueue = VolleyRequestQueue.getInstance(getContext());
 
                     // TODO show user that 721 is updating events
 
@@ -234,12 +234,14 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
             });
         }
-//        if (callingLoader instanceof LoadingDiscoverFragment) {
-//            SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-//                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"));
-//            addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
-//                    "discover_sheet_fragment");
-//        }
+        if (callingLoader instanceof LoadingDiscoverFragment) {
+            filterButton.setOnClickListener(view -> {
+                SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+                        SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"), Integer.valueOf(getArguments().getString("daysFromNow")), Integer.valueOf(getArguments().getString("radius")));
+                addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
+                        "discover_sheet_fragment");
+            });
+        }
         cardStackView = root.findViewById(R.id.card_stack_view);
 
         if (cardArrayList != null && cardArrayList.isEmpty())
@@ -282,6 +284,12 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         queue.getRequestQueue().stop();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        queue.getRequestQueue().start();
+    }
+
     void initialise() {
         // Create card stack manager
         cardStackLayoutManager = new CardStackLayoutManager(getContext(), this);
@@ -291,9 +299,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         List<Direction> directions = new ArrayList<>();
         directions.add(Direction.Right);
         directions.add(Direction.Left);
-        directions.add(Direction.Left);
         cardStackLayoutManager.setDirections(directions);
         queue = VolleyRequestQueue.getInstance(getContext());
+        queue.getRequestQueue().start();
         // Create card stack adapter
         cardStackAdapter = new CardStackAdapter(cardArrayList);
 
@@ -346,6 +354,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             final Runnable runnable = () -> CacheDatabase.getInstance(getContext()).eventCardDao().delete(eventCard);
             switch (direction) {
                 case Left:
+                    Log.d("CSF", "onCardSwiped: swiped left");
                     snackbar.dismiss();
                     String[] negative_terms = getResources().getStringArray(R.array.negative_terms);
                     textView.setText(getRandom(negative_terms));
@@ -374,6 +383,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     queue.addToRequestQueue(stringRequest);
                     break;
                 case Right:
+                    Log.d("CSF", "onCardSwiped: swiped right");
                     snackbar.dismiss();
                     String[] positive_terms = getResources().getStringArray(R.array.positive_terms);
                     textView.setText(getRandom(positive_terms));
@@ -458,7 +468,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     }
 
     protected void updateCards() {
-        cardStackAdapter.notifyDataSetChanged();
+//        cardStackAdapter.notifyDataSetChanged();
     }
 
     public class EventCuratorAsyncTask extends AsyncTask<Void, String, List<EventCard>> {
@@ -515,10 +525,17 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         @Override
         protected void onPostExecute(List<EventCard> eventCards) {
             super.onPostExecute(eventCards);
+            ArrayList<Card> combinedList = new ArrayList<>();
+            combinedList.addAll(cardStackAdapter.getEvents());
+            combinedList.addAll(eventCards);
+            combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
+            combinedList.add((int) (combinedList.size() * 0.6), new AdCard());
             if (!eventCards.isEmpty()) updateCards();
-            cardStackAdapter.getEvents().add((int) (cardStackAdapter.getItemCount() * 0.4), new AdCard());
-            cardStackAdapter.getEvents().add((int) (cardStackAdapter.getItemCount() * 0.6), new AdCard());
-            updateCards();
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
+            cardArrayList = combinedList;
+            cardStackAdapter.setEvents(cardArrayList);
+            diffResult.dispatchUpdatesTo(cardStackAdapter);
+//            updateCards();
         }
 
         @Override
@@ -620,7 +637,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                 for (EventCard ec : filteredCards) {
                                     if (!discoverMode)
                                         CacheDatabase.getInstance(dbAccessContext).eventCardDao().insert(ec);
-                                    cardStackAdapter.getEvents().add(ec);
                                     Log.v("ASYNC", "added card to stack");
                                 }
 

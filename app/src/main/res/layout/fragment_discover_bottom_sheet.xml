@@ -42,43 +42,86 @@
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:padding="5dp"
-        tools:text="Up to n days from today"
-        android:textAlignment="center" />
-
-    <SeekBar
-        android:id="@+id/daysSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:max="31"
-        android:padding="5dp"
-        android:progressTint="@color/colorAccent"
-        android:thumbTint="@color/colorAccent" />
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginTop="16dp"
+        android:text="Event Curation"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/radiusTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:padding="5dp"
-        tools:text="Search n miles away" />
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginTop="16dp"
+        tools:text="@string/miles_away_discover_hint" />
 
-    <SeekBar
-        android:id="@+id/radiusSeekBar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="9"
-        android:padding="5dp"
-        android:progressTint="@color/colorAccent"
-        android:thumbTint="@color/colorAccent"
-        app:tickMarkTint="@color/colorAccent" />
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/radiusSeekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_weight="9"
+            android:max="9"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent"
+            app:tickMarkTint="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/radValTv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="0"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginTop="16dp"
+        tools:text="@string/days_away_hint" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <SeekBar
+            android:id="@+id/daysSeekBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/activity_vertical_margin"
+            android:layout_weight="9"
+            android:max="31"
+            android:progressTint="@color/colorAccent"
+            android:thumbTint="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/daysValTv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="0"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/discover_button"

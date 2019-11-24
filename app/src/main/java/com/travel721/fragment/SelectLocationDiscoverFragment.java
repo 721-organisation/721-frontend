@@ -21,11 +21,27 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
     boolean discovering = false;
     private String accessToken;
     private String IID;
+    boolean prefill = false;
+    int daysFromNow;
+    int milesFromSL;
+    String searchLocation;
 
     public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken, String IID) {
         SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
         discoverFragmentSelectLocation.accessToken = accessToken;
         discoverFragmentSelectLocation.IID = IID;
+        return discoverFragmentSelectLocation;
+    }
+
+    // Prefill mode
+    public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken, String IID, String searchLocation, int daysFromNow, int milesFromSL) {
+        SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
+        discoverFragmentSelectLocation.prefill = true;
+        discoverFragmentSelectLocation.accessToken = accessToken;
+        discoverFragmentSelectLocation.IID = IID;
+        discoverFragmentSelectLocation.daysFromNow = daysFromNow;
+        discoverFragmentSelectLocation.milesFromSL = milesFromSL;
+        discoverFragmentSelectLocation.searchLocation = searchLocation;
         return discoverFragmentSelectLocation;
     }
 
@@ -54,15 +70,19 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         TextView radTextView = v.findViewById(R.id.radiusTextView);
         EditText editText = v.findViewById(R.id.editText);
         TextView textView = v.findViewById(R.id.textView5);
-        textView.setText(getResources().getQuantityString(R.plurals.up_to_days_from_today, 5, 5));
+        textView.setText(getString(R.string.days_away_hint));
         daysSeekBar.setProgress(4);
         radiusSeekBar.setProgress(4);
-        radTextView.setText(getResources().getQuantityString(R.plurals.search_x_miles, 5, 5));
+        radTextView.setText(getString(R.string.miles_away_discover_hint));
+        TextView radValTV = v.findViewById(R.id.radValTv);
+        TextView daysValTV = v.findViewById(R.id.daysValTv);
+        radValTV.setText(String.valueOf(5));
+        daysValTV.setText(String.valueOf(5));
         Button button = v.findViewById(R.id.discover_button);
         daysSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                textView.setText(getResources().getQuantityString(R.plurals.up_to_days_from_today, i + 1, i + 1));
+                daysValTV.setText(String.valueOf(i + 1));
             }
 
             @Override
@@ -78,7 +98,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                radTextView.setText(getResources().getQuantityString(R.plurals.search_x_miles, i + 1, i + 1));
+                radValTV.setText(String.valueOf(i + 1));
             }
 
             @Override
@@ -101,6 +121,14 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         });
         // get the views and attach the listener
 
+
+        if (prefill) {
+            editText.setText(searchLocation);
+            radiusSeekBar.setProgress(milesFromSL - 1);
+            daysSeekBar.setProgress(milesFromSL - 1);
+            radValTV.setText(String.valueOf(milesFromSL));
+            daysValTV.setText(String.valueOf(milesFromSL));
+        }
         return v;
 
     }

@@ -38,14 +38,6 @@
     <string name="near_me_tab">Near Me</string>
     <string name="discover_tab">Discover</string>
     <string name="my_721_tab">My 721</string>
-    <plurals name="up_to_days_from_today">
-        <item quantity="one">Up to %1$d day from today</item>
-        <item quantity="other">Up to %1$d days from today</item>
-    </plurals>
-    <plurals name="search_x_miles">
-        <item quantity="one">Search %1$d mile</item>
-        <item quantity="other">Search %1$d miles</item>
-    </plurals>
     <string name="no_events_discovered">We couldn\'t discover any events there! Double check spelling and radius, and please try again.</string>
     <string name="no_local_events">No events in you area.</string>
     <string name="nno_events_near_you">It looks like there\'s no events near you. Click here to change your event curation settings.</string>
@@ -88,4 +80,7 @@
         <item>Maybe not</item>
         <item>Not for me</item>
     </string-array>
+    <string name="miles_away_hint">721 will curate events this many miles away fom your current location</string>
+    <string name="miles_away_discover_hint">721 will curate events this many miles away fom your search location</string>
+    <string name="days_away_hint">721 will curate events this many days from now</string>
 </resources>

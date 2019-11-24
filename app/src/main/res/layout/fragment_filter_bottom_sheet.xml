@@ -26,6 +26,7 @@
         app:drawableTint="#8B8B8B" />
 
     <FrameLayout
+
         android:id="@android:id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,9 +56,19 @@
 
     </com.google.android.material.chip.ChipGroup>
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="721 Sheffield"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
+
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
 
         <TableRow
             android:layout_width="match_parent"
@@ -65,9 +76,27 @@
             android:gravity="center">
 
             <ToggleButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/food_drink_tag"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/food_drink_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/music_tag"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/music_selector"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -75,14 +104,19 @@
                 android:textOn="" />
 
             <ToggleButton
-                android:id="@+id/imageButton5"
+                android:id="@+id/travel_tag"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/takeoff_selector"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:textOff=""
                 android:textOn="" />
+
         </TableRow>
 
         <TableRow
@@ -91,9 +125,13 @@
             android:gravity="center">
 
             <ToggleButton
-                android:id="@+id/imageButton2"
+                android:id="@+id/fitness_tag"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/fitness_selector"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
@@ -101,14 +139,33 @@
                 android:textOn="" />
 
             <ToggleButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/xmas_tag"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/xmas_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/whatshot_tag"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/whatshot_selector"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:textOff=""
                 android:textOn="" />
+
         </TableRow>
 
     </TableLayout>

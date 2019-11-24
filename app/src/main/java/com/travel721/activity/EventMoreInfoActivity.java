@@ -15,11 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.travel721.R;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.EventCard;
@@ -72,6 +73,12 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         tv.setText(eventCard.getName());
         tv = findViewById(R.id.eventMoreInfoPrice);
         tv.setText(eventCard.getPrice());
+        ChipGroup tagChipGroup = findViewById(R.id.eventTagChipGroup);
+        for (String s : eventCard.tags) {
+            Chip chip = new Chip(this);
+            chip.setText(s);
+            tagChipGroup.addView(chip);
+        }
     }
 
     private int _yDelta;
