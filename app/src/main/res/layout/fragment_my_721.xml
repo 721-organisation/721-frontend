@@ -51,6 +51,10 @@
         android:layout_gravity="bottom|start"
         android:layout_marginStart="25dp"
         android:layout_marginBottom="25dp"
-        android:src="@drawable/ic_settings"
-        app:fabSize="auto" />
+        android:backgroundTint="#ffff"
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_settings"
+        app:tint="@color/colorAccent" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:foregroundGravity="center_vertical|center_horizontal"
         app:singleSelection="false">
 
@@ -57,40 +57,58 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <ToggleButton
                 android:id="@+id/imageButton4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/music_selector" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/music_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
 
             <ToggleButton
                 android:id="@+id/imageButton5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/takeoff_selector" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/takeoff_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
             <ToggleButton
                 android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/fitness_selector" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/fitness_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
 
             <ToggleButton
                 android:id="@+id/imageButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/whatshot_selector" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/whatshot_selector"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:textOff=""
+                android:textOn="" />
         </TableRow>
 
     </TableLayout>
