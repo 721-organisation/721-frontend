@@ -528,13 +528,40 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             ArrayList<Card> combinedList = new ArrayList<>();
             combinedList.addAll(cardStackAdapter.getEvents());
             combinedList.addAll(eventCards);
-            combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
             combinedList.add((int) (combinedList.size() * 0.6), new AdCard());
+            combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
             if (!eventCards.isEmpty()) updateCards();
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
             cardArrayList = combinedList;
             cardStackAdapter.setEvents(cardArrayList);
             diffResult.dispatchUpdatesTo(cardStackAdapter);
+
+            final View.OnClickListener performFilterButtonClick = view -> {
+                getView().findViewById(R.id.filterButton).performClick();
+            };
+            if (eventCards.isEmpty() && cardArrayList.isEmpty()) {
+                if (discoverMode) {
+                    TextView bgtv = getView().findViewById(R.id.background_textview);
+                    bgtv.setText(getResources().getString(R.string.discover_unavailable));
+                    bgtv.setOnClickListener(view -> {
+                        SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, IID);
+                        addPhotoBottomDialogFragment.show(Objects.requireNonNull(getFragmentManager()),
+                                "discover_sheet_fragment");
+                    });
+                    getView().findViewById(R.id.card_stack_view).setVisibility(View.GONE);
+                } else {
+                    TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
+                    bgtv.setText(getResources().getString(R.string.near_me_unavailable));
+                    bgtv.setOnClickListener(performFilterButtonClick);
+                    Objects.requireNonNull(getView()).findViewById(R.id.card_stack_view).setVisibility(View.GONE);
+
+                }
+            } else {
+                TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
+                bgtv.setText(getResources().getString(R.string.end_of_stack));
+                bgtv.setOnClickListener(performFilterButtonClick);
+            }
 //            updateCards();
         }
 

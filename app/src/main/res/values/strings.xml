@@ -83,4 +83,8 @@
     <string name="miles_away_hint">721 will curate events this many miles away fom your current location</string>
     <string name="miles_away_discover_hint">721 will curate events this many miles away fom your search location</string>
     <string name="days_away_hint">721 will curate events this many days from now</string>
+    <string name="discover_unavailable">There are no events available on your selected dates or location. Click here to try changing the date or selecting another place.</string>
+    <string name="near_me_unavailable">There are no events available near you on the selected dates or location. Click here to try changing the date or selecting another place.</string>
+    <string name="end_of_stack">You\'ve reached the end of the list; use the filter button to refine your search filters.</string>
+
 </resources>
