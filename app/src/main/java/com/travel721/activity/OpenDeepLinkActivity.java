@@ -82,7 +82,7 @@ public class OpenDeepLinkActivity extends AppCompatActivity {
                                         bundle.putString("accessToken", accessToken);
                                         bundle.putParcelableArrayList("events", eventCardList);
                                         bundle.putString("mode", "applink");
-                                        bundle.putString("fiid", finalIID);
+                                        bundle.putString("IID", finalIID);
 
                                         setContentView(R.layout.fragment_app_link_event);
                                         getSupportFragmentManager().beginTransaction().replace(R.id.app_link_cardswipefragment, CardSwipeFragment.newNonBoundInstance(bundle)).commit();
