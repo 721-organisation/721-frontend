@@ -46,11 +46,11 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/settingsButton"
         android:layout_width="wrap_content"
+        app:fabSize="auto"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
-        android:layout_margin="12dp"
         android:backgroundTint="#FFFFFFFF"
-        android:clickable="true"
         android:foregroundGravity="bottom"
         android:src="@drawable/ic_settings" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

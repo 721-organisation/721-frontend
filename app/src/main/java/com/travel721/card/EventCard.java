@@ -54,7 +54,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public String description;
     public String sourceTag;
     @Ignore
-    public String dateFormatString = "dd-MM-yy";
+    public String dateFormatString = "yyyy-MM-dd";
 
     protected EventCard(Parcel in) {
         name = in.readString();
@@ -216,7 +216,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
         try {
             if (getDayOfWeek().equals("Today")) return "Today";
             Date realDateOfEvent = new SimpleDateFormat(dateFormatString).parse(formattedDate);
-            return new SimpleDateFormat("EEE, MMM d").format(Objects.requireNonNull(realDateOfEvent));
+            return new SimpleDateFormat("EEEE dd MMM").format(Objects.requireNonNull(realDateOfEvent));
         } catch (ParseException e) {
             e.printStackTrace();
             return "";
@@ -226,7 +226,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public String getFormattedDate() {
         try {
             DateFormat originalFormat = new SimpleDateFormat(dateFormatString, Locale.ENGLISH);
-            DateFormat targetFormat = new SimpleDateFormat("EEEE, MMM dd");
+            DateFormat targetFormat = new SimpleDateFormat("EEEE dd MMMM");
             Date date = originalFormat.parse(formattedDate);
 
             return targetFormat.format(Objects.requireNonNull(date));
