@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -115,6 +116,29 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         return array[rnd];
     }
 
+    static void filterUsingTags(List<Card> cardsToFilter, List<String> tagsToFilterBy) {
+        ArrayList<Card> cardsToRemove = new ArrayList<>();
+        for (Card c : cardsToFilter) {
+            if (c instanceof EventCard) {
+                if (tagsToFilterBy != null && !tagsToFilterBy.isEmpty()) {
+                    for (String s : tagsToFilterBy) {
+                        boolean relevant = false;
+                        if (((EventCard) c).tags.contains(s)) {
+                            relevant = true;
+                        }
+                        if (!relevant) cardsToRemove.add(c);
+                    }
+                }
+                Set<String> fooSet = new LinkedHashSet<>(tags);
+                fooSet.addAll(((EventCard) c).tags);
+                fooSet.addAll(tags);
+                tags = new ArrayList<>();
+                tags.addAll(fooSet);
+            }
+        }
+        cardsToFilter.removeAll(cardsToRemove);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,26 +147,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardArrayList = Objects.requireNonNull(getArguments()).getParcelableArrayList("events");
         if (cardArrayList != null) {
             tagsToFilterBy = getArguments().getStringArrayList("tagsToFilterBy");
-            ArrayList<Card> cardsToRemove = new ArrayList<>();
-            for (Card c : cardArrayList) {
-                if (c instanceof EventCard) {
-                    if (tagsToFilterBy != null && !tagsToFilterBy.isEmpty()) {
-                        for (String s : tagsToFilterBy) {
-                            boolean relevant = false;
-                            if (((EventCard) c).tags.contains(s)) {
-                                relevant = true;
-                            }
-                            if (!relevant) cardsToRemove.add(c);
-                        }
-                    }
-                    Set<String> fooSet = new LinkedHashSet<>(tags);
-                    fooSet.addAll(((EventCard) c).tags);
-                    fooSet.addAll(tags);
-                    tags = new ArrayList<>();
-                    tags.addAll(fooSet);
-                }
-            }
-            cardArrayList.removeAll(cardsToRemove);
+
+            filterUsingTags(cardArrayList, tagsToFilterBy);
+
         } else {
             cardArrayList = new ArrayList<>();
         }
@@ -162,21 +169,21 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             case "nearme":
                 String longitude = getArguments().getString("longitude");
                 String latitude = getArguments().getString("latitude");
-                if (tagsToFilterBy == null || tagsToFilterBy.isEmpty()) {
-                    // TODO Asynchronously load more events
+//                if (tagsToFilterBy == null || tagsToFilterBy.isEmpty()) {
+                // TODO Asynchronously load more events
 
-                    // TODO show user that 721 is updating events
+                // TODO show user that 721 is updating events
 
 
-                    EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, longitude, latitude, radius, daysFromNow);
-                    eventCuratorAsyncTask.execute();
+                EventCuratorAsyncTask nearmeeventCuratorAsyncTask = new EventCuratorAsyncTask(tagsToFilterBy, accessToken, IID, longitude, latitude, radius, daysFromNow);
+                nearmeeventCuratorAsyncTask.execute();
 
-                }
+//                }
                 break;
             case "discover":
                 String searchLocation = getArguments().getString("searchLocation");
-                EventCuratorAsyncTask eventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, radius, daysFromNow, searchLocation);
-                eventCuratorAsyncTask.execute();
+                EventCuratorAsyncTask discovereventCuratorAsyncTask = new EventCuratorAsyncTask(null, accessToken, IID, radius, daysFromNow, searchLocation);
+                discovereventCuratorAsyncTask.execute();
                 break;
             case "applink":
                 break;
@@ -466,9 +473,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardStackView.swipe();
     }
 
-    protected void updateCards() {
-//        cardStackAdapter.notifyDataSetChanged();
-    }
 
     public class EventCuratorAsyncTask extends AsyncTask<Void, String, List<EventCard>> {
         private String accessToken;
@@ -479,6 +483,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         private String daysFromNow;
         private boolean discoverMode;
         private String searchLocation;
+        private List<String> tags;
 
         /**
          * This constructor is for the 'Near Me' mode only
@@ -490,10 +495,11 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
          * @param radius      user's search radius
          * @param daysFromNow days from now to search
          */
-        public EventCuratorAsyncTask(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow) {
+        public EventCuratorAsyncTask(@Nullable List<String> tags, String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow) {
             this.accessToken = accessToken;
             this.IID = IID;
             this.longitude = longitude;
+            this.tags = tags;
             this.latitude = latitude;
             this.radius = radius;
             this.daysFromNow = daysFromNow;
@@ -510,12 +516,13 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
          * @param daysFromNow    days from now to search
          * @param searchLocation the location to discover
          */
-        public EventCuratorAsyncTask(String accessToken, String IID, String radius, String daysFromNow, String searchLocation) {
+        public EventCuratorAsyncTask(@Nullable List<String> tags, String accessToken, String IID, String radius, String daysFromNow, String searchLocation) {
             this.accessToken = accessToken;
             this.IID = IID;
             this.longitude = String.valueOf(0);
             this.latitude = String.valueOf(0);
             this.radius = radius;
+            this.tags = tags;
             this.daysFromNow = daysFromNow;
             this.searchLocation = searchLocation;
             discoverMode = true;
@@ -524,17 +531,8 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         @Override
         protected void onPostExecute(List<EventCard> eventCards) {
             super.onPostExecute(eventCards);
-            ArrayList<Card> combinedList = new ArrayList<>();
-            combinedList.addAll(cardStackAdapter.getEvents());
-            combinedList.addAll(eventCards);
-            combinedList.add((int) (combinedList.size() * 0.6), new AdCard());
-            combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
-            if (!eventCards.isEmpty()) updateCards();
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
-            cardArrayList = combinedList;
-            cardStackAdapter.setEvents(cardArrayList);
-            diffResult.dispatchUpdatesTo(cardStackAdapter);
 
+            // Check if there are no results and display message accordingly
             final View.OnClickListener performFilterButtonClick = view -> {
                 getView().findViewById(R.id.filterButton).performClick();
             };
@@ -561,7 +559,26 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 bgtv.setText(getResources().getString(R.string.end_of_stack));
                 bgtv.setOnClickListener(performFilterButtonClick);
             }
-//            updateCards();
+            // Add two AdCards and display to screen
+            ArrayList<Card> combinedList = new ArrayList<>();
+            combinedList.addAll(cardStackAdapter.getEvents());
+            combinedList.addAll(eventCards);
+            combinedList.add((int) (combinedList.size() * 0.6), new AdCard());
+            combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
+
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
+            cardArrayList = combinedList;
+
+            // Implements filtering networked results
+            if (tags == null || tags.isEmpty()) {
+                cardStackAdapter.setEvents(cardArrayList);
+            } else {
+                filterUsingTags(combinedList, tags);
+                cardStackAdapter.setEvents(combinedList);
+            }
+            diffResult.dispatchUpdatesTo(cardStackAdapter);
+
+
         }
 
         @Override

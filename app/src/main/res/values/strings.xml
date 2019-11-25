@@ -86,5 +86,6 @@
     <string name="discover_unavailable">There are no events available on your selected dates or location. Click here to try changing the date or selecting another place.</string>
     <string name="near_me_unavailable">There are no events available near you on the selected dates or location. Click here to try changing the date or selecting another place.</string>
     <string name="end_of_stack">You\'ve reached the end of the list; use the filter button to refine your search filters.</string>
+    <string name="filters_too_narrow">You\'ve set filters, and we couldn\'t match any events to them. Try again with different settings.</string>
 
 </resources>
