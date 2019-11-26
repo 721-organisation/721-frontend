@@ -9,6 +9,9 @@ import androidx.annotation.Nullable;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel721.BuildConfig;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * This class is designed to provide compile-time safety
  * for the types of events we like to be reported to
@@ -38,6 +41,40 @@ public class AnalyticsHelper {
     public static final String TEST_RELEASE_ANALYTICS_EVENT = "PleaseIgnoreThisStatistic";
     public static final String USER_POSITIVE_FEEDBACK = "FeedbackCardPositiveFeedback";
     public static final String USER_NEGATIVE_FEEDBACK = "FeedbackCardNegativeFeedback";
+
+
+    // Feedback card text
+    public static final String HAVING_FUN_QUESTION = "Having fun?";
+    public static final String HAVING_FUN_QUESTION_POSITIVE_RESPONSE = "HavingFunPositiveResponse";
+    public static final String HAVING_FUN_QUESTION_NEGATIVE_RESPONSE = "HavingFunNegativeResponse";
+    public static final String FINDING_EXPERIENCES_YOU_LIKE_QUESTION = "Finding experiences you like?";
+    public static final String FINDING_EXPERIENCES_YOU_LIKE_QUESTION_POSITIVE_RESPONSE = "FindingExperiencesYouLikePositiveResponse";
+    public static final String FINDING_EXPERIENCES_YOU_LIKE_QUESTION_NEGATIVE_RESPONSE = "FindingExperiencesYouLikeNegativeResponse";
+    public static final String HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION = "Have you been to an event yet?";
+    public static final String HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE = "HaveYouBeenToAnEventYetPositiveResponse";
+    public static final String HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_NEGATIVE_RESPONSE = "HaveYouBeenToAnEventYetNegativeResponse";
+    public static final String DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION = "Discovered something you didn't know?";
+    public static final String DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_POSITIVE_RESPONSE = "DiscoveredSomethingYouDidntKnowPositiveResponse";
+    public static final String DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_NEGATIVE_RESPONSE = "DiscoveredSomethingYouDidntKnowNegativeResponse";
+    public static final String NEED_MORE_HELP_QUESTION = "Need more help to find cool experiences?";
+    public static final String NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE = "NeedMoreHelpToFindCoolExperiencesPositiveResponse";
+    public static final String NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE = "NeedMoreHelpToFindCoolExperiencesNegativeResponse";
+
+    public static final ArrayList<String> feedbackQuestions() {
+        ArrayList<String> questions = new ArrayList<>();
+        questions.add(HAVING_FUN_QUESTION);
+        questions.add(FINDING_EXPERIENCES_YOU_LIKE_QUESTION);
+        questions.add(HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION);
+        questions.add(DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION);
+        questions.add(NEED_MORE_HELP_QUESTION);
+        return questions;
+    }
+
+    public static String getRandomQuestion(){
+        Random rand = new Random();
+        ArrayList<String> feedbackQs = feedbackQuestions();
+        return feedbackQs.get(rand.nextInt(feedbackQs.size()));
+    }
 
     /**
      * This is the custom Analytics logger for 721.

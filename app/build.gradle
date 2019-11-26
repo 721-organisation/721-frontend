@@ -9,8 +9,8 @@ android {
         applicationId "com.travel721"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 12
-        versionName "1.02 ReleaseBuild"
+        versionCode 15
+        versionName "1.05 ReleaseBuild Nov 2019"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -70,6 +70,7 @@ dependencies {
     api "androidx.room:room-guava:$room_version"
     // Test helpers
     api 'com.google.firebase:firebase-messaging:20.0.1'
+    api 'com.google.firebase:firebase-config:19.0.3'
     testImplementation "androidx.room:room-testing:$room_version"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

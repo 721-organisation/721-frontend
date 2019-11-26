@@ -21,13 +21,18 @@ public class LoadingDiscoverFragment extends LoadingFragment {
     String radius;
     String daysFromNow;
     private String IID;
+    private String minDays;
+    private int selectedChipResID;
 
-    public static LoadingDiscoverFragment newInstance(String accessToken, String searchLocation, String radius, String daysFromNow, String IID) {
+
+    public static LoadingDiscoverFragment newInstance(String accessToken, String searchLocation, String radius, int selectedChipResID, String minDays, String daysFromNow, String IID) {
         LoadingDiscoverFragment fragment = new LoadingDiscoverFragment();
         fragment.accessToken = accessToken;
         fragment.searchLocation = searchLocation;
         fragment.radius = radius;
         fragment.daysFromNow = daysFromNow;
+        fragment.selectedChipResID = selectedChipResID;
+        fragment.minDays = minDays;
         fragment.IID = IID;
         return fragment;
     }
@@ -54,15 +59,17 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         bundle.putString("accessToken", accessToken);
         bundle.putString("searchLocation", searchLocation);
         bundle.putString("IID", IID);
+        bundle.putInt("selectedChip", selectedChipResID);
         bundle.putString("radius", radius);
         bundle.putString("daysFromNow", daysFromNow);
+        bundle.putString("minDays", minDays);
         Log.v("TEST", "Swapping fragments... ");
         Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
         return view;
     }
 
     public static LoadingDiscoverFragment clone(LoadingDiscoverFragment toClone) {
-        return LoadingDiscoverFragment.newInstance(toClone.accessToken, toClone.searchLocation, toClone.radius, toClone.daysFromNow, toClone.IID);
+        return LoadingDiscoverFragment.newInstance(toClone.accessToken, toClone.searchLocation, toClone.radius, toClone.selectedChipResID, toClone.minDays, toClone.daysFromNow, toClone.IID);
     }
 }
 

@@ -33,12 +33,16 @@ import com.travel721.CardStackAdapter;
 import com.travel721.PageViewModel;
 import com.travel721.R;
 import com.travel721.VolleyRequestQueue;
+import com.travel721.activity.Email721TeamRedirectActivity;
 import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
+import com.travel721.card.ContactUsFeedbackCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
+import com.travel721.card.FeedbackToFirebaseCard;
+import com.travel721.card.InstagramFeedbackCard;
 import com.travel721.eventcaching.CacheDatabase;
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackListener;
@@ -67,10 +71,21 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import static com.travel721.Constants.API_ROOT_URL;
+import static com.travel721.Constants.SHEFFIELD_LATITUDE;
+import static com.travel721.Constants.SHEFFIELD_LONGITUDE;
+import static com.travel721.Constants.SHEFFIELD_RADIUS;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
+import static com.travel721.analytics.AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION;
+import static com.travel721.analytics.AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION;
+import static com.travel721.analytics.AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION;
+import static com.travel721.analytics.AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.AnalyticsHelper.HAVING_FUN_QUESTION;
+import static com.travel721.analytics.AnalyticsHelper.NEED_MORE_HELP_QUESTION;
 import static com.travel721.analytics.AnalyticsHelper.USER_NEGATIVE_FEEDBACK;
 import static com.travel721.analytics.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
+import static com.yuyakaido.android.cardstackview.Direction.Left;
+import static com.yuyakaido.android.cardstackview.Direction.Right;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -165,6 +180,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         String IID = getArguments().getString("IID");
         String radius = getArguments().getString("radius");
         String daysFromNow = getArguments().getString("daysFromNow");
+        String minDays;
         switch (Objects.requireNonNull(mode)) {
             case "nearme":
                 String longitude = getArguments().getString("longitude");
@@ -174,15 +190,17 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 // TODO show user that 721 is updating events
 
-
+                minDays = "0";
                 EventCuratorAsyncTask nearmeeventCuratorAsyncTask = new EventCuratorAsyncTask(tagsToFilterBy, accessToken, IID, longitude, latitude, radius, daysFromNow);
                 nearmeeventCuratorAsyncTask.execute();
 
 //                }
                 break;
             case "discover":
+                minDays = getArguments().getString("minDays");
                 String searchLocation = getArguments().getString("searchLocation");
-                EventCuratorAsyncTask discovereventCuratorAsyncTask = new EventCuratorAsyncTask(null, accessToken, IID, radius, daysFromNow, searchLocation);
+
+                EventCuratorAsyncTask discovereventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, radius, daysFromNow, minDays, searchLocation);
                 discovereventCuratorAsyncTask.execute();
                 break;
             case "applink":
@@ -235,7 +253,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         FloatingActionButton filterButton = root.findViewById(R.id.filterButton);
         if (callingLoader instanceof LoadingNearMeFragment) {
             filterButton.setOnClickListener(view -> {
-                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags);
+                double distanceFromSheffield = getDistanceFromLatLongs(SHEFFIELD_LATITUDE, Double.parseDouble(Objects.requireNonNull(getArguments().getString("latitude"))), SHEFFIELD_LONGITUDE, Double.parseDouble(Objects.requireNonNull(getArguments().getString("longitude"))), 0, 0);
+                Log.d("CSF", "onCreateView: distance" + distanceFromSheffield);
+                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags, distanceFromSheffield < SHEFFIELD_RADIUS);
                 filterBottomSheetFragment.show(Objects.requireNonNull(getFragmentManager()),
                         "filter_sheet_fragment");
 
@@ -244,7 +264,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         if (callingLoader instanceof LoadingDiscoverFragment) {
             filterButton.setOnClickListener(view -> {
                 SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                        SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"), Integer.valueOf(getArguments().getString("daysFromNow")), Integer.valueOf(getArguments().getString("radius")));
+                        SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"), getArguments().getInt("selectedChip"), Integer.valueOf(getArguments().getString("radius")));
                 addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
                         "discover_sheet_fragment");
             });
@@ -305,7 +325,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         cardStackLayoutManager.setSwipeableMethod(SwipeableMethod.AutomaticAndManual);
         List<Direction> directions = new ArrayList<>();
         directions.add(Direction.Right);
-        directions.add(Direction.Left);
+        directions.add(Left);
         cardStackLayoutManager.setDirections(directions);
         queue = VolleyRequestQueue.getInstance(getContext());
         queue.getRequestQueue().start();
@@ -430,6 +450,51 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             }
         }
 //        cardArrayList.remove(cardArrayList.get(index));
+        if (cardArrayList.get(index) instanceof InstagramFeedbackCard && direction == Left) {
+            String url = "https://www.instagram.com/721app/";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            getContext().startActivity(i);
+        }
+        if (cardArrayList.get(index) instanceof ContactUsFeedbackCard && direction == Direction.Right) {
+            Intent i = new Intent(getContext(), Email721TeamRedirectActivity.class);
+            getContext().startActivity(i);
+        }
+        if (cardArrayList.get(index) instanceof FeedbackToFirebaseCard) {
+            String question = ((FeedbackToFirebaseCard) cardArrayList.get(index)).getQuestion();
+            switch (question) {
+                case HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION:
+                    if (direction == Left)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_NEGATIVE_RESPONSE, null);
+                    if (direction == Right)
+                        AnalyticsHelper.logEvent(getContext(), HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE, null);
+                    break;
+                case DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION:
+                    if (direction == Left)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_NEGATIVE_RESPONSE, null);
+                    if (direction == Right)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_POSITIVE_RESPONSE, null);
+                    break;
+                case HAVING_FUN_QUESTION:
+                    if (direction == Left)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVING_FUN_QUESTION_NEGATIVE_RESPONSE, null);
+                    if (direction == Right)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVING_FUN_QUESTION_POSITIVE_RESPONSE, null);
+                    break;
+                case FINDING_EXPERIENCES_YOU_LIKE_QUESTION:
+                    if (direction == Left)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_NEGATIVE_RESPONSE, null);
+                    if (direction == Right)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_POSITIVE_RESPONSE, null);
+                    break;
+                case NEED_MORE_HELP_QUESTION:
+                    if (direction == Left)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE, null);
+                    if (direction == Right)
+                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE, null);
+            }
+            Toast.makeText(getContext(), "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -454,7 +519,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
     public void dislikesTopCard(View view) {
         cardStackLayoutManager.setSwipeAnimationSetting(new SwipeAnimationSetting.Builder()
-                .setDirection(Direction.Left)
+                .setDirection(Left)
                 .setDuration(SLIDE_ANIMATION_DURATION)
                 .setInterpolator(new AccelerateInterpolator())
                 .build());
@@ -484,6 +549,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         private boolean discoverMode;
         private String searchLocation;
         private List<String> tags;
+        private String minDays;
 
         /**
          * This constructor is for the 'Near Me' mode only
@@ -516,69 +582,76 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
          * @param daysFromNow    days from now to search
          * @param searchLocation the location to discover
          */
-        public EventCuratorAsyncTask(@Nullable List<String> tags, String accessToken, String IID, String radius, String daysFromNow, String searchLocation) {
+        public EventCuratorAsyncTask(String accessToken, String IID, String radius, String daysFromNow, String minDays, String searchLocation) {
             this.accessToken = accessToken;
             this.IID = IID;
             this.longitude = String.valueOf(0);
             this.latitude = String.valueOf(0);
             this.radius = radius;
-            this.tags = tags;
             this.daysFromNow = daysFromNow;
             this.searchLocation = searchLocation;
             discoverMode = true;
+            this.minDays = minDays;
         }
 
         @Override
         protected void onPostExecute(List<EventCard> eventCards) {
-            super.onPostExecute(eventCards);
+            try {
+                super.onPostExecute(eventCards);
 
-            // Check if there are no results and display message accordingly
-            final View.OnClickListener performFilterButtonClick = view -> {
-                getView().findViewById(R.id.filterButton).performClick();
-            };
-            if (eventCards.isEmpty() && cardArrayList.isEmpty()) {
-                if (discoverMode) {
-                    TextView bgtv = getView().findViewById(R.id.background_textview);
-                    bgtv.setText(getResources().getString(R.string.discover_unavailable));
-                    bgtv.setOnClickListener(view -> {
-                        SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, IID);
-                        addPhotoBottomDialogFragment.show(Objects.requireNonNull(getFragmentManager()),
-                                "discover_sheet_fragment");
-                    });
-                    getView().findViewById(R.id.card_stack_view).setVisibility(View.GONE);
+                // Check if there are no results and display message accordingly
+                final View.OnClickListener performFilterButtonClick = view -> {
+                    getView().findViewById(R.id.filterButton).performClick();
+                };
+                if ((eventCards != null && eventCards.isEmpty()) && (cardArrayList != null && cardArrayList.isEmpty())) {
+                    if (discoverMode) {
+                        TextView bgtv = getView().findViewById(R.id.background_textview);
+                        bgtv.setText(getResources().getString(R.string.discover_unavailable));
+                        bgtv.setOnClickListener(view -> {
+                            SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
+                                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, IID);
+                            addPhotoBottomDialogFragment.show(Objects.requireNonNull(getFragmentManager()),
+                                    "discover_sheet_fragment");
+                        });
+                        getView().findViewById(R.id.card_stack_view).setVisibility(View.GONE);
+                    } else {
+                        TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
+                        bgtv.setText(getResources().getString(R.string.near_me_unavailable));
+                        bgtv.setOnClickListener(performFilterButtonClick);
+                        Objects.requireNonNull(getView()).findViewById(R.id.card_stack_view).setVisibility(View.GONE);
+
+                    }
                 } else {
-                    TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
-                    bgtv.setText(getResources().getString(R.string.near_me_unavailable));
-                    bgtv.setOnClickListener(performFilterButtonClick);
-                    Objects.requireNonNull(getView()).findViewById(R.id.card_stack_view).setVisibility(View.GONE);
-
+                    if (getView() != null) {
+                        TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
+                        bgtv.setText(getResources().getString(R.string.end_of_stack));
+                        bgtv.setOnClickListener(performFilterButtonClick);
+                    }
                 }
-            } else {
-                TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
-                bgtv.setText(getResources().getString(R.string.end_of_stack));
-                bgtv.setOnClickListener(performFilterButtonClick);
+                // Add two AdCards and display to screen
+                ArrayList<Card> combinedList = new ArrayList<>();
+                combinedList.addAll(cardStackAdapter.getEvents());
+                combinedList.addAll(eventCards);
+                combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
+                combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
+                combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
+                combinedList.add((int) (combinedList.size() * 0.2), new InstagramFeedbackCard());
+
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
+                cardArrayList = combinedList;
+
+                // Implements filtering networked results
+                if (tags == null || tags.isEmpty()) {
+                    cardStackAdapter.setEvents(cardArrayList);
+                } else {
+                    filterUsingTags(combinedList, tags);
+                    cardStackAdapter.setEvents(combinedList);
+                }
+                diffResult.dispatchUpdatesTo(cardStackAdapter);
+
+            } catch (NullPointerException e) {
+                Log.e("NPE", "onPostExecute: tried to update UI but failed with nullpointerexception");
             }
-            // Add two AdCards and display to screen
-            ArrayList<Card> combinedList = new ArrayList<>();
-            combinedList.addAll(cardStackAdapter.getEvents());
-            combinedList.addAll(eventCards);
-            combinedList.add((int) (combinedList.size() * 0.6), new AdCard());
-            combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
-
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
-            cardArrayList = combinedList;
-
-            // Implements filtering networked results
-            if (tags == null || tags.isEmpty()) {
-                cardStackAdapter.setEvents(cardArrayList);
-            } else {
-                filterUsingTags(combinedList, tags);
-                cardStackAdapter.setEvents(combinedList);
-            }
-            diffResult.dispatchUpdatesTo(cardStackAdapter);
-
-
         }
 
         @Override
@@ -609,6 +682,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             .add("latitude", "0")
                             .add("longitude", "0")
                             .add("location", searchLocation)
+                            .add("minDays", minDays)
                             .add("explore", "true")
                             .add("radius", String.valueOf(radius))
                             .add("daysFromNow", String.valueOf(daysFromNow))
@@ -636,7 +710,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                         okhttp3.Request getEventsFromServerRequest = new okhttp3.Request.Builder()
                                 .url(discoverMode ?
-                                        API_ROOT_URL + "events/getWithinDistance?latitude=0&longitude=0&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=true&location=" + searchLocation :
+                                        API_ROOT_URL + "events/getWithinDistance?latitude=0&longitude=0&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=true&location=" + searchLocation + "&minDays=" + minDays :
 
                                         API_ROOT_URL + "events/getWithinDistance?latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false")
                                 .build();
@@ -699,4 +773,23 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         }
     }
 
+    public static double getDistanceFromLatLongs(double lat1, double lat2, double lon1,
+                                                 double lon2, double el1, double el2) {
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        double height = el1 - el2;
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        return Math.sqrt(distance);
+    }
 }

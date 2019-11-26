@@ -12,6 +12,18 @@ public class Constants {
     public static final String FOOD_AND_DRINK_TAG = "Food and Drink".toUpperCase();
     public static final String MUSIC_TAG = "Music".toUpperCase();
 
+    public static final String BEST_OF_SHEFFIELD_TAG = "Best in Sheffield".toUpperCase();
+    public static final String KELHAM_ISLAND_TAG = "Kelham Island".toUpperCase();
+    public static final String ECCY_ROAD_TAG = "Ecclesall Road".toUpperCase();
+    public static final String UOS_TAG = "University Of Sheffield".toUpperCase();
+    public static final String CITY_CENTRE_TAG = "City Center".toUpperCase();
+    public static final String HALLAM_TAG = "Sheffield Hallam University".toUpperCase();
+
+    public static final double SHEFFIELD_LATITUDE = 53.38297;
+    public static final double SHEFFIELD_LONGITUDE = -1.4659;
+    public static final double SHEFFIELD_RADIUS = 8229.99;
+
+    public static final String SHEFFIELD_FILTERS_ENABLED_KEY = "SheffieldTagsEnabled";
 
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 999;
     public static final int REQUEST_LOCATION_PERMISSIONS = 999;

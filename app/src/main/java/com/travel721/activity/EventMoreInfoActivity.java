@@ -58,11 +58,20 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             });
         }
         Button button = findViewById(R.id.eventHyperlink);
+        if (eventCard.getSourceTag().toUpperCase().equals("BUSINESS")) {
+            button.setText(getString(R.string.event_hyperlink_text, getResources().getString(R.string.partner_website), eventCard.getName()));
+        } else {
+            button.setText(getString(R.string.event_hyperlink_text, eventCard.getSourceTag(), eventCard.getName()));
+        }
         button.setText(getString(R.string.event_hyperlink_text, eventCard.getSourceTag(), eventCard.getName()));
         TextView tv = findViewById(R.id.eventLongDescription);
         tv.setText(eventCard.getDescription());
         tv = findViewById(R.id.eventProvidedBy);
-        tv.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
+        if (eventCard.getSourceTag().toUpperCase().equals("BUSINESS")) {
+            tv.setText(getString(R.string.event_provided_by_placeholder, getResources().getString(R.string.partner_721)));
+        } else {
+            tv.setText(getString(R.string.event_provided_by_placeholder, eventCard.getSourceTag().toLowerCase()));
+        }
         tv = findViewById(R.id.eventMoreInfoDate);
         tv.setText(eventCard.getFormattedDate());
         tv = findViewById(R.id.eventMoreInfoTime);

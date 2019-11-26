@@ -39,7 +39,6 @@
             android:layout_marginBottom="100dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
-            android:text="@string/feedback_card_tagline"
             android:textAlignment="center"
             android:textStyle="italic"
             app:layout_constraintBottom_toTopOf="@+id/imageView3"

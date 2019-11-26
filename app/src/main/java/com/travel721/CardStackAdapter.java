@@ -3,6 +3,7 @@ package com.travel721;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -29,15 +31,19 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
+import com.travel721.activity.Email721TeamRedirectActivity;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
+import com.travel721.card.ContactUsFeedbackCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
+import com.travel721.card.FeedbackToFirebaseCard;
+import com.travel721.card.InstagramFeedbackCard;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,6 +56,26 @@ import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
  * @author Bhav
  */
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+            EVENT_CARD,
+            FEEDBACK_CARD,
+            AD_CARD,
+            CONTACT_US_FEEDBACK_CARD,
+            FEEDBACK_TO_FIREBASE_CARD,
+            INSTAGRAM_FEEDBACK_CARD
+    })
+    public @interface CardTypes {
+    }
+
+    public static final int EVENT_CARD = 0;
+    public static final int FEEDBACK_CARD = 1;
+    public static final int AD_CARD = 2;
+    public static final int CONTACT_US_FEEDBACK_CARD = 3;
+    public static final int FEEDBACK_TO_FIREBASE_CARD = 4;
+    public static final int INSTAGRAM_FEEDBACK_CARD = 5;
+
+
     // Field for cards in the stack
     private List<Card> events;
 
@@ -62,13 +88,19 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(@CardTypes int position) {
         if (events.get(position) instanceof EventCard)
-            return 0;
+            return EVENT_CARD;
         if (events.get(position) instanceof FeedbackCard)
-            return 1;
+            return FEEDBACK_CARD;
         if (events.get(position) instanceof AdCard)
-            return 2;
+            return AD_CARD;
+        if (events.get(position) instanceof ContactUsFeedbackCard)
+            return CONTACT_US_FEEDBACK_CARD;
+        if (events.get(position) instanceof FeedbackToFirebaseCard)
+            return FEEDBACK_TO_FIREBASE_CARD;
+        if (events.get(position) instanceof InstagramFeedbackCard)
+            return INSTAGRAM_FEEDBACK_CARD;
         return -1;
     }
 
@@ -85,14 +117,14 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
      */
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, @CardTypes int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         switch (viewType) {
-            case 0:
+            case EVENT_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
-            case 1:
+            case FEEDBACK_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback, parent, false));
-            case 2:
+            case AD_CARD:
                 ViewHolder vh = new ViewHolder(inflater.inflate(R.layout.card_ad, parent, false));
                 MobileAds.initialize(parent.getContext(), initializationStatus -> {
                 });
@@ -109,8 +141,13 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
 
                 });
                 mAdView.loadAd(adRequest);
-
                 return vh;
+            case CONTACT_US_FEEDBACK_CARD:
+                return new ViewHolder(inflater.inflate(R.layout.card_feedback_contact_us, parent, false));
+            case FEEDBACK_TO_FIREBASE_CARD:
+                return new ViewHolder(inflater.inflate(R.layout.card_feedback_firebase, parent, false));
+            case INSTAGRAM_FEEDBACK_CARD:
+                return new ViewHolder(inflater.inflate(R.layout.card_feedback_instagram, parent, false));
         }
         // This should never happen
         return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
@@ -150,7 +187,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV = v.findViewById(R.id.eventPrice);
             currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
             currTV = v.findViewById(R.id.eventSourceLabel);
-            currTV.setText(ec.getSourceTag());
+            if (ec.getSourceTag().toUpperCase().equals("BUSINESS")) {
+                currTV.setText(v.getResources().getString(R.string.partner_721));
+            } else {
+                currTV.setText(ec.getSourceTag());
+            }
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
             imageView.setImageDrawable(null);
@@ -201,7 +242,25 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
 
         }
-
+        if (events.get(position) instanceof ContactUsFeedbackCard) {
+            holder.itemView.setOnClickListener(v -> {
+                Intent i = new Intent(holder.itemView.getContext(), Email721TeamRedirectActivity.class);
+                holder.itemView.getContext().startActivity(i);
+            });
+        }
+        if (events.get(position) instanceof InstagramFeedbackCard) {
+            holder.itemView.setOnClickListener(v -> {
+                String url = "https://www.instagram.com/721app/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                holder.itemView.getContext().startActivity(i);
+            });
+        }
+        if (events.get(position) instanceof FeedbackToFirebaseCard) {
+            String question = ((FeedbackToFirebaseCard) events.get(position)).getQuestion();
+            TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
+            feedbackTagline.setText(question);
+        }
     }
 
     @Override

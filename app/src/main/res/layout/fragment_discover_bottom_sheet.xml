@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <ImageView
@@ -96,32 +96,67 @@
         android:layout_marginTop="16dp"
         tools:text="@string/days_away_hint" />
 
-    <LinearLayout
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/daysChipGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:layout_margin="16dp"
+        app:checkedChip="@id/today_chip"
+        app:selectionRequired="true"
+        app:singleSelection="true">
 
-        <SeekBar
-            android:id="@+id/daysSeekBar"
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/today_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_vertical_margin"
-            android:layout_weight="9"
-            android:max="31"
-            android:progressTint="@color/colorAccent"
-            android:thumbTint="@color/colorAccent" />
+            android:checked="true"
+            android:text="@string/today"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
 
-        <TextView
-            android:id="@+id/daysValTv"
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tomorrow_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="0"
-            android:textAlignment="center"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="@string/tomorrow"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/this_week_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/this_week"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/next_week_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_week"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/this_month_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/this_month"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/next_month_chip"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_month"
+            app:chipBackgroundColor="@color/chip_selector_state_list" />
+
+
+    </com.google.android.material.chip.ChipGroup>
 
     <Button
         android:id="@+id/discover_button"
