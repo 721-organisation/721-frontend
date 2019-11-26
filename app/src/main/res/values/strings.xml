@@ -95,7 +95,7 @@
     <string name="next_month">Next Month</string>
     <string name="partner_website">partner website</string>
     <string name="partner_721">721 Partner</string>
-    <string name="following_on_instagram">Are you following @721app on Instagram?</string>
+    <string name="following_on_instagram">Are you following <u>@721app</u> on Instagram?</string>
     <string name="do_you_have_any_thoughts_or_ideas_for_the_721_team">Do you have any thoughts or ideas for the 721 team?</string>
 
 </resources>
