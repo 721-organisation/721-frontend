@@ -2,7 +2,6 @@ package com.travel721.fragment;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.travel721.eventcaching.CacheDatabase;
 import com.travel721.R;
+import com.travel721.card.Card;
+import com.travel721.card.EventCard;
+import com.travel721.eventcaching.CacheDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class LoadingNearMeFragment extends LoadingFragment {
@@ -28,7 +32,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
     String latitude;
     String radius;
     String daysFromNow;
-    ArrayList<? extends Parcelable> eventCardList = new ArrayList<>();
+    ArrayList<? extends Card> eventCardList = new ArrayList<>();
 
     // This is where to make the bundle info
     public static LoadingNearMeFragment newInstance(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow, ArrayList<String> tagsToFilterBy) {
@@ -63,8 +67,24 @@ public class LoadingNearMeFragment extends LoadingFragment {
         TextView statusText = view.findViewById(R.id.status_text);
         statusText.setText("Loading cached events..");
         new Thread(() -> {
-            eventCardList = (ArrayList<? extends Parcelable>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
+            eventCardList = (ArrayList<? extends EventCard>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
+            String eventCardDateFormatString = "EEEE dd MMM";
+            SimpleDateFormat sdf = new SimpleDateFormat(eventCardDateFormatString);
+            for (Card c : eventCardList) {
+                if (c instanceof EventCard) {
+                    Date currDate = new Date();
+                    try {
+                        Date formattedEventDate = sdf.parse(((EventCard) c).getPrettyDate());
+                        if (currDate.compareTo(formattedEventDate) > 0) {
+                            CacheDatabase.getInstance(getContext()).eventCardDao().delete((EventCard) c);
+                            eventCardList.remove(c);
+                        }
+                    } catch (ParseException e) {
 
+                    }
+
+                }
+            }
             Bundle bundle = new Bundle();
             bundle.putString("mode", "nearme");
             bundle.putStringArrayList("tagsToFilterBy", tagsToFilterBy);

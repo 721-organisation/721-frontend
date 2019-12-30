@@ -41,7 +41,8 @@
         android:text="721 Sheffield"
         android:textAlignment="center"
         android:textColor="@color/colorAccent"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <!--    <TableLayout-->
     <!--        android:layout_width="match_parent"-->
@@ -156,6 +157,7 @@
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:foregroundGravity="center_vertical|center_horizontal"
+        android:visibility="gone"
         app:singleSelection="false">
 
         <!--        <com.google.android.material.chip.Chip-->

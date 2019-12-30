@@ -197,6 +197,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             imageView.setImageDrawable(null);
 
             final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
+
             CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
             circularProgressDrawable.setStrokeWidth(15f);
             circularProgressDrawable.setCenterRadius(90f);
