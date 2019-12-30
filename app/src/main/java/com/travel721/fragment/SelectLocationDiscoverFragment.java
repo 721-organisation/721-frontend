@@ -1,6 +1,10 @@
 package com.travel721.fragment;
 
+import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +18,17 @@ import androidx.annotation.Nullable;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.travel721.R;
 
+import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFragment {
     boolean discovering = false;
@@ -101,8 +111,26 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
 
         ChipGroup daysChipGroup = v.findViewById(R.id.daysChipGroup);
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         button.setOnClickListener(view1 -> {
+            Log.v("BTN", "CLICKED");
+            try {
+                List<Address> addressList = geocoder.getFromLocationName(String.valueOf(editText.getText()), 1);
+                String mCountryName = addressList.get(0).getCountryName();
+                SharedPreferences ss = getContext().getSharedPreferences("unlocked_countries_721", 0);
+                Set<String> hs = ss.getStringSet("set", new HashSet<String>());
+                if (!hs.contains(mCountryName)) {
+                    Snackbar.make(getView().getRootView(), "You have not yet unlocked 721 in " + mCountryName, Snackbar.LENGTH_LONG).show();
+                    Log.v("BTN", "Blocked Discover");
+                    return;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+
+
             discovering = true;
             LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), String.valueOf(radiusSeekBar.getProgress() + 1), daysChipGroup.getCheckedChipId(), String.valueOf(minDays), String.valueOf(maxDays), IID);
             Objects.requireNonNull(getFragmentManager()).beginTransaction()

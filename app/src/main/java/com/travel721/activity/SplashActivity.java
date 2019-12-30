@@ -2,6 +2,8 @@ package com.travel721.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
@@ -46,10 +50,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.R;
-import com.travel721.error.SplashScreenLoadFailure;
+import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.EventCard;
+import com.travel721.error.SplashScreenLoadFailure;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -62,10 +66,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.REQUEST_CHECK_LOCATION_SETTINGS;
@@ -77,9 +83,9 @@ import static com.travel721.Constants.testRadius;
 /**
  * Splash Activity to load SOME but not all information
  * required by the MainActivity in order to load
- *
+ * <p>
  * No events curation is done here.
- *
+ * <p>
  * This class is not designed to be instantiated by itself as setContentView is not called.
  * See Initial App Loader and UpdatedSettingsSplashActivity to see why.
  *
@@ -356,6 +362,37 @@ public abstract class SplashActivity extends Activity {
                                         try {
                                             List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                             String city = address.get(0).getSubAdminArea();
+                                            String mCountryName = address.get(0).getCountryName();
+                                            SharedPreferences ss = getSharedPreferences("unlocked_countries_721", 0);
+                                            Set<String> hs = ss.getStringSet("set", new HashSet<String>());
+                                            if (!hs.contains(mCountryName)) {
+                                                hs.add(mCountryName);
+                                                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "COUNTRY_UNLOCKED")
+                                                        .setSmallIcon(R.drawable.ic_flight_takeoff)
+                                                        .setContentTitle("New Country Unlocked")
+                                                        .setContentText("You just unlocked 721 in " + mCountryName)
+                                                        .setPriority(NotificationCompat.PRIORITY_MAX);
+                                                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                    CharSequence name = "COUNTRY_UNLOCKED";
+                                                    String description = "COUNTRY_UNLOCKED";
+                                                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                                                    NotificationChannel channel = new NotificationChannel("COUNTRY_UNLOCKED", name, importance);
+                                                    channel.setDescription(description);
+                                                    // Register the channel with the system; you can't change the importance
+                                                    // or other notification behaviors after this
+                                                    NotificationManager mnotificationManager = getSystemService(NotificationManager.class);
+                                                    mnotificationManager.createNotificationChannel(channel);
+                                                }
+
+                                                //    notificationId is a unique int for each notification that you must define
+                                                notificationManager.notify(0, builder.build());
+                                            }
+                                            SharedPreferences.Editor edit = ss.edit();
+                                            edit.clear();
+                                            edit.putStringSet("set", hs);
+                                            edit.apply();
                                             loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
                                         } catch (IOException e) {
                                             loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));

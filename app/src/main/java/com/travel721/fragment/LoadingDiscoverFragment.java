@@ -1,6 +1,9 @@
 package com.travel721.fragment;
 
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,12 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.travel721.R;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 public class LoadingDiscoverFragment extends LoadingFragment {
     private String accessToken;
@@ -26,6 +36,7 @@ public class LoadingDiscoverFragment extends LoadingFragment {
 
 
     public static LoadingDiscoverFragment newInstance(String accessToken, String searchLocation, String radius, int selectedChipResID, String minDays, String daysFromNow, String IID) {
+
         LoadingDiscoverFragment fragment = new LoadingDiscoverFragment();
         fragment.accessToken = accessToken;
         fragment.searchLocation = searchLocation;
@@ -35,13 +46,14 @@ public class LoadingDiscoverFragment extends LoadingFragment {
         fragment.minDays = minDays;
         fragment.IID = IID;
         return fragment;
+
+
     }
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-
         View view = getLayoutInflater().inflate(R.layout.blank, null);
         TextView textView = view.findViewById(R.id.status_text);
         textView.setText("Finding events near " + searchLocation);
