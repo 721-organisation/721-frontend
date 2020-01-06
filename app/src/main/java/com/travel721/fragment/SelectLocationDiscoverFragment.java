@@ -22,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.travel721.R;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -121,12 +120,14 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 SharedPreferences ss = getContext().getSharedPreferences("unlocked_countries_721", 0);
                 Set<String> hs = ss.getStringSet("set", new HashSet<String>());
                 if (!hs.contains(mCountryName)) {
+                    if (mCountryName.equals("null"))
+                        throw new Exception();
                     Snackbar.make(getView().getRootView(), "You have not yet unlocked 721 in " + mCountryName, Snackbar.LENGTH_LONG).show();
                     Log.v("BTN", "Blocked Discover");
                     return;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Snackbar.make(getView().getRootView(), "Invalid place", Snackbar.LENGTH_LONG).show();
                 return;
             }
 

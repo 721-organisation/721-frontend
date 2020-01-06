@@ -28,6 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -369,7 +370,9 @@ public abstract class SplashActivity extends Activity {
                                                 hs.add(mCountryName);
                                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "COUNTRY_UNLOCKED")
                                                         .setSmallIcon(R.drawable.ic_flight_takeoff)
+
                                                         .setContentTitle("New Country Unlocked")
+                                                        .setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null))
                                                         .setContentText("You just unlocked 721 in " + mCountryName)
                                                         .setPriority(NotificationCompat.PRIORITY_MAX);
                                                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
