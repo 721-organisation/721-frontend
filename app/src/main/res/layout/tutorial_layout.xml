@@ -34,7 +34,7 @@
         android:layout_margin="20dp"
         android:layout_weight="1"
         android:background="@drawable/custom_button"
-        android:fontFamily="@font/catamaran"
+        android:fontFamily="@font/open_sans_light"
         android:onClick="progressFromTutorial"
         android:text="@string/get_started"
         android:textAllCaps="false"

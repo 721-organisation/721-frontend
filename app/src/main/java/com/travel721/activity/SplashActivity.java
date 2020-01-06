@@ -88,7 +88,7 @@ import static com.travel721.Constants.testRadius;
  * No events curation is done here.
  * <p>
  * This class is not designed to be instantiated by itself as setContentView is not called.
- * See Initial App Loader and UpdatedSettingsSplashActivity to see why.
+ * See Initial App Loader to see why.
  *
  * @author Bhav
  */

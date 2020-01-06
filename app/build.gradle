@@ -69,6 +69,8 @@ dependencies {
     api 'com.google.firebase:firebase-ads:18.3.0'
     api 'com.google.code.gson:gson:2.8.6'
     api 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    api 'me.toptas.fancyshowcase:fancyshowcaseview:1.2.1'
+
 
     def room_version = "2.2.3"
     api "androidx.room:room-runtime:$room_version"
