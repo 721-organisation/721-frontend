@@ -1,32 +1,38 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme" parent="AppBaseTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat</item>
-
     </style>
 
     <style name="CustomButtomStyle" parent="Widget.AppCompat.Button">
         <item name="android:color">@color/button_custom_statelist</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="SplashTheme" parent="AppTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:textColor">@color/textLightSecondary</item>
         <item name="android:textColorPrimary">@color/textLightSecondary</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorAccent</item>
-
+        <item name="android:textViewStyle">@style/OpenSansTextViewStyle</item>
+        <item name="android:buttonStyle">@style/OpenSansButtonStyle</item>
     </style>
 
+    <style name="OpenSansTextViewStyle">
+        <item name="android:fontFamily">@font/open_sans_light</item>
+    </style>
 
+    <style name="OpenSansButtonStyle">
+        <item name="android:fontFamily">@font/open_sans_light</item>
+    </style>
 </resources>
