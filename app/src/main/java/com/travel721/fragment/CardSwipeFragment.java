@@ -2,6 +2,7 @@ package com.travel721.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -69,7 +70,11 @@ import java.util.Set;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.SHEFFIELD_LATITUDE;
 import static com.travel721.Constants.SHEFFIELD_LONGITUDE;
@@ -285,6 +290,72 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 startActivity(i);
                 Objects.requireNonNull(getActivity()).finish();
             });
+        }
+
+
+        // CSF Tutorial
+
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("firstcsfvisit", true)) {
+            Log.v("CSFT", "First CSF Visit");
+            // sequence example
+            ShowcaseConfig config = new ShowcaseConfig();
+            Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
+            config.setMaskColor(Color.rgb(254, 96, 96));
+            config.setDelay(100); // half second between each showcase view
+
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialNearMe");
+
+            sequence.setConfig(config);
+
+            int positions = 0;
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(root.findViewById(R.id.background_textview))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("Nearby experiences are shown here\nSwipe right to save to My 721\nSwipe left to dismiss")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build()
+            );
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(root.findViewById(R.id.thumbupButton))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("If you don't like swiping, feel free to use the buttons here")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(root.findViewById(R.id.filterButton))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("Filter and change curation settings using this button")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+            sequence.addSequenceItem(new MaterialShowcaseView.Builder(getActivity())
+                    .setTarget(root.findViewById(R.id.shareEventButton))
+                    .setDismissText("Got It!")
+                    .setContentText("Share experiences on 721 with this button")
+                    .setMaskColour(Color.argb(200, 254, 96, 96))
+                    .build());
+            positions++;
+
+
+            int numberOfPositions = positions;
+            sequence.setOnItemDismissedListener((itemView, position) -> {
+                if (position == numberOfPositions) {
+                    // Unset first run
+                    sharedPreferences.edit().putBoolean("firstcsfvisit", false).apply();
+                }
+
+            });
+            sequence.start();
+
         }
 
         return root;

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                         loadingNearMeFragment = LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, prefRadius, prefDaysFromNow, null);
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragmentContainer, loadingNearMeFragment).commit();
+
                         break;
                     case 2:
                         SelectLocationDiscoverFragment addPhotoBottomDialogFragment =

@@ -183,7 +183,7 @@ public abstract class SplashActivity extends Activity {
             if (e instanceof ResolvableApiException) {
                 final ResolvableApiException resolvable = (ResolvableApiException) e;
                 // Location settings are not satisfied, show dialog
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SplashActivity.this);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
                 dialogBuilder
                         .setTitle(getResources().getString(R.string.location_is_off_title))
                         .setMessage(getResources().getString(R.string.location_is_off_message))
@@ -368,12 +368,13 @@ public abstract class SplashActivity extends Activity {
                                             Set<String> hs = ss.getStringSet("set", new HashSet<String>());
                                             if (!hs.contains(mCountryName)) {
                                                 hs.add(mCountryName);
+
                                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "COUNTRY_UNLOCKED")
                                                         .setSmallIcon(R.drawable.ic_flight_takeoff)
 
-                                                        .setContentTitle("New Country Unlocked")
+                                                        .setContentTitle("New Country Unlocked \uD83D\uDD13")
                                                         .setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null))
-                                                        .setContentText("You just unlocked 721 in " + mCountryName)
+                                                        .setContentText("You just unlocked 721 in " + mCountryName + "  \uD83C\uDF89")
                                                         .setPriority(NotificationCompat.PRIORITY_MAX);
                                                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 

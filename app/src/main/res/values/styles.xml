@@ -31,8 +31,6 @@
     <style name="SplashTheme" parent="AppBaseTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:textColor">@color/textLightSecondary</item>
-        <item name="android:textColorPrimary">@color/textLightSecondary</item>
         <item name="android:windowBackground">@color/colorAccent</item>
     </style>
 

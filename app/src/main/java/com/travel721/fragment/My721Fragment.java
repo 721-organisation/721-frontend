@@ -1,6 +1,8 @@
 package com.travel721.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -21,9 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.travel721.R;
 import com.travel721.activity.EventMoreInfoActivity;
@@ -41,6 +41,11 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
+import static android.content.Context.MODE_PRIVATE;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileLikedSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
@@ -196,6 +201,56 @@ public class My721Fragment extends Fragment {
             startActivity(i);
 
         });
+
+        // My 721 Tutorial
+
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("firstmy721visit", true)) {
+            Log.v("CSFT", "First Discover Visit");
+            // sequence example
+            ShowcaseConfig config = new ShowcaseConfig();
+            Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
+            config.setMaskColor(Color.rgb(254, 96, 96));
+            config.setDelay(100); // half second between each showcase view
+
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialMy721");
+
+            sequence.setConfig(config);
+
+            int positions = 0;
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(root.findViewById(R.id.eventListCardHolder))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("Experiences you save in Near Me or Discover are shown here")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build()
+            );
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(root.findViewById(R.id.settingsButton))
+                            .setDismissText("Got It!")
+                            .setContentText("Contact the 721 Team and see additional information about the app here")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+
+            int numberOfPositions = positions;
+            sequence.setOnItemDismissedListener((itemView, position) -> {
+                if (position == numberOfPositions) {
+                    // Unset first run
+                    sharedPreferences.edit().putBoolean("firstmy721visit", false).apply();
+                }
+
+            });
+            sequence.start();
+
+        }
+
+
         return root;
     }
 

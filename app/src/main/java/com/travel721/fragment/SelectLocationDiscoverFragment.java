@@ -1,5 +1,6 @@
 package com.travel721.fragment;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -9,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -20,8 +21,9 @@ import androidx.preference.PreferenceManager;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.travel721.R;
 
 import java.util.HashSet;
@@ -91,7 +93,8 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         TextView title = v.findViewById(R.id.discoverTitle);
         title.setOnClickListener(view -> dismiss());
         v.findViewById(R.id.closeDiscover).setOnClickListener(view -> dismiss());
-        EditText editText = v.findViewById(R.id.editText);
+        TextInputEditText editText = v.findViewById(R.id.discoverLocationEditText);
+        TextInputLayout textInputLayout = v.findViewById(R.id.discoverLocationInputLayout);
         TextView textView = v.findViewById(R.id.textView5);
         Button button = v.findViewById(R.id.discover_button);
 
@@ -102,12 +105,12 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
             try {
                 List<Address> addressList = geocoder.getFromLocationName(String.valueOf(editText.getText()), 1);
                 String mCountryName = addressList.get(0).getCountryName();
-                SharedPreferences ss = getContext().getSharedPreferences("unlocked_countries_721", 0);
+                SharedPreferences ss = Objects.requireNonNull(getContext()).getSharedPreferences("unlocked_countries_721", 0);
                 Set<String> hs = ss.getStringSet("set", new HashSet<>());
                 if (!hs.contains(mCountryName)) {
                     if (mCountryName.equals("null"))
                         throw new Exception();
-                    Snackbar.make(getView().getRootView(), "You have not yet unlocked 721 in " + mCountryName, Snackbar.LENGTH_LONG).show();
+                    textInputLayout.setError("You have not yet unlocked 721 in " + mCountryName + "\nOpen 721 there to unlock discover");
                     Log.v("BTN", "Blocked Discover");
                     return;
                 }
@@ -126,10 +129,31 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 dismiss();
 
             } catch (Exception e) {
-                Snackbar.make(getView().getRootView(), "Ambiguous or invalid place name, try 'Sheffield, UK' for example", Snackbar.LENGTH_LONG).show();
+                textInputLayout.setError("Ambiguous or invalid place name, try 'Sheffield, UK' for example");
                 return;
             }
 
+        });
+        SharedPreferences ss = Objects.requireNonNull(getContext()).getSharedPreferences("unlocked_countries_721", 0);
+        Set<String> hs = ss.getStringSet("set", new HashSet<>());
+        String message = "";
+        for (String s : hs) {
+            message = message + s + "\n";
+        }
+        if (hs.isEmpty()) message = "No Countries Unlocked.";
+
+        ImageView listUnlockedCountries = v.findViewById(R.id.listUnlockedCountriesButton);
+        String finalMessage = message;
+        listUnlockedCountries.setOnClickListener(v1 -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Unlocked Countries")
+                    .setMessage(finalMessage).setNeutralButton("Go Back", (dialog, which) -> {
+
+            });
+
+            AlertDialog alert = builder.create();
+
+            alert.show();
         });
         // get the views and attach the listener
 
