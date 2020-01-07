@@ -20,13 +20,13 @@ public class TutorialSlideFragment extends Fragment {
         int drawable;
         switch (position) {
             case 0:
-                drawable = R.drawable.explore;
+                drawable = R.drawable.tut_ready_to_explore;
                 break;
             case 1:
-                drawable = R.drawable.discover;
+                drawable = R.drawable.tut_swipe;
                 break;
             default:
-                drawable = R.drawable.go;
+                drawable = R.drawable.tut_unlocks;
 
         }
 

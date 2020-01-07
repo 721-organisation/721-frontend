@@ -101,11 +101,6 @@ public class LoadingNearMeFragment extends LoadingFragment {
         return view;
     }
 
-
-    static void splashErrorHandler(String error) {
-        Log.v("HANDLEDERROR", error);
-    }
-
     public static LoadingNearMeFragment clone(LoadingNearMeFragment toClone) {
         return LoadingNearMeFragment.newInstance(toClone.accessToken, toClone.IID, toClone.longitude, toClone.latitude, toClone.radius, toClone.daysFromNow, toClone.tagsToFilterBy);
     }

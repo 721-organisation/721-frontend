@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                                SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, iid);
+                                SelectLocationDiscoverFragment.newInstance(null, accessToken, iid);
                         addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
                                 "discover_sheet_fragment");
                         break;

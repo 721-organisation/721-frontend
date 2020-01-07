@@ -181,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/open_sans_light"
+                android:fontFamily="@font/open_sans"
                 android:gravity="center_vertical"
                 app:layout_constraintEnd_toEndOf="@+id/eventPrice"
                 app:layout_constraintHorizontal_bias="0.0"

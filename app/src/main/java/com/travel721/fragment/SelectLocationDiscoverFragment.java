@@ -10,52 +10,53 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SeekBar;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.travel721.R;
 
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.travel721.Constants.testDaysFromNow;
+import static com.travel721.Constants.testRadius;
+
 public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFragment {
-    boolean discovering = false;
+    private boolean discovering = false;
     private String accessToken;
     private String IID;
-    boolean prefill = false;
-    //    int daysFromNow;
-    int selectedChipResId;
-    int milesFromSL;
-    String searchLocation;
-    private int minDays = 0;
-    private int maxDays = 1;
+    private boolean prefill = false;
+    private String searchLocation;
+    private LoadingFragment callingLoader;
 
-    public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken, String IID) {
+
+    public static SelectLocationDiscoverFragment newInstance(@Nullable LoadingFragment callingLoader, String accessToken, String IID) {
         SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
         discoverFragmentSelectLocation.accessToken = accessToken;
         discoverFragmentSelectLocation.IID = IID;
+        discoverFragmentSelectLocation.callingLoader = callingLoader;
         return discoverFragmentSelectLocation;
     }
 
     // Prefill mode
-    public static SelectLocationDiscoverFragment newInstance(int discoverFragment, String accessToken, String IID, String searchLocation, int chipSelectedRedID, int milesFromSL) {
+    public static SelectLocationDiscoverFragment newInstance(@Nullable LoadingFragment callingLoader, String accessToken, String IID, String searchLocation) {
         SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
+        discoverFragmentSelectLocation.callingLoader = callingLoader;
         discoverFragmentSelectLocation.prefill = true;
         discoverFragmentSelectLocation.accessToken = accessToken;
         discoverFragmentSelectLocation.IID = IID;
-        discoverFragmentSelectLocation.selectedChipResId = chipSelectedRedID;
-        discoverFragmentSelectLocation.milesFromSL = milesFromSL;
         discoverFragmentSelectLocation.searchLocation = searchLocation;
         return discoverFragmentSelectLocation;
     }
@@ -77,39 +78,23 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
         View v = inflater.inflate(R.layout.fragment_discover_bottom_sheet, container,
                 false);
+
+        Objects.requireNonNull(getDialog()).setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            FrameLayout bottomSheet = d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(Objects.requireNonNull(bottomSheet))
+                    .setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+
+        getChildFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment()).commit();
+
         TextView title = v.findViewById(R.id.discoverTitle);
         title.setOnClickListener(view -> dismiss());
         v.findViewById(R.id.closeDiscover).setOnClickListener(view -> dismiss());
-        SeekBar radiusSeekBar = v.findViewById(R.id.radiusSeekBar);
-        TextView radTextView = v.findViewById(R.id.radiusTextView);
         EditText editText = v.findViewById(R.id.editText);
         TextView textView = v.findViewById(R.id.textView5);
-        textView.setText(getString(R.string.days_away_hint));
-        radiusSeekBar.setProgress(4);
-        radTextView.setText(getString(R.string.miles_away_discover_hint));
-        TextView radValTV = v.findViewById(R.id.radValTv);
-        radValTV.setText(String.valueOf(5));
         Button button = v.findViewById(R.id.discover_button);
 
-        radiusSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                radValTV.setText(String.valueOf(i + 1));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-
-        ChipGroup daysChipGroup = v.findViewById(R.id.daysChipGroup);
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         button.setOnClickListener(view1 -> {
@@ -118,7 +103,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 List<Address> addressList = geocoder.getFromLocationName(String.valueOf(editText.getText()), 1);
                 String mCountryName = addressList.get(0).getCountryName();
                 SharedPreferences ss = getContext().getSharedPreferences("unlocked_countries_721", 0);
-                Set<String> hs = ss.getStringSet("set", new HashSet<String>());
+                Set<String> hs = ss.getStringSet("set", new HashSet<>());
                 if (!hs.contains(mCountryName)) {
                     if (mCountryName.equals("null"))
                         throw new Exception();
@@ -126,66 +111,47 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                     Log.v("BTN", "Blocked Discover");
                     return;
                 }
+
+
+                discovering = true;
+
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(getContext());
+                final int radius = sharedPreferences.getInt("radius", testRadius);
+                final int daysFromNow = sharedPreferences.getInt("daysFromNow", testDaysFromNow);
+
+                LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, addressList.get(0).getFeatureName(), String.valueOf(radius), String.valueOf(daysFromNow), IID);
+                Objects.requireNonNull(getFragmentManager()).beginTransaction()
+                        .replace(R.id.fragmentContainer, loadingFragment).commit();
+                dismiss();
+
             } catch (Exception e) {
-                Snackbar.make(getView().getRootView(), "Invalid place", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(getView().getRootView(), "Ambiguous or invalid place name, try 'Sheffield, UK' for example", Snackbar.LENGTH_LONG).show();
                 return;
             }
 
-
-            discovering = true;
-            LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, editText.getText().toString(), String.valueOf(radiusSeekBar.getProgress() + 1), daysChipGroup.getCheckedChipId(), String.valueOf(minDays), String.valueOf(maxDays), IID);
-            Objects.requireNonNull(getFragmentManager()).beginTransaction()
-                    .replace(R.id.fragmentContainer, loadingFragment).commit();
-            dismiss();
         });
         // get the views and attach the listener
 
 
         if (prefill) {
             editText.setText(searchLocation);
-            radiusSeekBar.setProgress(milesFromSL - 1);
-            radValTV.setText(String.valueOf(milesFromSL));
-            Chip chipToSelect = v.findViewById(selectedChipResId);
-            chipToSelect.setChecked(true);
-
         }
-
-        daysChipGroup.setOnCheckedChangeListener((ChipGroup group, int checkedId) -> {
-            Calendar cal = Calendar.getInstance();
-            int currentDay = cal.get(Calendar.DAY_OF_WEEK);
-            int leftDays = Calendar.SATURDAY - currentDay;
-            switch (checkedId) {
-                case R.id.today_chip:
-                    minDays = 0;
-                    maxDays = 0;
-                    break;
-                case R.id.tomorrow_chip:
-                    minDays = 0;
-                    maxDays = 2;
-                    break;
-                case R.id.this_week_chip:
-                    minDays = 0;
-                    maxDays = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_WEEK);
-                    break;
-                case R.id.next_week_chip:
-                    minDays = leftDays;
-                    maxDays = leftDays + 7;
-                    break;
-                case R.id.this_month_chip:
-                    minDays = 0;
-                    maxDays = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-                    break;
-                case R.id.next_month_chip:
-                    minDays = leftDays;
-                    maxDays = leftDays + 31;
-
-                    break;
-
-            }
-        });
-
 
         return v;
 
     }
+
+    /**
+     * This inner class is similar to FilterBottomSheetFragment's mechanism except there is
+     * no need to detect settings changes or re-load an existing UI. Therefore the functionality
+     * is reduced.
+     */
+    public static class CurationSettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.event_curation_preferences, rootKey);
+        }
+    }
+
 }

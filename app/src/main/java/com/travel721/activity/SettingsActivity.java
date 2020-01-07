@@ -7,15 +7,13 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.travel721.R;
 
-import java.util.Objects;
-
 public class SettingsActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+//        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_settings);
         getSupportFragmentManager()
                 .beginTransaction()

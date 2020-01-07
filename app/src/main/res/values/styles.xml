@@ -1,38 +1,48 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.Bridge">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textViewStyle">@style/OpenSansTextViewStyle</item>
+        <item name="android:buttonStyle">@style/OpenSansButtonStyle</item>
     </style>
 
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat</item>
     </style>
 
-    <style name="CustomButtomStyle" parent="Widget.AppCompat.Button">
+    <style name="AppTheme.ActionBar" parent="AppBaseTheme">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="subtitleTextColor">@android:color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.Button">
         <item name="android:color">@color/button_custom_statelist</item>
     </style>
 
-    <style name="SplashTheme" parent="AppTheme">
+    <style name="SplashTheme" parent="AppBaseTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:textColor">@color/textLightSecondary</item>
         <item name="android:textColorPrimary">@color/textLightSecondary</item>
-        <item name="android:background">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorAccent</item>
-        <item name="android:textViewStyle">@style/OpenSansTextViewStyle</item>
-        <item name="android:buttonStyle">@style/OpenSansButtonStyle</item>
     </style>
 
     <style name="OpenSansTextViewStyle">
-        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
     <style name="OpenSansButtonStyle">
-        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans</item>
     </style>
+
+
 </resources>

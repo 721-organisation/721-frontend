@@ -197,10 +197,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 //                }
                 break;
             case "discover":
-                minDays = getArguments().getString("minDays");
+//                minDays = "0"; Removed from ECAST
                 String searchLocation = getArguments().getString("searchLocation");
 
-                EventCuratorAsyncTask discovereventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, radius, daysFromNow, minDays, searchLocation);
+                EventCuratorAsyncTask discovereventCuratorAsyncTask = new EventCuratorAsyncTask(accessToken, IID, radius, daysFromNow, searchLocation);
                 discovereventCuratorAsyncTask.execute();
                 break;
             case "applink":
@@ -264,7 +264,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         if (callingLoader instanceof LoadingDiscoverFragment) {
             filterButton.setOnClickListener(view -> {
                 SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                        SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"), getArguments().getInt("selectedChip"), Integer.valueOf(getArguments().getString("radius")));
+                        SelectLocationDiscoverFragment.newInstance(callingLoader, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"));
                 addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
                         "discover_sheet_fragment");
             });
@@ -549,7 +549,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         private boolean discoverMode;
         private String searchLocation;
         private List<String> tags;
-        private String minDays;
 
         /**
          * This constructor is for the 'Near Me' mode only
@@ -582,7 +581,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
          * @param daysFromNow    days from now to search
          * @param searchLocation the location to discover
          */
-        public EventCuratorAsyncTask(String accessToken, String IID, String radius, String daysFromNow, String minDays, String searchLocation) {
+        public EventCuratorAsyncTask(String accessToken, String IID, String radius, String daysFromNow, String searchLocation) {
             this.accessToken = accessToken;
             this.IID = IID;
             this.longitude = String.valueOf(0);
@@ -591,7 +590,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             this.daysFromNow = daysFromNow;
             this.searchLocation = searchLocation;
             discoverMode = true;
-            this.minDays = minDays;
         }
 
         @Override
@@ -609,7 +607,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                         bgtv.setText(getResources().getString(R.string.discover_unavailable));
                         bgtv.setOnClickListener(view -> {
                             SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
-                                    SelectLocationDiscoverFragment.newInstance(R.id.fragmentContainer, accessToken, IID);
+                                    SelectLocationDiscoverFragment.newInstance(callingLoader, accessToken, IID);
                             addPhotoBottomDialogFragment.show(Objects.requireNonNull(getFragmentManager()),
                                     "discover_sheet_fragment");
                         });
@@ -634,7 +632,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 combinedList.addAll(eventCards);
                 combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
-                combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
+//                combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
                 combinedList.add((int) (combinedList.size() * 0.2), new InstagramFeedbackCard());
 
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
@@ -682,7 +680,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             .add("latitude", "0")
                             .add("longitude", "0")
                             .add("location", searchLocation)
-                            .add("minDays", minDays)
+                            .add("minDays", "0")
                             .add("explore", "true")
                             .add("radius", String.valueOf(radius))
                             .add("daysFromNow", String.valueOf(daysFromNow))
@@ -710,7 +708,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                         okhttp3.Request getEventsFromServerRequest = new okhttp3.Request.Builder()
                                 .url(discoverMode ?
-                                        API_ROOT_URL + "events/getWithinDistance?latitude=0&longitude=0&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=true&location=" + searchLocation + "&minDays=" + minDays :
+                                        API_ROOT_URL + "events/getWithinDistance?latitude=0&longitude=0&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=true&location=" + searchLocation + "&minDays=0" :
 
                                         API_ROOT_URL + "events/getWithinDistance?latitude=" + latitude + "&longitude=" + longitude + "&radius=" + radius + "&daysFromNow=" + daysFromNow + "&access_token=" + accessToken + "&explore=false")
                                 .build();

@@ -257,11 +257,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 holder.itemView.getContext().startActivity(i);
             });
         }
-        if (events.get(position) instanceof FeedbackToFirebaseCard) {
-            String question = ((FeedbackToFirebaseCard) events.get(position)).getQuestion();
-            TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
-            feedbackTagline.setText(question);
-        }
+//        if (events.get(position) instanceof FeedbackToFirebaseCard) {
+//            String question = ((FeedbackToFirebaseCard) events.get(position)).getQuestion();
+//            TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
+//            feedbackTagline.setText(question);
+//        }
     }
 
     @Override

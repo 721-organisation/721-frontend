@@ -16,5 +16,6 @@ public class Email721TeamRedirectActivity extends AppCompatActivity {
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Contact 721 Team");
         emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi 721 Team! \n");
         startActivity(Intent.createChooser(emailIntent, "Send an email..."));
+        finish();
     }
 }

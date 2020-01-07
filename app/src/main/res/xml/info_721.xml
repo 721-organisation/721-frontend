@@ -36,7 +36,7 @@
             android:summary="Click here to contact 721"
             android:title="Drop us an email with a message, feedback or suggestions!">
             <intent
-                android:targetClass="com.travel721.Contact721Class"
+                android:targetClass="com.travel721.activity.Email721TeamRedirectActivity"
                 android:targetPackage="com.travel721" />
         </Preference>
     </PreferenceCategory>
@@ -46,7 +46,7 @@
             app:key="loadTPLIntent"
             app:title="This app relies on third-party libraries. To see them, click here.">
             <intent
-                android:targetClass="com.travel721.ListLibrariesActivity"
+                android:targetClass="com.travel721.activity.ListLibrariesActivity"
                 android:targetPackage="com.travel721" />
         </Preference>
     </PreferenceCategory>

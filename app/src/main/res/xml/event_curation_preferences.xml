@@ -22,7 +22,6 @@
         app:title="Event Curation">
         <SeekBarPreference
             android:max="@integer/radius_max"
-            app:defaultValue="@integer/radius_default"
             app:iconSpaceReserved="false"
             app:key="radius"
             app:min="@integer/radius_min"

@@ -35,9 +35,12 @@
             android:name=".activity.EventMoreInfoActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".activity.Email721TeamRedirectActivity"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.AppCompat">
+            android:theme="@style/AppTheme.ActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.travel721.activity.MainActivity" />
