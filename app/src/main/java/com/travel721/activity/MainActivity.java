@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel721.R;
 import com.travel721.fragment.LoadingNearMeFragment;
 import com.travel721.fragment.My721Fragment;
@@ -15,10 +16,12 @@ import com.travel721.fragment.SelectLocationDiscoverFragment;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main_tabbed);
         String accessToken = getIntent().getStringExtra("accessToken");
         String iid = getIntent().getStringExtra("IID");
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         String daysFromNow = getIntent().getStringExtra("daysfromnow");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow, null)).commit();
+
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             LoadingNearMeFragment loadingNearMeFragment;
             My721Fragment my721Fragment;

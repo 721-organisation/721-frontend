@@ -703,7 +703,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 combinedList.addAll(eventCards);
                 combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
-//                combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
+                combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
                 combinedList.add((int) (combinedList.size() * 0.2), new InstagramFeedbackCard());
 
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));

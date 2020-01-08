@@ -42,7 +42,6 @@ public class AnalyticsHelper {
     public static final String USER_POSITIVE_FEEDBACK = "FeedbackCardPositiveFeedback";
     public static final String USER_NEGATIVE_FEEDBACK = "FeedbackCardNegativeFeedback";
 
-
     // Feedback card text
     public static final String HAVING_FUN_QUESTION = "Having fun?";
     public static final String HAVING_FUN_QUESTION_POSITIVE_RESPONSE = "HavingFunPositiveResponse";
@@ -59,6 +58,9 @@ public class AnalyticsHelper {
     public static final String NEED_MORE_HELP_QUESTION = "Need more help to find cool experiences?";
     public static final String NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE = "NeedMoreHelpToFindCoolExperiencesPositiveResponse";
     public static final String NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE = "NeedMoreHelpToFindCoolExperiencesNegativeResponse";
+
+    // Fragment Screen Name Constants
+//    public static final String
 
     public static final ArrayList<String> feedbackQuestions() {
         ArrayList<String> questions = new ArrayList<>();
@@ -110,4 +112,5 @@ public class AnalyticsHelper {
         FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
         mFirebaseAnalytics.logEvent(event, bundle);
     }
+
 }

@@ -19,8 +19,10 @@ import com.travel721.R;
 import java.util.ArrayList;
 import java.util.Objects;
 
+
 public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment {
     private LoadingFragment callingLoader;
+
 
     public static FilterBottomSheetFragment newInstance(LoadingFragment callingLoader, ArrayList<String> tags, boolean enableSheffieldFilters) {
         FilterBottomSheetFragment filterBottomSheetFragment = new FilterBottomSheetFragment();
@@ -87,6 +89,7 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
 //
 //        });
 //        tagChipGroup.invalidate();
+
         return root;
     }
 

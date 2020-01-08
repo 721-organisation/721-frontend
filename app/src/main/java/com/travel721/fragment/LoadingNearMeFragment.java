@@ -34,6 +34,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
     String daysFromNow;
     ArrayList<? extends Card> eventCardList = new ArrayList<>();
 
+
     // This is where to make the bundle info
     public static LoadingNearMeFragment newInstance(String accessToken, String IID, String longitude, String latitude, String radius, String daysFromNow, ArrayList<String> tagsToFilterBy) {
         LoadingNearMeFragment fragment = new LoadingNearMeFragment();

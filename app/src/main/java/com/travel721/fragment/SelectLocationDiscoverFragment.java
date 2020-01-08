@@ -44,6 +44,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
     private LoadingFragment callingLoader;
 
 
+
     public static SelectLocationDiscoverFragment newInstance(@Nullable LoadingFragment callingLoader, String accessToken, String IID) {
         SelectLocationDiscoverFragment discoverFragmentSelectLocation = new SelectLocationDiscoverFragment();
         discoverFragmentSelectLocation.accessToken = accessToken;
@@ -129,21 +130,20 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 dismiss();
 
             } catch (Exception e) {
-                textInputLayout.setError("Ambiguous or invalid place name, try 'Sheffield, UK' for example");
-                return;
+                textInputLayout.setError("Ambiguous or invalid place, try 'Sheffield, UK' for example");
             }
 
         });
         SharedPreferences ss = Objects.requireNonNull(getContext()).getSharedPreferences("unlocked_countries_721", 0);
         Set<String> hs = ss.getStringSet("set", new HashSet<>());
-        String message = "";
+        StringBuilder message = new StringBuilder();
         for (String s : hs) {
-            message = message + s + "\n";
+            message.append(s).append("\n");
         }
-        if (hs.isEmpty()) message = "No Countries Unlocked.";
+        if (hs.isEmpty()) message = new StringBuilder("No Countries Unlocked.");
 
         ImageView listUnlockedCountries = v.findViewById(R.id.listUnlockedCountriesButton);
-        String finalMessage = message;
+        String finalMessage = message.toString();
         listUnlockedCountries.setOnClickListener(v1 -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Unlocked Countries")

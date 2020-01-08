@@ -144,8 +144,8 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 return vh;
             case CONTACT_US_FEEDBACK_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_contact_us, parent, false));
-//            case FEEDBACK_TO_FIREBASE_CARD:
-//                return new ViewHolder(inflater.inflate(R.layout.card_feedback_firebase, parent, false));
+            case FEEDBACK_TO_FIREBASE_CARD:
+                return new ViewHolder(inflater.inflate(R.layout.card_feedback_firebase, parent, false));
             case INSTAGRAM_FEEDBACK_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_instagram, parent, false));
         }
@@ -257,11 +257,11 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 holder.itemView.getContext().startActivity(i);
             });
         }
-//        if (events.get(position) instanceof FeedbackToFirebaseCard) {
-//            String question = ((FeedbackToFirebaseCard) events.get(position)).getQuestion();
-//            TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
-//            feedbackTagline.setText(question);
-//        }
+        if (events.get(position) instanceof FeedbackToFirebaseCard) {
+            String question = ((FeedbackToFirebaseCard) events.get(position)).getQuestion();
+            TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
+            feedbackTagline.setText(question);
+        }
     }
 
     @Override
