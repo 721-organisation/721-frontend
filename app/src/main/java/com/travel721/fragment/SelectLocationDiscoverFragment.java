@@ -25,6 +25,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.travel721.R;
+import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.analytics.ReleaseScreenNameAnalytic;
 
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,6 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
     private boolean prefill = false;
     private String searchLocation;
     private LoadingFragment callingLoader;
-
 
 
     public static SelectLocationDiscoverFragment newInstance(@Nullable LoadingFragment callingLoader, String accessToken, String IID) {
@@ -127,6 +128,12 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 LoadingDiscoverFragment loadingFragment = LoadingDiscoverFragment.newInstance(accessToken, addressList.get(0).getFeatureName(), String.valueOf(radius), String.valueOf(daysFromNow), IID);
                 Objects.requireNonNull(getFragmentManager()).beginTransaction()
                         .replace(R.id.fragmentContainer, loadingFragment).commit();
+                try {
+                    AnalyticsHelper.setScreenNameAnalytic(getContext(), Objects.requireNonNull(getActivity()), ReleaseScreenNameAnalytic.DISCOVER_LAUNCHED, SelectLocationDiscoverFragment.class.getName());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 dismiss();
 
             } catch (Exception e) {

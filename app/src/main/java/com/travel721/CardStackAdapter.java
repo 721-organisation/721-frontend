@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.travel721.Constants.getRandomOverlay;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_SWIPED_DOWN;
 import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
 
 /**
@@ -168,7 +169,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             View v = holder.itemView;
             ConstraintLayout linearLayout2 = v.findViewById(R.id.eventCardTopLinearLayout);
             linearLayout2.setOnClickListener(view -> {
-                AnalyticsHelper.logEvent(v.getContext(), AnalyticsHelper.USER_SWIPED_DOWN, null);
+                AnalyticsHelper.logEvent(v.getContext(), USER_SWIPED_DOWN, null);
                 Intent i = new Intent(v.getContext(), EventMoreInfoActivity.class);
                 i.putExtra("eventCard", events.get(position));
                 v.getContext().startActivity(i);

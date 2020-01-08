@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.Bridge">
@@ -8,6 +8,7 @@
 
         <item name="android:textViewStyle">@style/OpenSansTextViewStyle</item>
         <item name="android:buttonStyle">@style/OpenSansButtonStyle</item>
+        <item name="snackbarButtonStyle">@style/OpenSansButtonStyle</item>
     </style>
 
     <style name="AppTheme" parent="AppBaseTheme">
@@ -38,9 +39,14 @@
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
-    <style name="OpenSansButtonStyle">
+    <style name="OpenSansButtonStyle" parent="Widget.AppCompat.Button.Borderless" tools:override="true">
+        <item name="android:buttonStyle">@style/CustomButtonStyle</item>
+        <item name="android:buttonTint">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
-
+    <style name="OpenSansSmallTextAppearence" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/open_sans</item>
+    </style>
 </resources>

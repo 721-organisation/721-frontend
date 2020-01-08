@@ -24,11 +24,14 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.travel721.R;
 import com.travel721.activity.EventMoreInfoActivity;
 import com.travel721.activity.SettingsActivity;
 import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.analytics.ReleaseAnalyticsEvent;
 import com.travel721.card.EventCard;
 
 import org.json.JSONArray;
@@ -52,6 +55,7 @@ import static com.travel721.Constants.eventSearchFilter;
 
 public class My721Fragment extends Fragment {
     String api_access_token;
+
 
     // This is where to make the bundle info
     public static My721Fragment newInstance(String api_access_token) {
@@ -125,7 +129,9 @@ public class My721Fragment extends Fragment {
                                 Collections.sort(eventCardArrayList);
 //                                    Collections.reverse(eventCardArrayList);
                                 String previousDateTag = "";
-
+                                if (eventCardArrayList.isEmpty()) {
+                                    Snackbar.make(root, "No events saved - start swiping to see saved events.", BaseTransientBottomBar.LENGTH_INDEFINITE).setAction(getString(android.R.string.ok), null).show();
+                                }
                                 for (int i = 0; i < eventCardArrayList.size(); i++) {
                                     boolean requireDateTag = false;
                                     if (i == 0) requireDateTag = true;
@@ -168,7 +174,7 @@ public class My721Fragment extends Fragment {
                                                 "delete_sheet_fragment");
                                     });
 
-                                    AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
+                                    AnalyticsHelper.logEvent(getContext(), ReleaseAnalyticsEvent.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
 
                                     if (requireDateTag || !eventCardArrayList.get(i).getPrettyDate().equals(previousDateTag)) {
                                         View dateTag = getLayoutInflater().inflate(R.layout.item_date_tag, null);

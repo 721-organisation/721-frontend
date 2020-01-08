@@ -24,7 +24,7 @@ public class FilterBottomSheetFragment extends RoundedBottomSheetDialogFragment 
     private LoadingFragment callingLoader;
 
 
-    public static FilterBottomSheetFragment newInstance(LoadingFragment callingLoader, ArrayList<String> tags, boolean enableSheffieldFilters) {
+    public static FilterBottomSheetFragment newInstance(LoadingFragment callingLoader, ArrayList<String> tags) {
         FilterBottomSheetFragment filterBottomSheetFragment = new FilterBottomSheetFragment();
         filterBottomSheetFragment.callingLoader = callingLoader;
         return filterBottomSheetFragment;

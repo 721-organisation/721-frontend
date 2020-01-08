@@ -25,7 +25,7 @@ public class Constants {
 
     public static final String SHEFFIELD_FILTERS_ENABLED_KEY = "SheffieldTagsEnabled";
 
-    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 999;
+    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 998;
     public static final int REQUEST_LOCATION_PERMISSIONS = 999;
 
     public final static int SLIDE_ANIMATION_DURATION = 300;

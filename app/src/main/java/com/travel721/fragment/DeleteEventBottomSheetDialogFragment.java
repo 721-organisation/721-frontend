@@ -17,6 +17,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.deishelon.roundedbottomsheet.RoundedBottomSheetDialogFragment;
 import com.travel721.R;
+import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.analytics.ReleaseAnalyticsEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +53,7 @@ public class DeleteEventBottomSheetDialogFragment extends
             RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
             StringRequest stringRequest = new StringRequest(Request.Method.DELETE, API_ROOT_URL + "eventProfiles/" + eventProfileId + "?access_token=" + accessToken, response -> {
                 Toast.makeText(getContext(), "Successfully deleted event " + eventName + ".", Toast.LENGTH_SHORT).show();
+                AnalyticsHelper.logEvent(getContext(), ReleaseAnalyticsEvent.EVENT_DELETED, null);
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, My721Fragment.newInstance(accessToken)).commit();
                 dismiss();
             }, error -> {

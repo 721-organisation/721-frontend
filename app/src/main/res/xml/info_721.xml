@@ -24,7 +24,7 @@
             android:summary="To rate 721 on Google Play, please click here"
             android:title="We'd love to hear your feedback">
             <intent
-                android:targetClass="com.travel721.RateOnPlayActivity"
+                android:targetClass="com.travel721.activity.RateOnPlayActivity"
                 android:targetPackage="com.travel721" />
         </Preference>
     </PreferenceCategory>

@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -48,6 +49,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -80,6 +82,8 @@ import static com.travel721.Constants.REQUEST_LOCATION_PERMISSIONS;
 import static com.travel721.Constants.profileSearchURL;
 import static com.travel721.Constants.testDaysFromNow;
 import static com.travel721.Constants.testRadius;
+import static com.travel721.analytics.DebugAnalyticsEvent.DEBUG_USED_FUSED_LOCATION_PROVIDER;
+import static com.travel721.analytics.DebugAnalyticsEvent.DEBUG_USED_NATIVE_LOCATION_MANAGER;
 
 /**
  * Splash Activity to load SOME but not all information
@@ -132,6 +136,23 @@ public abstract class SplashActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            // Check for the integer request code originally supplied to startResolutionForResult().
+            case REQUEST_CHECK_LOCATION_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Intent i = new Intent(this, InitialLoadSplashActivity.class);
+                        startActivity(i);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(this, "Cannot proceed without location", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
     // TODO permission first, then change settings - not the other way around
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -176,7 +197,7 @@ public abstract class SplashActivity extends Activity {
         task.addOnSuccessListener(locationSettingsResponse -> {
             // All settings required are set correctly, proceed
             Log.d("doLoad", "called from OnSuccessListener");
-            doLoad();
+            SplashActivity.this.doLoad();
         });
         // If settings need to be changed
         task.addOnFailureListener(e -> {
@@ -197,9 +218,14 @@ public abstract class SplashActivity extends Activity {
                         });
                 dialogBuilder.create().show();
             } else {
-                e.printStackTrace(); // This error is nearly impossible
+                Snackbar.make(findViewById(android.R.id.content), "721 could not attempt to get location settings. Check your settings.", BaseTransientBottomBar.LENGTH_INDEFINITE).setAction(getString(android.R.string.ok), v -> {
+                    Intent i = new Intent(this, InitialLoadSplashActivity.class);
+                    startActivity(i);
+                    finish();
+                }).show();
             }
         });
+
     }
 
     TextSwitcher loadingTextView;
@@ -233,7 +259,7 @@ public abstract class SplashActivity extends Activity {
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, view -> finish()).show();
                     } else {
-                        AnalyticsHelper.debugLogEvent(SplashActivity.this, AnalyticsHelper.DEBUG_USED_FUSED_LOCATION_PROVIDER, null);
+                        AnalyticsHelper.debugLogEvent(SplashActivity.this, DEBUG_USED_FUSED_LOCATION_PROVIDER, null);
                         registrationSingleExecutor(locationResult.getLastLocation());
                     }
 
@@ -247,7 +273,7 @@ public abstract class SplashActivity extends Activity {
                         locationManager.removeUpdates(this);
                     }
                     fusedLocationClient.removeLocationUpdates(locationCallback);
-                    AnalyticsHelper.debugLogEvent(SplashActivity.this, AnalyticsHelper.DEBUG_USED_NATIVE_LOCATION_MANAGER, null);
+                    AnalyticsHelper.debugLogEvent(SplashActivity.this, DEBUG_USED_NATIVE_LOCATION_MANAGER, null);
                     registrationSingleExecutor(location);
                 }
 

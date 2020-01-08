@@ -98,5 +98,6 @@
     <string name="do_you_have_any_thoughts_or_ideas_for_the_721_team">Do you have any thoughts or ideas for the 721 team?</string>
     <string name="click_to_continue">Click here to continue</string>
     <string name="fcm_notification_channel_id">721 Team Notifications</string>
+    <string name="share_721_experience">Share experience \'%s\'</string>
 
 </resources>

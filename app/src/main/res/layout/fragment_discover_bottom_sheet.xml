@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="10dp"
-            android:scaleType="fitStart"
+            android:scaleType="fitEnd"
             app:srcCompat="@drawable/ic_map" />
 
         <ImageView
@@ -55,15 +55,25 @@
         android:gravity="center"
         android:hint="@string/discover_hint"
         app:boxStrokeColor="@color/colorAccent"
-        app:hintTextColor="@color/colorAccent">
+        app:counterOverflowTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:counterTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:errorTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:helperTextTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:hintTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:hintTextColor="@color/colorAccent"
+        app:placeholderTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:prefixTextAppearance="@style/OpenSansSmallTextAppearence"
+        app:suffixTextAppearance="@style/OpenSansSmallTextAppearence">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/discoverLocationEditText"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:descendantFocusability="blocksDescendants"
             android:focusableInTouchMode="true"
             android:focusedByDefault="true"
+            android:fontFamily="@font/open_sans"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1" />

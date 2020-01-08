@@ -25,6 +25,8 @@ import com.travel721.R;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.EventCard;
 
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_CONVERSION_EVENT_AFF_LINK_CLICK;
+
 public class EventMoreInfoActivity extends AppCompatActivity implements View.OnTouchListener {
 
     EventCard eventCard;
@@ -133,7 +135,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
      * @param view
      */
     public void openEventInChromeCustomTab(View view) {
-        AnalyticsHelper.logEvent(this, AnalyticsHelper.USER_CONVERSION_EVENT_AFF_LINK_CLICK, null);
+        AnalyticsHelper.logEvent(this, USER_CONVERSION_EVENT_AFF_LINK_CLICK, null);
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .addDefaultShareMenuItem()
                 .setToolbarColor(ContextCompat.getColor(this, R.color.colorAccent))

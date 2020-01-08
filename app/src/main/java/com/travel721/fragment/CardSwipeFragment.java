@@ -76,19 +76,30 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.travel721.Constants.API_ROOT_URL;
-import static com.travel721.Constants.SHEFFIELD_LATITUDE;
-import static com.travel721.Constants.SHEFFIELD_LONGITUDE;
-import static com.travel721.Constants.SHEFFIELD_RADIUS;
 import static com.travel721.Constants.SLIDE_ANIMATION_DURATION;
 import static com.travel721.Constants.eventProfileAllSearchFilter;
-import static com.travel721.analytics.AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION;
-import static com.travel721.analytics.AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION;
-import static com.travel721.analytics.AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION;
-import static com.travel721.analytics.AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE;
-import static com.travel721.analytics.AnalyticsHelper.HAVING_FUN_QUESTION;
-import static com.travel721.analytics.AnalyticsHelper.NEED_MORE_HELP_QUESTION;
-import static com.travel721.analytics.AnalyticsHelper.USER_NEGATIVE_FEEDBACK;
-import static com.travel721.analytics.AnalyticsHelper.USER_POSITIVE_FEEDBACK;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_NEGATIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.FILTER_CLICKED_IN_DISCOVER;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.FILTER_CLICKED_IN_NEAR_ME;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.FINDING_EXPERIENCES_YOU_LIKE_QUESTION;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_NEGATIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_NEGATIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVING_FUN_QUESTION;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVING_FUN_QUESTION_NEGATIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.HAVING_FUN_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.NEED_MORE_HELP_QUESTION;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.TEST_RELEASE_ANALYTICS_EVENT;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_NEGATIVE_FEEDBACK;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_POSITIVE_FEEDBACK;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_SWIPED_LEFT;
+import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_SWIPED_RIGHT;
 import static com.yuyakaido.android.cardstackview.Direction.Left;
 import static com.yuyakaido.android.cardstackview.Direction.Right;
 
@@ -224,7 +235,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
         root = inflater.inflate(R.layout.fragment_card_swipe, container, false);
 
-        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.TEST_RELEASE_ANALYTICS_EVENT, null);
+        AnalyticsHelper.logEvent(getContext(), TEST_RELEASE_ANALYTICS_EVENT, null);
         super.onCreate(savedInstanceState);
 //        setContentView(R.layout.fragment_card_swipe);
 
@@ -244,8 +255,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     Intent i = new Intent(Intent.ACTION_SEND);
                     i.putExtra(Intent.EXTRA_TEXT, "share721.appspot.com/event/" + ((EventCard) card).getEventSourceID());
                     i.setType("text/plain");
-                    Intent shareIntent = Intent.createChooser(i, null);
+                    Intent shareIntent = Intent.createChooser(i, Objects.requireNonNull(getContext()).getString(R.string.share_721_experience, ((EventCard) card).getName()));
                     startActivity(shareIntent);
+
                 } else if (card instanceof FeedbackCard) {
                     Intent i = new Intent(android.content.Intent.ACTION_VIEW);
                     i.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.travel721"));
@@ -258,9 +270,8 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         FloatingActionButton filterButton = root.findViewById(R.id.filterButton);
         if (callingLoader instanceof LoadingNearMeFragment) {
             filterButton.setOnClickListener(view -> {
-                double distanceFromSheffield = getDistanceFromLatLongs(SHEFFIELD_LATITUDE, Double.parseDouble(Objects.requireNonNull(getArguments().getString("latitude"))), SHEFFIELD_LONGITUDE, Double.parseDouble(Objects.requireNonNull(getArguments().getString("longitude"))), 0, 0);
-                Log.d("CSF", "onCreateView: distance" + distanceFromSheffield);
-                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags, distanceFromSheffield < SHEFFIELD_RADIUS);
+                AnalyticsHelper.logEvent(getContext(), FILTER_CLICKED_IN_NEAR_ME, null);
+                FilterBottomSheetFragment filterBottomSheetFragment = FilterBottomSheetFragment.newInstance(callingLoader, tags);
                 filterBottomSheetFragment.show(Objects.requireNonNull(getFragmentManager()),
                         "filter_sheet_fragment");
 
@@ -268,6 +279,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         }
         if (callingLoader instanceof LoadingDiscoverFragment) {
             filterButton.setOnClickListener(view -> {
+                AnalyticsHelper.logEvent(getContext(), FILTER_CLICKED_IN_DISCOVER, null);
                 SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
                         SelectLocationDiscoverFragment.newInstance(callingLoader, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"));
                 addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
@@ -457,7 +469,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     textView.setText(getRandom(negative_terms));
                     textView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorAccent));
                     snackbar.show();
-                    AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_SWIPED_LEFT, null);
+                    AnalyticsHelper.logEvent(getContext(), USER_SWIPED_LEFT, null);
                     // Dislikes
                     // Request a string response from the provided URL.
                     stringRequest = new StringRequest(Request.Method.POST, url,
@@ -486,7 +498,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     textView.setText(getRandom(positive_terms));
                     textView.setTextColor(Color.rgb(0, 230, 118));
                     snackbar.show();
-                    AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.USER_SWIPED_RIGHT, null);
+                    AnalyticsHelper.logEvent(getContext(), USER_SWIPED_RIGHT, null);
 
                     // Likes
                     // Request a string response from the provided URL.
@@ -536,33 +548,33 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             switch (question) {
                 case HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION:
                     if (direction == Left)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_NEGATIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_NEGATIVE_RESPONSE, null);
                     if (direction == Right)
                         AnalyticsHelper.logEvent(getContext(), HAVE_YOU_BEEN_TO_AN_EVENT_YET_QUESTION_POSITIVE_RESPONSE, null);
                     break;
                 case DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION:
                     if (direction == Left)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_NEGATIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_NEGATIVE_RESPONSE, null);
                     if (direction == Right)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_POSITIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), DISCOVERED_SOMETHING_YOU_DIDNT_KNOW_QUESTION_POSITIVE_RESPONSE, null);
                     break;
                 case HAVING_FUN_QUESTION:
                     if (direction == Left)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVING_FUN_QUESTION_NEGATIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), HAVING_FUN_QUESTION_NEGATIVE_RESPONSE, null);
                     if (direction == Right)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.HAVING_FUN_QUESTION_POSITIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), HAVING_FUN_QUESTION_POSITIVE_RESPONSE, null);
                     break;
                 case FINDING_EXPERIENCES_YOU_LIKE_QUESTION:
                     if (direction == Left)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_NEGATIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), FINDING_EXPERIENCES_YOU_LIKE_QUESTION_NEGATIVE_RESPONSE, null);
                     if (direction == Right)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.FINDING_EXPERIENCES_YOU_LIKE_QUESTION_POSITIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), FINDING_EXPERIENCES_YOU_LIKE_QUESTION_POSITIVE_RESPONSE, null);
                     break;
                 case NEED_MORE_HELP_QUESTION:
                     if (direction == Left)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), NEED_MORE_HELP_QUESTION_NEGATIVE_RESPONSE, null);
                     if (direction == Right)
-                        AnalyticsHelper.logEvent(getContext(), AnalyticsHelper.NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE, null);
+                        AnalyticsHelper.logEvent(getContext(), NEED_MORE_HELP_QUESTION_POSITIVE_RESPONSE, null);
             }
             Toast.makeText(getContext(), "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
         }

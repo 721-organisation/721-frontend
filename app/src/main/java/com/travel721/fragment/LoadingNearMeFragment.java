@@ -71,6 +71,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
             eventCardList = (ArrayList<? extends EventCard>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
             String eventCardDateFormatString = "EEEE dd MMM";
             SimpleDateFormat sdf = new SimpleDateFormat(eventCardDateFormatString);
+            ArrayList<Card> cardsToRemoveList = new ArrayList<>();
             for (Card c : eventCardList) {
                 if (c instanceof EventCard) {
                     Date currDate = new Date();
@@ -78,7 +79,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
                         Date formattedEventDate = sdf.parse(((EventCard) c).getPrettyDate());
                         if (currDate.compareTo(formattedEventDate) > 0) {
                             CacheDatabase.getInstance(getContext()).eventCardDao().delete((EventCard) c);
-                            eventCardList.remove(c);
+                            cardsToRemoveList.add(c);
                         }
                     } catch (ParseException e) {
 
@@ -86,6 +87,8 @@ public class LoadingNearMeFragment extends LoadingFragment {
 
                 }
             }
+            eventCardList.removeAll(cardsToRemoveList);
+
             Bundle bundle = new Bundle();
             bundle.putString("mode", "nearme");
             bundle.putStringArrayList("tagsToFilterBy", tagsToFilterBy);
