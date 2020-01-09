@@ -17,36 +17,39 @@
         map:layout_constraintBottom_toTopOf="@+id/guideline"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
-        map:layout_constraintTop_toTopOf="parent"
-         />
+        map:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
         android:id="@+id/eventProvidedBy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:padding="10dp"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="12sp"
         map:layout_constraintBottom_toTopOf="@+id/swipeUpToDismissBar"
         map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintStart_toStartOf="parent"
         tools:text="Event Provider" />
 
-    <Button
-        android:id="@+id/eventHyperlink"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/eventMoreInfoShareButton"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:onClick="openEventInChromeCustomTab"
-        android:text="@string/event_hyperlink_text"
-        android:textColor="@android:color/white"
-        map:layout_constraintBottom_toTopOf="@+id/eventProvidedBy"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="shareEvent"
+        android:text="@string/share_experience"
+        android:textSize="12sp"
+        map:layout_constraintBottom_toTopOf="@+id/eventHyperlink"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent" />
+
 
     <ImageView
         android:id="@+id/swipeUpToDismissBar"
@@ -73,7 +76,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        map:layout_constraintBottom_toTopOf="@+id/eventHyperlink"
+        map:layout_constraintBottom_toTopOf="@+id/eventMoreInfoShareButton"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="@+id/guideline">
@@ -159,6 +162,19 @@
         </LinearLayout>
     </ScrollView>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/eventHyperlink"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="openEventInChromeCustomTab"
+        android:text="@string/event_hyperlink_text"
+        android:textSize="12sp"
+        map:layout_constraintBottom_toTopOf="@+id/eventProvidedBy"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

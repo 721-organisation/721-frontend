@@ -227,7 +227,8 @@ public class My721Fragment extends Fragment {
             sequence.addSequenceItem(
                     new MaterialShowcaseView.Builder(getActivity())
                             .setTarget(root.findViewById(R.id.eventListCardHolder))
-                            .setDismissText(getString(R.string.click_to_continue))
+                            .setShapePadding(-75)
+                            .setDismissText(R.string.click_to_continue)
                             .setContentText("Experiences you save in Near Me or Discover are shown here")
                             .setMaskColour(Color.argb(200, 254, 96, 96))
                             .build()

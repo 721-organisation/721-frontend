@@ -15,15 +15,8 @@
 
         <TextView
             android:id="@+id/feedbackTagline"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="200dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="200dp"
-            android:autoLink="web"
-            android:paddingStart="30dp"
-            android:paddingEnd="30dp"
             android:text="@string/following_on_instagram"
             android:textAlignment="center"
             android:textSize="14sp"

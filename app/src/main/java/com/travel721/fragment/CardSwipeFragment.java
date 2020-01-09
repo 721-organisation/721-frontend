@@ -38,6 +38,8 @@ import com.travel721.VolleyRequestQueue;
 import com.travel721.activity.Email721TeamRedirectActivity;
 import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.analytics.ReleaseAnalyticsEvent;
+import com.travel721.analytics.ReleaseScreenNameAnalytic;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
 import com.travel721.card.ContactUsFeedbackCard;
@@ -212,6 +214,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 //                }
                 break;
             case "discover":
+                AnalyticsHelper.setScreenNameAnalytic(getContext(), Objects.requireNonNull(getActivity()), ReleaseScreenNameAnalytic.DISCOVER_LAUNCHED, SelectLocationDiscoverFragment.class.getName());
 //                minDays = "0"; Removed from ECAST
                 String searchLocation = getArguments().getString("searchLocation");
 
@@ -245,6 +248,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         likeButton.setOnClickListener(this::likesTopCard);
         dislikeButton.setOnClickListener(this::dislikesTopCard);
         shareEventButton.setOnClickListener(view -> {
+            AnalyticsHelper.logEvent(getContext(), ReleaseAnalyticsEvent.SHARE_CLICKED, null);
             try {
                 Log.v("INDEX", String.valueOf(cardStackLayoutManager.getTopPosition()));
 
@@ -348,7 +352,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             sequence.addSequenceItem(
                     new MaterialShowcaseView.Builder(getActivity())
                             .setTarget(getView().findViewById(R.id.background_textview))
-                            .setShapePadding(-50)
+                            .setShapePadding(-75)
                             .setDismissText(getString(R.string.click_to_continue))
                             .setContentText("Nearby experiences are shown here\nSwipe right to save to My 721\nSwipe left to dismiss")
                             .setMaskColour(Color.argb(200, 254, 96, 96))

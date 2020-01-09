@@ -1,5 +1,6 @@
 package com.travel721.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -23,6 +24,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.travel721.R;
 import com.travel721.analytics.AnalyticsHelper;
+import com.travel721.analytics.ReleaseAnalyticsEvent;
+import com.travel721.analytics.ReleaseScreenNameAnalytic;
 import com.travel721.card.EventCard;
 
 import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_CONVERSION_EVENT_AFF_LINK_CLICK;
@@ -89,6 +92,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
             chip.setText(s);
             tagChipGroup.addView(chip);
         }
+        AnalyticsHelper.setScreenNameAnalytic(this, this, ReleaseScreenNameAnalytic.DISCOVER_LAUNCHED, getClass().getName());
     }
 
     private int _yDelta;
@@ -145,4 +149,12 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         customTabsIntent.launchUrl(this, Uri.parse(eventCard.getEventHyperLink()));
     }
 
+    public void shareEvent(View view) {
+        AnalyticsHelper.logEvent(this, ReleaseAnalyticsEvent.SHARE_CLICKED, null);
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_TEXT, "share721.appspot.com/event/" + eventCard.getEventSourceID());
+        i.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(i, getString(R.string.share_721_experience, eventCard.getName()));
+        startActivity(shareIntent);
+    }
 }

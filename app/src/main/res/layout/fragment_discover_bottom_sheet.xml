@@ -16,8 +16,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="10dp"
-            android:scaleType="fitEnd"
-            app:srcCompat="@drawable/ic_map" />
+            android:scaleType="fitStart"
+            android:tint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_lock_open" />
 
         <ImageView
             android:id="@+id/closeDiscover"
