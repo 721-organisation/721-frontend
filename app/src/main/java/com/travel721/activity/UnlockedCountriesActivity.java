@@ -306,6 +306,8 @@ public class UnlockedCountriesActivity extends AppCompatActivity {
         countryNameToCode.put("Zimbabwe", "ZW");
         setContentView(R.layout.activity_unlocked_countries);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.drawable.ic_lock_open_padding_right);
         SharedPreferences ss = getSharedPreferences("unlocked_countries_721", 0);
         hashSet = ss.getStringSet("set", new HashSet<>());
         LinearLayout countriesListView = findViewById(R.id.unlocked_countries_listview);

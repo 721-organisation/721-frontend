@@ -52,8 +52,9 @@ public class DeleteEventBottomSheetDialogFragment extends
         delete.setOnClickListener(view -> {
             RequestQueue queue = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
             StringRequest stringRequest = new StringRequest(Request.Method.DELETE, API_ROOT_URL + "eventProfiles/" + eventProfileId + "?access_token=" + accessToken, response -> {
-                Toast.makeText(getContext(), "Successfully deleted event " + eventName + ".", Toast.LENGTH_SHORT).show();
                 AnalyticsHelper.logEvent(getContext(), ReleaseAnalyticsEvent.EVENT_DELETED, null);
+                if (getContext() == null) return;
+                Toast.makeText(getContext(), "Successfully deleted event " + eventName + ".", Toast.LENGTH_SHORT).show();
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, My721Fragment.newInstance(accessToken)).commit();
                 dismiss();
             }, error -> {

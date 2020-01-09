@@ -2,6 +2,7 @@ package com.travel721.eventcaching;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -24,7 +25,7 @@ public abstract class CacheDatabase extends RoomDatabase {
      * open and close connections. This explains why 'leaks' may occur
      */
 
-    public static CacheDatabase getInstance(Context context) {
+    public static CacheDatabase getInstance(@NonNull Context context) {
         return thisInstance == null ? Room.databaseBuilder(context, CacheDatabase.class, "cache-database").fallbackToDestructiveMigration().build() : thisInstance;
     }
 

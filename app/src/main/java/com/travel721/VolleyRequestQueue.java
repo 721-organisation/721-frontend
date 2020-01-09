@@ -16,8 +16,10 @@ public class VolleyRequestQueue {
     private static Context ctx;
 
     public static final int DEFAULT_TIMEOUT_MS = 2500;
-    public static DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+    public static final int DEFAULT_MAX_RETRIES = 5;
+    public static final int DEFAULT_BACKOFF_MULT = 2;
+    public static DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(DEFAULT_TIMEOUT_MS, DEFAULT_MAX_RETRIES,
+            DEFAULT_BACKOFF_MULT);
 
     private VolleyRequestQueue(Context context) {
         ctx = context;

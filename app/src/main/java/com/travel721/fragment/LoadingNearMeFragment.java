@@ -54,55 +54,70 @@ public class LoadingNearMeFragment extends LoadingFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = getLayoutInflater().inflate(R.layout.blank, null);
 
-        // set its background to our AnimationDrawable XML resource.
-        ImageView img = view.findViewById(R.id.loading_dots_anim);
-        img.setBackgroundResource(R.drawable.loading_dots_animation);
+        try {
+            // set its background to our AnimationDrawable XML resource.
+            ImageView img = view.findViewById(R.id.loading_dots_anim);
+            img.setBackgroundResource(R.drawable.loading_dots_animation);
 
-        // Get the background, which has been compiled to an AnimationDrawable object.
-        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+            // Get the background, which has been compiled to an AnimationDrawable object.
+            AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
 
-        // Start the animation (looped playback by default).
-        frameAnimation.start();
+            // Start the animation (looped playback by default).
+            frameAnimation.start();
 
 
-        TextView statusText = view.findViewById(R.id.status_text);
-        statusText.setText(getString(R.string.loading_cached_events_hint));
-        new Thread(() -> {
-            eventCardList = (ArrayList<? extends EventCard>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
-            String eventCardDateFormatString = "EEEE dd MMM";
-            SimpleDateFormat sdf = new SimpleDateFormat(eventCardDateFormatString);
-            ArrayList<Card> cardsToRemoveList = new ArrayList<>();
-            for (Card c : eventCardList) {
-                if (c instanceof EventCard) {
-                    Date currDate = new Date();
-                    try {
-                        Date formattedEventDate = sdf.parse(((EventCard) c).getPrettyDate());
-                        if (currDate.compareTo(formattedEventDate) > 0) {
-                            CacheDatabase.getInstance(getContext()).eventCardDao().delete((EventCard) c);
-                            cardsToRemoveList.add(c);
+            TextView statusText = view.findViewById(R.id.status_text);
+            statusText.setText(getString(R.string.loading_cached_events_hint));
+            new Thread(() -> {
+
+                try {
+                    eventCardList = (ArrayList<? extends EventCard>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
+                    String eventCardDateFormatString = "EEEE dd MMM";
+                    SimpleDateFormat sdf = new SimpleDateFormat(eventCardDateFormatString);
+                    ArrayList<Card> cardsToRemoveList = new ArrayList<>();
+                    for (Card c : eventCardList) {
+                        if (c instanceof EventCard) {
+                            Date currDate = new Date();
+                            try {
+                                Date formattedEventDate = sdf.parse(((EventCard) c).getPrettyDate());
+                                if (currDate.compareTo(formattedEventDate) > 0) {
+                                    cardsToRemoveList.add(c);
+                                }
+                            } catch (ParseException ignored) {
+
+                            }
+
                         }
-                    } catch (ParseException ignored) {
-
                     }
+                    if (!cardsToRemoveList.isEmpty()) //noinspection SuspiciousMethodCalls
+                        eventCardList.removeAll(cardsToRemoveList);
+                    for (Card c : cardsToRemoveList)
+                        CacheDatabase.getInstance(getContext()).eventCardDao().delete((EventCard) c);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                Bundle bundle = new Bundle();
+                bundle.putString("mode", "nearme");
+                bundle.putStringArrayList("tagsToFilterBy", tagsToFilterBy);
+                bundle.putString("accessToken", accessToken);
+                bundle.putString("IID", IID);
+                bundle.putString("longitude", longitude);
+                bundle.putString("latitude", latitude);
+                bundle.putString("radius", radius);
+                bundle.putString("daysFromNow", daysFromNow);
+                bundle.putParcelableArrayList("events", eventCardList);
+                Log.v("TEST", "Swapping fragments... ");
+                try {
+                    Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
+                } catch (NullPointerException ignored) {
 
                 }
-            }
-            if (!cardsToRemoveList.isEmpty()) //noinspection SuspiciousMethodCalls
-                eventCardList.removeAll(cardsToRemoveList);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("mode", "nearme");
-            bundle.putStringArrayList("tagsToFilterBy", tagsToFilterBy);
-            bundle.putString("accessToken", accessToken);
-            bundle.putString("IID", IID);
-            bundle.putString("longitude", longitude);
-            bundle.putString("latitude", latitude);
-            bundle.putString("radius", radius);
-            bundle.putString("daysFromNow", daysFromNow);
-            bundle.putParcelableArrayList("events", eventCardList);
-            Log.v("TEST", "Swapping fragments... ");
-            Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(getId(), CardSwipeFragment.newInstance(bundle, this)).commit();
-        }).start();
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return view;
     }
 

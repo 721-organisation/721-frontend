@@ -285,7 +285,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 AnalyticsHelper.logEvent(getContext(), FILTER_CLICKED_IN_DISCOVER, null);
                 SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
                         SelectLocationDiscoverFragment.newInstance(callingLoader, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"));
-                addPhotoBottomDialogFragment.show(Objects.requireNonNull(callingLoader.getActivity()).getSupportFragmentManager(),
+                addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
                         "discover_sheet_fragment");
             });
         }
@@ -532,7 +532,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                             response -> {
                                 // Display the first 500 characters of the response string.
                                 Log.v("SWIPE", "Successfully registered like on " + eventCard.getName());
-                            }, error -> Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show()) {
+                            }, error -> {
+                        error.printStackTrace();
+                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+                    }) {
                         @Override
                         protected Map<String, String> getParams() {
                             Map<String, String> map = new HashMap<>();

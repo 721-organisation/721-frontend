@@ -103,7 +103,7 @@
     <string name="_721_event_link_title">721 Event Link</string>
     <string name="_721_event_link_return_hint">To return to 721; click here</string>
     <string name="loading_cached_events_hint">Loading cached events..</string>
-    <string name="discover_tutorial_hint">Explore experiences happening elsewhere in the world here in Discover</string>
+    <string name="discover_tutorial_hint">Discover &amp; unlock new countries as you travel in Discover\nOnce you unlock a country, you have access to all its cities - even when you leave.</string>
     <string name="my_721_tutorial_hint">See your saved events here in My 721</string>
     <string name="share_experience">Share Experience</string>
     <string name="title_activity_unlocked_countries">Unlocked Countries</string>
