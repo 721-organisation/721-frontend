@@ -61,7 +61,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.EventMoreInfoActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.TransparentBackground" />
         <activity
             android:name=".activity.Email721TeamRedirectActivity"
             android:theme="@style/AppTheme" />
