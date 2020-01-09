@@ -390,7 +390,7 @@ public abstract class SplashActivity extends Activity {
                                             String mCountryName = address.get(0).getCountryName();
                                             SharedPreferences ss = getSharedPreferences("unlocked_countries_721", 0);
                                             Set<String> hs = ss.getStringSet("set", new HashSet<>());
-                                            if (!hs.contains(mCountryName)) {
+                                            if (mCountryName != null && !hs.contains(mCountryName)) {
                                                 hs.add(mCountryName);
 
                                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "COUNTRY_UNLOCKED")
@@ -398,15 +398,16 @@ public abstract class SplashActivity extends Activity {
 
                                                         .setContentTitle("New Country Unlocked \uD83D\uDD13")
                                                         .setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null))
-                                                        .setContentText("You just unlocked 721 in " + mCountryName + "  \uD83C\uDF89")
+                                                        .setContentText("You just unlocked 721 in " + mCountryName + " " + UnlockedCountriesActivity.countryCodeToEmoji(address.get(0).getCountryCode()) + "\uD83C\uDF89")
                                                         .setPriority(NotificationCompat.PRIORITY_MAX);
                                                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                    CharSequence name = "COUNTRY_UNLOCKED";
-                                                    String description = "COUNTRY_UNLOCKED";
+                                                    CharSequence name = getString(R.string.new_country_notification_channel);
+                                                    String description = getString(R.string.country_unlock_notification_channel_desc);
                                                     int importance = NotificationManager.IMPORTANCE_HIGH;
-                                                    NotificationChannel channel = new NotificationChannel("COUNTRY_UNLOCKED", name, importance);
+                                                    NotificationChannel channel = new NotificationChannel(getString(R.string.new_country_notification_channel_id), name, importance);
+                                                    channel.enableVibration(true);
                                                     channel.setDescription(description);
                                                     // Register the channel with the system; you can't change the importance
                                                     // or other notification behaviors after this
@@ -415,7 +416,7 @@ public abstract class SplashActivity extends Activity {
                                                 }
 
                                                 //    notificationId is a unique int for each notification that you must define
-                                                notificationManager.notify(0, builder.build());
+                                                notificationManager.notify(100025, builder.build());
                                             }
                                             SharedPreferences.Editor edit = ss.edit();
                                             edit.clear();

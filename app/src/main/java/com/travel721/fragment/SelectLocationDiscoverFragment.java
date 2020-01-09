@@ -1,6 +1,6 @@
 package com.travel721.fragment;
 
-import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.travel721.R;
+import com.travel721.activity.UnlockedCountriesActivity;
 
 import java.util.HashSet;
 import java.util.List;
@@ -133,26 +134,12 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
             }
 
         });
-        SharedPreferences ss = Objects.requireNonNull(getContext()).getSharedPreferences("unlocked_countries_721", 0);
-        Set<String> hs = ss.getStringSet("set", new HashSet<>());
-        StringBuilder message = new StringBuilder();
-        for (String s : hs) {
-            message.append(s).append("\n");
-        }
-        if (hs.isEmpty()) message = new StringBuilder("No Countries Unlocked.");
+
 
         ImageView listUnlockedCountries = v.findViewById(R.id.listUnlockedCountriesButton);
-        String finalMessage = message.toString();
         listUnlockedCountries.setOnClickListener(v1 -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Unlocked Countries")
-                    .setMessage(finalMessage).setNeutralButton("Go Back", (dialog, which) -> {
-
-            });
-
-            AlertDialog alert = builder.create();
-
-            alert.show();
+            Intent i = new Intent(getContext(), UnlockedCountriesActivity.class);
+            startActivity(i);
         });
         // get the views and attach the listener
 
