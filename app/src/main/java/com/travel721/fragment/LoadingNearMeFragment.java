@@ -111,4 +111,6 @@ public class LoadingNearMeFragment extends LoadingFragment {
     }
 
 
+    public void beginTutorial() {
+    }
 }

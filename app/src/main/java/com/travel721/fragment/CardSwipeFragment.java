@@ -30,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.androidadvance.topsnackbar.TSnackbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.travel721.CardStackAdapter;
 import com.travel721.PageViewModel;
 import com.travel721.R;
@@ -116,7 +117,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    private View root;
     private ArrayList<Card> cardArrayList;
     private CardStackAdapter cardStackAdapter;
     private String CARD_SWIPE_REQUEST_TAG = "CardSwipeRequestTag";
@@ -232,7 +232,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        root = inflater.inflate(R.layout.fragment_card_swipe, container, false);
+        View root = inflater.inflate(R.layout.fragment_card_swipe, container, false);
 
         AnalyticsHelper.logEvent(getContext(), TEST_RELEASE_ANALYTICS_EVENT, null);
         super.onCreate(savedInstanceState);
@@ -281,7 +281,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 AnalyticsHelper.logEvent(getContext(), FILTER_CLICKED_IN_DISCOVER, null);
                 SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
                         SelectLocationDiscoverFragment.newInstance(callingLoader, Objects.requireNonNull(getArguments()).getString("accessToken"), getArguments().getString("IID"), getArguments().getString("searchLocation"));
-                addPhotoBottomDialogFragment.show(Objects.requireNonNull(getActivity()).getSupportFragmentManager(),
+                addPhotoBottomDialogFragment.show(Objects.requireNonNull(callingLoader.getActivity()).getSupportFragmentManager(),
                         "discover_sheet_fragment");
             });
         }
@@ -299,75 +299,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             tv.setOnClickListener(v -> {
                 Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
                 startActivity(i);
-                Objects.requireNonNull(getActivity()).finish();
+                Objects.requireNonNull(callingLoader.getActivity()).finish();
             });
         }
 
-
-        // CSF Tutorial
-
-        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("firstcsfvisit", true)) {
-            Log.v("CSFT", "First CSF Visit");
-            // sequence example
-            ShowcaseConfig config = new ShowcaseConfig();
-            Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
-            config.setMaskColor(Color.rgb(254, 96, 96));
-            config.setDelay(100); // half second between each showcase view
-
-            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialNearMe");
-
-            sequence.setConfig(config);
-
-            int positions = 0;
-            sequence.addSequenceItem(
-                    new MaterialShowcaseView.Builder(getActivity())
-                            .setTarget(root.findViewById(R.id.background_textview))
-                            .setDismissText(getString(R.string.click_to_continue))
-                            .setContentText("Nearby experiences are shown here\nSwipe right to save to My 721\nSwipe left to dismiss")
-                            .setMaskColour(Color.argb(200, 254, 96, 96))
-                            .build()
-            );
-            positions++;
-
-            sequence.addSequenceItem(
-                    new MaterialShowcaseView.Builder(getActivity())
-                            .setTarget(root.findViewById(R.id.thumbupButton))
-                            .setDismissText(getString(R.string.click_to_continue))
-                            .setContentText("If you don't like swiping, feel free to use the buttons here")
-                            .setMaskColour(Color.argb(200, 254, 96, 96))
-                            .build());
-            positions++;
-
-            sequence.addSequenceItem(
-                    new MaterialShowcaseView.Builder(getActivity())
-                            .setTarget(root.findViewById(R.id.filterButton))
-                            .setDismissText(getString(R.string.click_to_continue))
-                            .setContentText("Filter and change curation settings using this button")
-                            .setMaskColour(Color.argb(200, 254, 96, 96))
-                            .build());
-            positions++;
-
-            sequence.addSequenceItem(new MaterialShowcaseView.Builder(getActivity())
-                    .setTarget(root.findViewById(R.id.shareEventButton))
-                    .setDismissText("Got It!")
-                    .setContentText("Share experiences on 721 with this button")
-                    .setMaskColour(Color.argb(200, 254, 96, 96))
-                    .build());
-            positions++;
-
-
-            int numberOfPositions = positions;
-            sequence.setOnItemDismissedListener((itemView, position) -> {
-                if (position == numberOfPositions) {
-                    // Unset first run
-                    sharedPreferences.edit().putBoolean("firstcsfvisit", false).apply();
-                }
-
-            });
-            sequence.start();
-
-        }
 
         return root;
     }
@@ -394,9 +329,97 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        // CSF Tutorial
+        SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("firstcsfvisit", true)) {
+            // sequence example
+            ShowcaseConfig config = new ShowcaseConfig();
+            Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
+            config.setMaskColor(Color.rgb(254, 96, 96));
+            config.setDelay(100); // half second between each showcase view
+
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialNearMe");
+
+            sequence.setConfig(config);
+
+            int positions = 0;
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(getView().findViewById(R.id.background_textview))
+                            .setShapePadding(-50)
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("Nearby experiences are shown here\nSwipe right to save to My 721\nSwipe left to dismiss")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build()
+            );
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(getView().findViewById(R.id.thumbupButton))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("If you don't like swiping, feel free to use the buttons here")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(getView().findViewById(R.id.filterButton))
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText("Filter and change curation settings using this button")
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+
+            sequence.addSequenceItem(new MaterialShowcaseView.Builder(getActivity())
+                    .setTarget(getView().findViewById(R.id.shareEventButton))
+                    .setDismissText(getString(R.string.click_to_continue))
+                    .setContentText("Share experiences on 721 with this button")
+                    .setMaskColour(Color.argb(200, 254, 96, 96))
+                    .build());
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(2).view)
+                            .setDismissText(getString(R.string.click_to_continue))
+                            .setContentText(getString((R.string.discover_tutorial_hint)))
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(getActivity())
+                            .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(0).view)
+                            .setDismissText("Got It!")
+                            .setContentText(getString(R.string.my_721_tutorial_hint))
+                            .setMaskColour(Color.argb(200, 254, 96, 96))
+                            .build());
+            positions++;
+
+
+            int numberOfPositions = positions;
+            sequence.setOnItemDismissedListener((itemView, position) -> {
+                if (position == numberOfPositions) {
+                    // Unset first run
+                    sharedPreferences.edit().putBoolean("firstcsfvisit", false).apply();
+                }
+
+            });
+            sequence.start();
+
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         queue.getRequestQueue().start();
+
     }
 
     void initialise() {
@@ -430,7 +453,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
     public void onCardSwiped(Direction direction) {
         // Removes TSnackBar
         if (cardStackLayoutManager.getChildCount() == 0) {
-            TextView tv = root.findViewById(R.id.background_textview);
+            TextView tv = getView().findViewById(R.id.background_textview);
             tv.setVisibility(View.VISIBLE);
         }
         // Gets the Card index
@@ -448,7 +471,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             // Each case makes a call to the Analytics API
             //vector drawable
             TSnackbar snackbar = TSnackbar
-                    .make(root.findViewById(R.id.rootConstraintLayout), "", TSnackbar.LENGTH_SHORT);
+                    .make(getView().findViewById(R.id.rootConstraintLayout), "", TSnackbar.LENGTH_SHORT);
             snackbar.setActionTextColor(Color.WHITE);
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(Color.WHITE);

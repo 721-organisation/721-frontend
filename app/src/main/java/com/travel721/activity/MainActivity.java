@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.travel721.R;
 import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.analytics.ReleaseScreenNameAnalytic;
@@ -20,22 +19,27 @@ import java.util.Objects;
 import static com.travel721.analytics.ReleaseScreenNameAnalytic.NEAR_ME_VIEWED;
 
 public class MainActivity extends AppCompatActivity {
+    LoadingNearMeFragment loadingNearMeFragment;
+    private String accessToken;
+    private String iid;
+    private String longitude;
+    private String latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main_tabbed);
-        String accessToken = getIntent().getStringExtra("accessToken");
-        String iid = getIntent().getStringExtra("IID");
-        TabLayout tabLayout = findViewById(R.id.tabLayout);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
-        String longitude = getIntent().getStringExtra("longitude");
-        String latitude = getIntent().getStringExtra("latitude");
+        accessToken = getIntent().getStringExtra("accessToken");
+        iid = getIntent().getStringExtra("IID");
+        longitude = getIntent().getStringExtra("longitude");
+        latitude = getIntent().getStringExtra("latitude");
         String radius = getIntent().getStringExtra("radius");
         String daysFromNow = getIntent().getStringExtra("daysfromnow");
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).select();
+        loadingNearMeFragment = LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow, null);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, LoadingNearMeFragment.newInstance(accessToken, iid, longitude, latitude, radius, daysFromNow, null)).commit();
+                .replace(R.id.fragmentContainer, loadingNearMeFragment).commit();
         AnalyticsHelper.setScreenNameAnalytic(this, this, NEAR_ME_VIEWED, LoadingNearMeFragment.class.getName());
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             LoadingNearMeFragment loadingNearMeFragment;

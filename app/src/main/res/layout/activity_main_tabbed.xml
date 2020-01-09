@@ -29,19 +29,22 @@
         app:tabTextColor="#FE6060">
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/my_721_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/ic_person"
             android:text="@string/my_721_tab" />
 
         <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
+            android:id="@+id/near_me_tab"
 
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/ic_person_pin_circle"
             android:text="@string/near_me_tab" />
 
         <com.google.android.material.tabs.TabItem
+            android:id="@+id/discover_tab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/ic_map"

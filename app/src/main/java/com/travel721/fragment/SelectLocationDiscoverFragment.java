@@ -103,7 +103,6 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
 
         button.setOnClickListener(view1 -> {
-            Log.v("BTN", "CLICKED");
             try {
                 List<Address> addressList = geocoder.getFromLocationName(String.valueOf(editText.getText()), 1);
                 String mCountryName = addressList.get(0).getCountryName();
