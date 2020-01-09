@@ -66,7 +66,7 @@ public class LoadingNearMeFragment extends LoadingFragment {
 
 
         TextView statusText = view.findViewById(R.id.status_text);
-        statusText.setText("Loading cached events..");
+        statusText.setText(getString(R.string.loading_cached_events_hint));
         new Thread(() -> {
             eventCardList = (ArrayList<? extends EventCard>) CacheDatabase.getInstance(getContext()).eventCardDao().getAll();
             String eventCardDateFormatString = "EEEE dd MMM";
@@ -81,13 +81,14 @@ public class LoadingNearMeFragment extends LoadingFragment {
                             CacheDatabase.getInstance(getContext()).eventCardDao().delete((EventCard) c);
                             cardsToRemoveList.add(c);
                         }
-                    } catch (ParseException e) {
+                    } catch (ParseException ignored) {
 
                     }
 
                 }
             }
-            eventCardList.removeAll(cardsToRemoveList);
+            if (!cardsToRemoveList.isEmpty()) //noinspection SuspiciousMethodCalls
+                eventCardList.removeAll(cardsToRemoveList);
 
             Bundle bundle = new Bundle();
             bundle.putString("mode", "nearme");

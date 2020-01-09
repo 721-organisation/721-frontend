@@ -138,18 +138,16 @@ public abstract class SplashActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
-            case REQUEST_CHECK_LOCATION_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        Intent i = new Intent(this, InitialLoadSplashActivity.class);
-                        startActivity(i);
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(this, "Cannot proceed without location", Toast.LENGTH_SHORT).show();
-                }
-                break;
+        // Check for the integer request code originally supplied to startResolutionForResult().
+        if (requestCode == REQUEST_CHECK_LOCATION_SETTINGS) {
+            switch (resultCode) {
+                case Activity.RESULT_OK:
+                    Intent i = new Intent(this, InitialLoadSplashActivity.class);
+                    startActivity(i);
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(this, "Cannot proceed without location", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -391,7 +389,7 @@ public abstract class SplashActivity extends Activity {
                                             String city = address.get(0).getSubAdminArea();
                                             String mCountryName = address.get(0).getCountryName();
                                             SharedPreferences ss = getSharedPreferences("unlocked_countries_721", 0);
-                                            Set<String> hs = ss.getStringSet("set", new HashSet<String>());
+                                            Set<String> hs = ss.getStringSet("set", new HashSet<>());
                                             if (!hs.contains(mCountryName)) {
                                                 hs.add(mCountryName);
 
@@ -413,7 +411,7 @@ public abstract class SplashActivity extends Activity {
                                                     // Register the channel with the system; you can't change the importance
                                                     // or other notification behaviors after this
                                                     NotificationManager mnotificationManager = getSystemService(NotificationManager.class);
-                                                    mnotificationManager.createNotificationChannel(channel);
+                                                    Objects.requireNonNull(mnotificationManager).createNotificationChannel(channel);
                                                 }
 
                                                 //    notificationId is a unique int for each notification that you must define

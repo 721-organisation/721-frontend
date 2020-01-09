@@ -35,7 +35,7 @@ public class AnalyticsHelper {
     // Fragment Screen Name Constants
 //    public static final String
 
-    public static final ArrayList<String> feedbackQuestions() {
+    public static ArrayList<String> feedbackQuestions() {
         ArrayList<String> questions = new ArrayList<>();
         questions.add(ReleaseAnalyticsEvent.HAVING_FUN_QUESTION);
         questions.add(ReleaseAnalyticsEvent.FINDING_EXPERIENCES_YOU_LIKE_QUESTION);

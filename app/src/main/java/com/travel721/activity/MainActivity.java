@@ -20,12 +20,11 @@ import java.util.Objects;
 import static com.travel721.analytics.ReleaseScreenNameAnalytic.NEAR_ME_VIEWED;
 
 public class MainActivity extends AppCompatActivity {
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main_tabbed);
         String accessToken = getIntent().getStringExtra("accessToken");
         String iid = getIntent().getStringExtra("IID");

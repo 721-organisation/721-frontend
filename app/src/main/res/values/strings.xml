@@ -99,5 +99,9 @@
     <string name="click_to_continue">Click here to continue</string>
     <string name="fcm_notification_channel_id">721 Team Notifications</string>
     <string name="share_721_experience">Share experience \'%s\'</string>
+    <string name="confirm_delete_saved_event">Are you sure you would like to remove this event?</string>
+    <string name="_721_event_link_title">721 Event Link</string>
+    <string name="_721_event_link_return_hint">To return to 721; click here</string>
+    <string name="loading_cached_events_hint">Loading cached events..</string>
 
 </resources>

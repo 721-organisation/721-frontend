@@ -206,7 +206,6 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 // TODO show user that 721 is updating events
 
-                minDays = "0";
                 EventCuratorAsyncTask nearmeeventCuratorAsyncTask = new EventCuratorAsyncTask(tagsToFilterBy, accessToken, IID, longitude, latitude, radius, daysFromNow);
                 nearmeeventCuratorAsyncTask.execute();
 
@@ -296,7 +295,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
         String mode = Objects.requireNonNull(getArguments()).getString("mode");
         if ("applink".equals(Objects.requireNonNull(mode))) {
             TextView tv = root.findViewById(R.id.background_textview);
-            tv.setText("To return to 721; click here");
+            tv.setText(getString(R.string._721_event_link_return_hint));
             tv.setOnClickListener(v -> {
                 Intent i = new Intent(getContext(), InitialLoadSplashActivity.class);
                 startActivity(i);
@@ -537,11 +536,11 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             String url = "https://www.instagram.com/721app/";
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
-            getContext().startActivity(i);
+            Objects.requireNonNull(getContext()).startActivity(i);
         }
         if (cardArrayList.get(index) instanceof ContactUsFeedbackCard && direction == Direction.Right) {
             Intent i = new Intent(getContext(), Email721TeamRedirectActivity.class);
-            getContext().startActivity(i);
+            Objects.requireNonNull(getContext()).startActivity(i);
         }
         if (cardArrayList.get(index) instanceof FeedbackToFirebaseCard) {
             String question = ((FeedbackToFirebaseCard) cardArrayList.get(index)).getQuestion();
@@ -681,12 +680,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 super.onPostExecute(eventCards);
 
                 // Check if there are no results and display message accordingly
-                final View.OnClickListener performFilterButtonClick = view -> {
-                    getView().findViewById(R.id.filterButton).performClick();
-                };
+                final View.OnClickListener performFilterButtonClick = view -> Objects.requireNonNull(getView()).findViewById(R.id.filterButton).performClick();
                 if ((eventCards != null && eventCards.isEmpty()) && (cardArrayList != null && cardArrayList.isEmpty())) {
                     if (discoverMode) {
-                        TextView bgtv = getView().findViewById(R.id.background_textview);
+                        TextView bgtv = Objects.requireNonNull(getView()).findViewById(R.id.background_textview);
                         bgtv.setText(getResources().getString(R.string.discover_unavailable));
                         bgtv.setOnClickListener(view -> {
                             SelectLocationDiscoverFragment addPhotoBottomDialogFragment =
@@ -712,7 +709,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 // Add two AdCards and display to screen
                 ArrayList<Card> combinedList = new ArrayList<>();
                 combinedList.addAll(cardStackAdapter.getEvents());
-                combinedList.addAll(eventCards);
+                combinedList.addAll(Objects.requireNonNull(eventCards));
                 combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());

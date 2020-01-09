@@ -15,7 +15,7 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="721 Event Link" />
+            android:text="@string/_721_event_link_title" />
     </com.google.android.material.tabs.TabLayout>
 
     <FrameLayout

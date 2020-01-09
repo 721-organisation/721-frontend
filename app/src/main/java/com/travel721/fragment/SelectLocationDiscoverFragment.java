@@ -112,7 +112,7 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
                 if (!hs.contains(mCountryName)) {
                     if (mCountryName.equals("null"))
                         throw new Exception();
-                    textInputLayout.setError("You have not yet unlocked 721 in " + mCountryName + "\nOpen 721 there to unlock discover");
+                    textInputLayout.setError("You have not yet unlocked 721 in " + mCountryName);
                     Log.v("BTN", "Blocked Discover");
                     return;
                 }

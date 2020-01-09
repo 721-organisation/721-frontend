@@ -44,24 +44,24 @@ public class Constants {
      * @param iid The Firebase instance ID to encode
      * @return The encoded URL
      */
-    public static final String profileSearchURL(String iid) {
+    public static String profileSearchURL(String iid) {
         return "?filter=%7B%22where%22%3A%7B%22profileId%22%3A%22" + iid + "%22%7D%7D";
     }
 
-    public static final String eventProfileLikedSearchFilter(String profileID) {
+    public static String eventProfileLikedSearchFilter(String profileID) {
         return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%2C%22swipe%22%3Atrue%7D%7D";
     }
 
-    public static final String eventProfileAllSearchFilter(String profileID) {
+    public static String eventProfileAllSearchFilter(String profileID) {
         return "%7B%22where%22%3A%7B%22profileId%22%3A+%22" + profileID + "%22%7D%7D";
     }
 
 
-    public static final String eventSearchFilter(String eventProfileID) {
+    public static String eventSearchFilter(String eventProfileID) {
         return "%7B%22where%22%3A%7B%22eventSourceId%22%3A%22" + eventProfileID + "%22%7D%7D";
     }
 
-    public static final int getRandomOverlay() {
+    public static int getRandomOverlay() {
         // Generate random number
         Random randomGenerator = new Random();
         int randomInt = randomGenerator.nextInt(7) + 1;

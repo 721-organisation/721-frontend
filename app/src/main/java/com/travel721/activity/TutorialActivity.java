@@ -13,7 +13,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.travel721.R;
-import com.travel721.activity.InitialLoadSplashActivity;
 import com.travel721.fragment.TutorialSlideFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 public class TutorialActivity extends FragmentActivity {
     private static final int NUM_PAGES = 3;
     private ViewPager2 mPager;
-    private FragmentStateAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +29,7 @@ public class TutorialActivity extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.view_pager);
-        pagerAdapter = new TutorialSlidePagerAdapter(this);
+        FragmentStateAdapter pagerAdapter = new TutorialSlidePagerAdapter(this);
         mPager.setAdapter(pagerAdapter);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

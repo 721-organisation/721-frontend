@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+@SuppressWarnings("WeakerAccess")
 @Entity
 public class EventCard extends Card implements Parcelable, Serializable, Comparable<EventCard> {
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
