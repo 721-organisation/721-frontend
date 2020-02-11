@@ -347,7 +347,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialNearMe");
 
-                sequence.setConfig(config);
+                // TODO add bold font to actions
 
                 int positions = 0;
                 sequence.addSequenceItem(
