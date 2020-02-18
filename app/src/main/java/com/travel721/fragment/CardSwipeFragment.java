@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DiffUtil;
@@ -42,7 +43,9 @@ import com.travel721.analytics.ReleaseAnalyticsEvent;
 import com.travel721.analytics.ReleaseScreenNameAnalytic;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
+import com.travel721.card.CardComparator;
 import com.travel721.card.ContactUsFeedbackCard;
+import com.travel721.card.DateCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
 import com.travel721.card.FeedbackToFirebaseCard;
@@ -62,6 +65,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -344,18 +348,19 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
                 config.setMaskColor(Color.rgb(254, 96, 96));
                 config.setDelay(100); // half second between each showcase view
-
+                Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.open_sans_bold);
+                config.setDismissTextStyle(typeface);
                 MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialNearMe");
-
-                // TODO add bold font to actions
+                sequence.setConfig(config);
 
                 int positions = 0;
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
-                                .setTarget(getView().findViewById(R.id.background_textview))
-                                .setShapePadding(-75)
+                                .setTarget(getView().findViewById(R.id.card_stack_view))
+                                .setSkipText("Skip")
+                                .setShapePadding(-500)
                                 .setDismissText(getString(R.string.click_to_continue))
-                                .setContentText("Nearby experiences are shown here\nSwipe right to save to My 721\nSwipe left to dismiss")
+                                .setContentText("Swipe right to save to My 721. Swipe left to dismiss")
                                 .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build()
                 );
@@ -363,15 +368,18 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setSkipText("Skip")
                                 .setTarget(getView().findViewById(R.id.thumbupButton))
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText("If you don't like swiping, feel free to use the buttons here")
                                 .setMaskColour(Color.argb(200, 254, 96, 96))
+
                                 .build());
                 positions++;
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setSkipText("Skip")
                                 .setTarget(getView().findViewById(R.id.filterButton))
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText("Filter and change curation settings using this button")
@@ -381,6 +389,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
 
                 sequence.addSequenceItem(new MaterialShowcaseView.Builder(getActivity())
+                        .setSkipText("Skip")
                         .setTarget(getView().findViewById(R.id.shareEventButton))
                         .setDismissText(getString(R.string.click_to_continue))
                         .setContentText("Share experiences on 721 with this button")
@@ -390,6 +399,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setSkipText("Skip")
                                 .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(2).view)
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText(getString((R.string.discover_tutorial_hint)))
@@ -399,6 +409,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setSkipText("Skip")
                                 .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(0).view)
                                 .setDismissText("Got It!")
                                 .setContentText(getString(R.string.my_721_tutorial_hint))
@@ -566,11 +577,15 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             }
         }
 //        cardArrayList.remove(cardArrayList.get(index));
-        if (cardArrayList.get(index) instanceof InstagramFeedbackCard && direction == Left) {
-            String url = "https://www.instagram.com/721app/";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            Objects.requireNonNull(getContext()).startActivity(i);
+        if (cardArrayList.get(index) instanceof InstagramFeedbackCard) {
+            if (direction == Left) {
+                String url = "https://www.instagram.com/721app/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                Objects.requireNonNull(getContext()).startActivity(i);
+            }
+            SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+            sharedPreferences.edit().putBoolean("firstinstacard", false).apply();
         }
         if (cardArrayList.get(index) instanceof ContactUsFeedbackCard && direction == Direction.Right) {
             Intent i = new Intent(getContext(), Email721TeamRedirectActivity.class);
@@ -747,10 +762,29 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 combinedList.add((int) (combinedList.size() * 0.4), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.8), new AdCard());
                 combinedList.add((int) (combinedList.size() * 0.51), new FeedbackToFirebaseCard());
-                combinedList.add((int) (combinedList.size() * 0.2), new InstagramFeedbackCard());
-
-                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
+                SharedPreferences sharedPreferences = Objects.requireNonNull(getContext()).getSharedPreferences(getContext().getPackageName(), MODE_PRIVATE);
+                if (sharedPreferences.getBoolean("firstinstacard", true))
+                    combinedList.add((int) (combinedList.size() * 0.2), new InstagramFeedbackCard());
                 cardArrayList = combinedList;
+
+
+                Collections.sort(cardArrayList, new CardComparator<>());
+                String currentLabel = "";
+                ArrayList<Card> separatedCards = new ArrayList<>();
+                for (int i = 0; i < cardArrayList.size(); i++) {
+                    if (cardArrayList.get(i) instanceof EventCard) {
+                        if (!currentLabel.equals(((EventCard) cardArrayList.get(i)).getPrettyDate())) {
+                            currentLabel = ((EventCard) cardArrayList.get(i)).getPrettyDate();
+                            separatedCards.add(new DateCard());
+                        }
+                        separatedCards.add(cardArrayList.get(i));
+                    } else {
+                        if (cardArrayList.get(i) instanceof DateCard) continue;
+                        separatedCards.add(cardArrayList.get(i));
+                    }
+                }
+                cardArrayList = separatedCards;
+                DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
 
                 // Implements filtering networked results
                 if (tags == null || tags.isEmpty()) {
@@ -759,6 +793,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     filterUsingTags(combinedList, tags);
                     cardStackAdapter.setEvents(combinedList);
                 }
+
                 diffResult.dispatchUpdatesTo(cardStackAdapter);
 
             } catch (NullPointerException e) {

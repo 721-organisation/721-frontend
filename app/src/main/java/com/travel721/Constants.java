@@ -29,7 +29,7 @@ public class Constants {
     public static final int REQUEST_LOCATION_PERMISSIONS = 999;
 
     public final static int SLIDE_ANIMATION_DURATION = 300;
-    public static String API_ROOT_URL = "https://temp-243314.appspot.com/api/";
+    public static String API_ROOT_URL = "https://721go.co.uk:3000/api/";
 
     public static final int testRadius = 5;
     public static final int testDaysFromNow = 4;

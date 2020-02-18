@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -91,16 +91,14 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
 
         getChildFragmentManager().beginTransaction().replace(android.R.id.content, new CurationSettingsFragment()).commit();
 
-        TextView title = v.findViewById(R.id.discoverTitle);
-        title.setOnClickListener(view -> dismiss());
+//        TextView title = v.findViewById(R.id.discoverTitle);
+//        title.setOnClickListener(view -> dismiss());
         v.findViewById(R.id.closeDiscover).setOnClickListener(view -> dismiss());
         TextInputEditText editText = v.findViewById(R.id.discoverLocationEditText);
         TextInputLayout textInputLayout = v.findViewById(R.id.discoverLocationInputLayout);
-        TextView textView = v.findViewById(R.id.textView5);
         Button button = v.findViewById(R.id.discover_button);
 
         Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-
         button.setOnClickListener(view1 -> {
             try {
                 List<Address> addressList = geocoder.getFromLocationName(String.valueOf(editText.getText()), 1);
@@ -136,7 +134,12 @@ public class SelectLocationDiscoverFragment extends RoundedBottomSheetDialogFrag
         });
 
 
-        ImageView listUnlockedCountries = v.findViewById(R.id.listUnlockedCountriesButton);
+        ImageButton listUnlockedCountries = v.findViewById(R.id.listUnlockedCountriesButton);
+        TextView textView = v.findViewById(R.id.unlocked_countries_label);
+        textView.setOnClickListener(v1 -> {
+            Intent i = new Intent(getContext(), UnlockedCountriesActivity.class);
+            startActivity(i);
+        });
         listUnlockedCountries.setOnClickListener(v1 -> {
             Intent i = new Intent(getContext(), UnlockedCountriesActivity.class);
             startActivity(i);

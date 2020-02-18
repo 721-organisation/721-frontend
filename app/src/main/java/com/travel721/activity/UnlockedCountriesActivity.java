@@ -9,18 +9,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.travel721.R;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class UnlockedCountriesActivity extends AppCompatActivity {
     private Set<String> hashSet;
-    private Map<String, String> countryNameToCode = new HashMap<>();
+    private SortedMap<String, String> countryNameToCode = new TreeMap<>();
 
     public static String countryCodeToEmoji(String code) {
 
@@ -319,6 +320,19 @@ public class UnlockedCountriesActivity extends AppCompatActivity {
             countryEmoji.setText(countryCodeToEmoji(countryNameToCode.get(s)));
             countriesListView.addView(countryEntry);
         }
+
+        for (String s : countryNameToCode.keySet()) {
+            if (!hashSet.contains(s)) {
+                View countryEntry = getLayoutInflater().inflate(R.layout.country_entry, null);
+                TextView countryName = countryEntry.findViewById(R.id.countryName);
+                countryName.setText(s);
+                countryName.setTextColor(ResourcesCompat.getColor(getResources(), R.color.light_gray, null));
+                TextView countryEmoji = countryEntry.findViewById(R.id.countryEmoji);
+                countryEmoji.setText("\uD83D\uDCCD");
+                countriesListView.addView(countryEntry);
+            }
+        }
+
     }
 
     public void finish(MenuItem item) {

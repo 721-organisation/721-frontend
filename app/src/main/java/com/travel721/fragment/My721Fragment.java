@@ -3,6 +3,7 @@ package com.travel721.fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
@@ -229,7 +231,8 @@ public class My721Fragment extends Fragment {
                 Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
                 config.setMaskColor(Color.rgb(254, 96, 96));
                 config.setDelay(100); // half second between each showcase view
-
+                Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.open_sans_bold);
+                config.setDismissTextStyle(typeface);
                 MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "TutorialMy721");
 
                 sequence.setConfig(config);

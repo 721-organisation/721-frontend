@@ -10,15 +10,29 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/listUnlockedCountriesButton"
+            style="@style/Widget.AppCompat.ButtonBar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:src="@drawable/ic_lock_open"
+            android:tint="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/unlocked_countries_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="@string/title_activity_unlocked_countries"
+            android:textAppearance="@android:style/TextAppearance.Material.Small"
+            android:textSize="12sp" />
+
+        <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:scaleType="fitStart"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_lock_open" />
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/closeDiscover"

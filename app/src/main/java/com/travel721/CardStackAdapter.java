@@ -37,6 +37,7 @@ import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
 import com.travel721.card.ContactUsFeedbackCard;
+import com.travel721.card.DateCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
 import com.travel721.card.FeedbackToFirebaseCard;
@@ -57,17 +58,7 @@ import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
  * @author Bhav
  */
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
-    @Retention(RetentionPolicy.SOURCE)
-    @IntDef({
-            EVENT_CARD,
-            FEEDBACK_CARD,
-            AD_CARD,
-            CONTACT_US_FEEDBACK_CARD,
-            FEEDBACK_TO_FIREBASE_CARD,
-            INSTAGRAM_FEEDBACK_CARD
-    })
-    public @interface CardTypes {
-    }
+    public static final int DATE_CARD = 6;
 
     public static final int EVENT_CARD = 0;
     public static final int FEEDBACK_CARD = 1;
@@ -75,18 +66,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
     public static final int CONTACT_US_FEEDBACK_CARD = 3;
     public static final int FEEDBACK_TO_FIREBASE_CARD = 4;
     public static final int INSTAGRAM_FEEDBACK_CARD = 5;
-
-
-    // Field for cards in the stack
-    private List<Card> events;
-
-    public CardStackAdapter(@NonNull List<Card> eventCardList) {
-        this.events = eventCardList;
-    }
-
-    public List<Card> getEvents() {
-        return events;
-    }
 
     @Override
     public int getItemViewType(@CardTypes int position) {
@@ -102,11 +81,21 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             return FEEDBACK_TO_FIREBASE_CARD;
         if (events.get(position) instanceof InstagramFeedbackCard)
             return INSTAGRAM_FEEDBACK_CARD;
+        if (events.get(position) instanceof DateCard)
+            return DATE_CARD;
         return -1;
     }
 
-    public void setEvents(List<Card> events) {
-        this.events = events;
+
+    // Field for cards in the stack
+    private List<Card> events;
+
+    public CardStackAdapter(@NonNull List<Card> eventCardList) {
+        this.events = eventCardList;
+    }
+
+    public List<Card> getEvents() {
+        return events;
     }
 
     /**
@@ -149,9 +138,15 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_firebase, parent, false));
             case INSTAGRAM_FEEDBACK_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_instagram, parent, false));
+            case DATE_CARD:
+                return new ViewHolder(inflater.inflate(R.layout.card_date, parent, false));
         }
         // This should never happen
         return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
+    }
+
+    public void setEvents(List<Card> events) {
+        this.events = events;
     }
 
     /**
@@ -263,6 +258,23 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
             feedbackTagline.setText(question);
         }
+        if (events.get(position) instanceof DateCard) {
+            TextView date = holder.itemView.findViewById(R.id.card_date_tag);
+            date.setText(((EventCard) events.get(position + 1)).getPrettyDate());
+        }
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+            EVENT_CARD,
+            FEEDBACK_CARD,
+            AD_CARD,
+            CONTACT_US_FEEDBACK_CARD,
+            FEEDBACK_TO_FIREBASE_CARD,
+            INSTAGRAM_FEEDBACK_CARD,
+            DATE_CARD
+    })
+    public @interface CardTypes {
     }
 
     @Override

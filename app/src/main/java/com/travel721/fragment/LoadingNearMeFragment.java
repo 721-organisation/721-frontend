@@ -14,12 +14,15 @@ import androidx.annotation.Nullable;
 
 import com.travel721.R;
 import com.travel721.card.Card;
+import com.travel721.card.CardComparator;
+import com.travel721.card.DateCard;
 import com.travel721.card.EventCard;
 import com.travel721.eventcaching.CacheDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
 
@@ -107,6 +110,21 @@ public class LoadingNearMeFragment extends LoadingFragment {
                 bundle.putString("latitude", latitude);
                 bundle.putString("radius", radius);
                 bundle.putString("daysFromNow", daysFromNow);
+                Collections.sort(eventCardList, new CardComparator<>());
+                String currentLabel = "";
+                ArrayList<Card> separatedCards = new ArrayList<>();
+                for (int i = 0; i < eventCardList.size(); i++) {
+                    if (eventCardList.get(i) instanceof EventCard) {
+                        if (!currentLabel.equals(((EventCard) eventCardList.get(i)).getPrettyDate())) {
+                            currentLabel = ((EventCard) eventCardList.get(i)).getPrettyDate();
+                            separatedCards.add(new DateCard());
+                        }
+                        separatedCards.add(eventCardList.get(i));
+                    } else {
+                        separatedCards.add(eventCardList.get(i));
+                    }
+                }
+                eventCardList = separatedCards;
                 bundle.putParcelableArrayList("events", eventCardList);
                 Log.v("TEST", "Swapping fragments... ");
                 try {

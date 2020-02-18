@@ -106,7 +106,7 @@
     <string name="discover_tutorial_hint">Discover &amp; unlock new countries as you travel\nOnce you unlock a country, you have access to all its cities - even when you leave.</string>
     <string name="my_721_tutorial_hint">See your saved events here in My 721</string>
     <string name="share_experience">Share Experience</string>
-    <string name="title_activity_unlocked_countries">Unlocked Countries</string>
+    <string name="title_activity_unlocked_countries">Unlocked\nCountries</string>
     <string name="new_country_notification_channel">New Country Unlocks</string>
     <string name="country_unlock_notification_channel_desc">Notifications for new countries unlocked in 721 Discover Mode</string>
     <string name="new_country_notification_channel_id">COUNTRY_UNLOCKED</string>

@@ -395,7 +395,8 @@ public abstract class SplashActivity extends Activity {
 
                                                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "COUNTRY_UNLOCKED")
                                                         .setSmallIcon(R.drawable.ic_flight_takeoff)
-
+                                                        .setStyle(new NotificationCompat.BigTextStyle()
+                                                                .bigText("You just unlocked 721 in " + mCountryName + " " + UnlockedCountriesActivity.countryCodeToEmoji(address.get(0).getCountryCode()) + "\uD83C\uDF89"))
                                                         .setContentTitle("New Country Unlocked \uD83D\uDD13")
                                                         .setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null))
                                                         .setContentText("You just unlocked 721 in " + mCountryName + " " + UnlockedCountriesActivity.countryCodeToEmoji(address.get(0).getCountryCode()) + "\uD83C\uDF89")
