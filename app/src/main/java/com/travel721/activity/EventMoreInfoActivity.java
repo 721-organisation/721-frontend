@@ -142,7 +142,7 @@ public class EventMoreInfoActivity extends AppCompatActivity implements View.OnT
         AnalyticsHelper.logEvent(this, USER_CONVERSION_EVENT_AFF_LINK_CLICK, null);
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .addDefaultShareMenuItem()
-                .setToolbarColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .setToolbarColor(ContextCompat.getColor(this, R.color.secondaryColor))
                 .setShowTitle(true)
                 .build();
 

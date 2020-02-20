@@ -24,9 +24,10 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tabIconTint="#fe6060"
-        app:tabRippleColor="#fe6060"
-        app:tabTextColor="#FE6060">
+        app:tabIconTint="@color/primaryColor"
+        app:tabRippleColor="@color/secondaryColor"
+        app:tabSelectedTextColor="@color/primaryColor"
+        app:tabTextColor="@color/primaryColor">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/my_721_tab"
@@ -37,7 +38,6 @@
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/near_me_tab"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/ic_person_pin_circle"

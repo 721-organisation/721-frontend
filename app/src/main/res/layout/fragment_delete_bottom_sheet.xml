@@ -62,7 +62,7 @@
             android:layout_weight="1"
             android:backgroundTint="@color/white"
             android:text="@android:string/cancel"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/secondaryColor" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/proceed_delete"
@@ -70,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorAccent"
+            android:backgroundTint="@color/secondaryColor"
             android:text="@string/delete"
             android:textColor="@color/white" />
     </LinearLayout>

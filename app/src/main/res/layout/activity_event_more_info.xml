@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="15dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/secondaryColor"
                 android:textStyle="bold"
                 map:layout_constraintStart_toStartOf="parent"
                 tools:text="Event Name" />

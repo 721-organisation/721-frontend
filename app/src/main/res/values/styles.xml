@@ -2,9 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppBaseTheme" parent="Theme.MaterialComponents.Light.Bridge">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/secondaryDarkColor</item>
 
         <item name="android:textViewStyle">@style/OpenSansTextViewStyle</item>
         <item name="android:buttonStyle">@style/OpenSansButtonStyle</item>
@@ -19,9 +19,9 @@
     <style name="AppTheme.ActionBar" parent="AppBaseTheme">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-        <item name="titleTextColor">@android:color/white</item>
-        <item name="subtitleTextColor">@android:color/white</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="titleTextColor">@color/primaryTextColor</item>
+        <item name="subtitleTextColor">@color/primaryTextColor</item>
+        <item name="colorControlNormal">@color/primaryTextColor</item>
         <item name="android:homeAsUpIndicator">@drawable/ic_arrow_back</item>
     </style>
 
@@ -32,7 +32,7 @@
     <style name="SplashTheme" parent="AppBaseTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/colorAccent</item>
+        <!--        <item name="android:windowBackground">@color/secondaryColor</item>-->
     </style>
 
     <style name="OpenSansTextViewStyle">
@@ -41,8 +41,8 @@
 
     <style name="OpenSansButtonStyle" parent="Widget.AppCompat.Button.Borderless" tools:override="true">
         <item name="android:buttonStyle">@style/CustomButtonStyle</item>
-        <item name="android:buttonTint">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:buttonTint">@color/secondaryColor</item>
+        <item name="android:textColor">@color/secondaryColor</item>
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
 

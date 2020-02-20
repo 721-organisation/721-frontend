@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FE6060</color>
-    <color name="colorPrimaryDark">#DF5151</color>
-    <color name="colorPrimaryEvenDarker">#A53C3C</color>
-    <color name="colorAccent">#FE6060</color>
+    <!--    <color name="colorPrimary">#FE6060</color>-->
+    <!--    <color name="colorPrimaryDark">#DF5151</color>-->
+    <!--    <color name="colorPrimaryEvenDarker">#A53C3C</color>-->
+    <!--        <color name="colorAccent">#FE6060</color>-->
     <color name="darkgreen6">#2D876E</color>
     <color name="bronze6">#9B813A</color>
     <color name="green6">#009B55</color>
@@ -22,11 +22,26 @@
     <color name="teal5">#83AAB3</color>
     <color name="light_gray">#E0E0E0</color>
 
-    <color name="textLightPrimary">#FFFFFF</color> <!--%100 opacity-->
-    <color name="textLightSecondary">#B2FFFFFF</color> <!--B2 for %70 opacity-->
-    <color name="textLightDisabled">#80FFFFFF</color> <!--80 for %50 opacity-->
-    <color name="textLightDisabledDEPRECATED">#4CFFFFFF</color>
+    <!--    <color name="textLightPrimary">#FFFFFF</color> &lt;!&ndash;%100 opacity&ndash;&gt;-->
+    <!--    <color name="textLightSecondary">#B2FFFFFF</color> &lt;!&ndash;B2 for %70 opacity&ndash;&gt;-->
+    <!--    <color name="textLightDisabled">#80FFFFFF</color> &lt;!&ndash;80 for %50 opacity&ndash;&gt;-->
+    <!--    <color name="textLightDisabledDEPRECATED">#4CFFFFFF</color>-->
     <color name="white">#FFFFFF</color> <!--4C for %30 opacity-->
     <color name="gold">#FFD700</color>
     <color name="black">#00000000</color>
+
+
+    <!-- New Color Scheme -->
+    <color name="primaryColor">#d84315</color>
+    <color name="primaryLightColor">#ff7543</color>
+    <color name="primaryDarkColor">#9f0000</color>
+    <color name="secondaryColor">#dd2c00</color>
+    <color name="secondaryLightColor">#ff6434</color>
+    <color name="secondaryDarkColor">#a30000</color>
+    <color name="primaryTextColor">#fafafa</color>
+    <color name="secondaryTextColor">#ffffff</color>
+
+    <!--    <color name="secondaryColor">#ff6434</color>-->
+
+
 </resources>

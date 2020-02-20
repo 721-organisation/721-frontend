@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:src="@drawable/ic_lock_open"
-            android:tint="@color/colorAccent" />
+            android:tint="@color/secondaryColor" />
 
         <TextView
             android:id="@+id/unlocked_countries_label"
@@ -69,13 +69,13 @@
         android:ems="10"
         android:gravity="center"
         android:hint="@string/discover_hint"
-        app:boxStrokeColor="@color/colorAccent"
+        app:boxStrokeColor="@color/secondaryColor"
         app:counterOverflowTextAppearance="@style/OpenSansSmallTextAppearence"
         app:counterTextAppearance="@style/OpenSansSmallTextAppearence"
         app:errorTextAppearance="@style/OpenSansSmallTextAppearence"
         app:helperTextTextAppearance="@style/OpenSansSmallTextAppearence"
         app:hintTextAppearance="@style/OpenSansSmallTextAppearence"
-        app:hintTextColor="@color/colorAccent"
+        app:hintTextColor="@color/secondaryColor"
         app:placeholderTextAppearance="@style/OpenSansSmallTextAppearence"
         app:prefixTextAppearance="@style/OpenSansSmallTextAppearence"
         app:suffixTextAppearance="@style/OpenSansSmallTextAppearence">

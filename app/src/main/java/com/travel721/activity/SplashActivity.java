@@ -398,7 +398,7 @@ public abstract class SplashActivity extends Activity {
                                                         .setStyle(new NotificationCompat.BigTextStyle()
                                                                 .bigText("You just unlocked 721 in " + mCountryName + " " + UnlockedCountriesActivity.countryCodeToEmoji(address.get(0).getCountryCode()) + "\uD83C\uDF89"))
                                                         .setContentTitle("New Country Unlocked \uD83D\uDD13")
-                                                        .setColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null))
+                                                        .setColor(ResourcesCompat.getColor(getResources(), R.color.primaryColor, null))
                                                         .setContentText("You just unlocked 721 in " + mCountryName + " " + UnlockedCountriesActivity.countryCodeToEmoji(address.get(0).getCountryCode()) + "\uD83C\uDF89")
                                                         .setPriority(NotificationCompat.PRIORITY_MAX);
                                                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);

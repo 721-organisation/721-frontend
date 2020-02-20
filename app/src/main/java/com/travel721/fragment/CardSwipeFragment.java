@@ -45,7 +45,6 @@ import com.travel721.card.AdCard;
 import com.travel721.card.Card;
 import com.travel721.card.CardComparator;
 import com.travel721.card.ContactUsFeedbackCard;
-import com.travel721.card.DateCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
 import com.travel721.card.FeedbackToFirebaseCard;
@@ -508,8 +507,8 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                     snackbar.dismiss();
                     String[] negative_terms = getResources().getStringArray(R.array.negative_terms);
                     textView.setText(getRandom(negative_terms));
-                    textView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.colorAccent));
-                    snackbar.show();
+                    textView.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.secondaryColor));
+
                     AnalyticsHelper.logEvent(getContext(), USER_SWIPED_LEFT, null);
                     // Dislikes
                     // Request a string response from the provided URL.
@@ -769,21 +768,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
 
 
                 Collections.sort(cardArrayList, new CardComparator<>());
-                String currentLabel = "";
-                ArrayList<Card> separatedCards = new ArrayList<>();
-                for (int i = 0; i < cardArrayList.size(); i++) {
-                    if (cardArrayList.get(i) instanceof EventCard) {
-                        if (!currentLabel.equals(((EventCard) cardArrayList.get(i)).getPrettyDate())) {
-                            currentLabel = ((EventCard) cardArrayList.get(i)).getPrettyDate();
-                            separatedCards.add(new DateCard());
-                        }
-                        separatedCards.add(cardArrayList.get(i));
-                    } else {
-                        if (cardArrayList.get(i) instanceof DateCard) continue;
-                        separatedCards.add(cardArrayList.get(i));
-                    }
-                }
-                cardArrayList = separatedCards;
+
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
 
                 // Implements filtering networked results

@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
@@ -162,10 +164,9 @@ public class My721Fragment extends Fragment {
                                                 .skipMemoryCache(true) //2
                                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                                 .transition(DrawableTransitionOptions.withCrossFade(300))
-                                                .error(R.drawable.ic_broken_image)
+                                                .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(5, 0, RoundedCornersTransformation.CornerType.BOTTOM)))
+                                                .error(Glide.with(imageView).load(R.drawable.ic_broken_img_bmp))
                                                 .into(imageView);
-                                        imageView.setHorizontalFadingEdgeEnabled(true);
-                                        imageView.setFadingEdgeLength(40);
 
                                         TextView tv = card.findViewById(R.id.eventCardName);
                                         tv.setText(eventCardArrayList.get(i).getName());

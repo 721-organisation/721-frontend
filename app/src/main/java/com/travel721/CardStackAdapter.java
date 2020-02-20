@@ -1,8 +1,6 @@
 package com.travel721;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,19 +11,14 @@ import android.widget.TextView;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -37,7 +30,6 @@ import com.travel721.analytics.AnalyticsHelper;
 import com.travel721.card.AdCard;
 import com.travel721.card.Card;
 import com.travel721.card.ContactUsFeedbackCard;
-import com.travel721.card.DateCard;
 import com.travel721.card.EventCard;
 import com.travel721.card.FeedbackCard;
 import com.travel721.card.FeedbackToFirebaseCard;
@@ -46,11 +38,10 @@ import com.travel721.card.InstagramFeedbackCard;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
-import java.util.Objects;
 
-import static com.travel721.Constants.getRandomOverlay;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 import static com.travel721.analytics.ReleaseAnalyticsEvent.USER_SWIPED_DOWN;
-import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
 
 /**
  * This is the adapter for the Event Card
@@ -58,7 +49,6 @@ import static com.travel721.utility.ColourFinder.getColourMatchedOverlay;
  * @author Bhav
  */
 public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.ViewHolder> {
-    public static final int DATE_CARD = 6;
 
     public static final int EVENT_CARD = 0;
     public static final int FEEDBACK_CARD = 1;
@@ -81,8 +71,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             return FEEDBACK_TO_FIREBASE_CARD;
         if (events.get(position) instanceof InstagramFeedbackCard)
             return INSTAGRAM_FEEDBACK_CARD;
-        if (events.get(position) instanceof DateCard)
-            return DATE_CARD;
+
         return -1;
     }
 
@@ -138,8 +127,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_firebase, parent, false));
             case INSTAGRAM_FEEDBACK_CARD:
                 return new ViewHolder(inflater.inflate(R.layout.card_feedback_instagram, parent, false));
-            case DATE_CARD:
-                return new ViewHolder(inflater.inflate(R.layout.card_date, parent, false));
+
         }
         // This should never happen
         return new ViewHolder(inflater.inflate(R.layout.card_event, parent, false));
@@ -182,17 +170,18 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             currTV.setText(ec.getDayOfWeek());
             currTV = v.findViewById(R.id.eventPrice);
             currTV.setText(currTV.getResources().getString(R.string.price, ec.getPrice())); // String resource used for i18n
-            currTV = v.findViewById(R.id.eventSourceLabel);
-            if (ec.getSourceTag().toUpperCase().equals("BUSINESS")) {
-                currTV.setText(v.getResources().getString(R.string.partner_721));
-            } else {
-                currTV.setText(ec.getSourceTag());
-            }
+//            currTV = v.findViewById(R.id.eventSourceLabel);
+
+//            if (ec.getSourceTag().toUpperCase().equals("BUSINESS")) {
+//                currTV.setText(v.getResources().getString(R.string.partner_721));
+//            } else {
+//                currTV.setText(ec.getSourceTag());
+//            }
             // Slightly complicated to load the image, using a 3rd party library
             final ImageView imageView = holder.itemView.findViewById(R.id.eventImage);
             imageView.setImageDrawable(null);
 
-            final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
+//            final ImageView overlayImageView = holder.itemView.findViewById(R.id.overlayImageView);
 
             CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(imageView.getContext());
             circularProgressDrawable.setStrokeWidth(15f);
@@ -203,40 +192,16 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             Glide.with(v.getContext())
                     .load(ec.getImgURL())
                     .placeholder(circularProgressDrawable)
-                    .apply(RequestOptions.bitmapTransform(new RoundedCorners(14)))
-                    .signature(new ObjectKey(ec.getEventSourceID()))
+                    .skipMemoryCache(true) //2
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .transition(DrawableTransitionOptions.withCrossFade(300))
+                    .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(5, 0, RoundedCornersTransformation.CornerType.BOTTOM)))
+                    .signature(new ObjectKey(ec.getEventSourceID()))
                     .error(Glide.with(imageView).load(R.drawable.ic_broken_img_bmp))
-                    .into(new CustomTarget<Drawable>() {
-                        @Override
-                        public void onLoadStarted(@Nullable Drawable placeholder) {
-                            super.onLoadStarted(placeholder);
-                            imageView.setImageDrawable(circularProgressDrawable);
-                        }
+                    .into(imageView);
 
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            imageView.setImageDrawable(resource);
-
-                            // Extract a colour from the image to set the overlay with
-                            Palette.from(((BitmapDrawable) resource).getBitmap()).generate(p -> {
-                                int defaultColour = ContextCompat.getColor(imageView.getContext(), R.color.colorAccent);
-                                int drawable = getColourMatchedOverlay(Objects.requireNonNull(p).getDominantColor(defaultColour), overlayImageView.getContext());
-                                Drawable overlayDrawable = ContextCompat.getDrawable(imageView.getContext(), drawable);
-                                Glide.with(v.getContext())
-                                        .load(overlayDrawable)
-                                        .into(overlayImageView);
-                            });
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            // Unnecessary but required
-                        }
-                    });
-
-            ImageView iv = v.findViewById(R.id.overlayImageView);
-            iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
+//            ImageView iv = v.findViewById(R.id.overlayImageView);
+//            iv.setImageDrawable(ContextCompat.getDrawable(overlayImageView.getContext(), getRandomOverlay()));
 
         }
         if (events.get(position) instanceof ContactUsFeedbackCard) {
@@ -258,10 +223,6 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             TextView feedbackTagline = holder.itemView.findViewById(R.id.feedbackTagline);
             feedbackTagline.setText(question);
         }
-        if (events.get(position) instanceof DateCard) {
-            TextView date = holder.itemView.findViewById(R.id.card_date_tag);
-            date.setText(((EventCard) events.get(position + 1)).getPrettyDate());
-        }
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -271,8 +232,7 @@ public class CardStackAdapter extends RecyclerView.Adapter<CardStackAdapter.View
             AD_CARD,
             CONTACT_US_FEEDBACK_CARD,
             FEEDBACK_TO_FIREBASE_CARD,
-            INSTAGRAM_FEEDBACK_CARD,
-            DATE_CARD
+            INSTAGRAM_FEEDBACK_CARD
     })
     public @interface CardTypes {
     }
