@@ -69,6 +69,7 @@ dependencies {
     api 'com.google.firebase:firebase-config:19.1.2'
     api 'com.github.deano2390:MaterialShowcaseView:1.3.4'
     api 'androidx.annotation:annotation:1.1.0'
+    api 'com.google.android.play:core:1.6.5'
 
     def room_version = "2.2.4"
     api "androidx.room:room-runtime:$room_version"

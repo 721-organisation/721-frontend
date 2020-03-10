@@ -46,6 +46,11 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.travel721.R;
@@ -93,6 +98,8 @@ import static com.travel721.analytics.DebugAnalyticsEvent.DEBUG_USED_NATIVE_LOCA
  */
 
 public abstract class SplashActivity extends Activity {
+    private static final int APP_UPDATE_REQUEST_CODE = 420;
+    private boolean UPDATE_FAIL = false;
     LocationRequest mLocationRequestHighAccuracy;
     //TextSwitcher statusText;
     // Private fields
@@ -144,6 +151,14 @@ public abstract class SplashActivity extends Activity {
                     Toast.makeText(this, "Cannot proceed without location", Toast.LENGTH_SHORT).show();
             }
         }
+
+        if (requestCode == APP_UPDATE_REQUEST_CODE) {
+            if (resultCode != RESULT_OK) {
+                UPDATE_FAIL = true;
+                // If the update is cancelled or fails,
+                // you can request to start the update again.
+            }
+        }
     }
 
     // TODO permission first, then change settings - not the other way around
@@ -164,6 +179,37 @@ public abstract class SplashActivity extends Activity {
 //        });
 //        loadingTextView.setInAnimation(this, R.anim.fade_in_text_switch);
 //        loadingTextView.setOutAnimation(this, R.anim.fade_out_text_switch);
+
+        // In-app updates
+
+        // Creates instance of the manager.
+        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(this);
+
+        // Returns an intent object that you use to check for an update.
+        com.google.android.play.core.tasks.Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+
+        // Checks that the platform will allow the specified type of update.
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    // For a flexible update, use AppUpdateType.FLEXIBLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                    && !UPDATE_FAIL) {
+                // Request the update.
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+                            appUpdateInfo,
+                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+                            AppUpdateType.IMMEDIATE,
+                            // The current activity making the update request.
+                            this,
+                            // Include a request code to later monitor this update request.
+                            APP_UPDATE_REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         // Initialise Firebase
         FirebaseApp.initializeApp(this);
         MobileAds.initialize(this, initializationStatus -> {
