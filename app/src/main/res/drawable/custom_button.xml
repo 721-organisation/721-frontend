@@ -13,6 +13,6 @@
         android:top="1dp"
         android:bottom="1dp"/>
 
-    <solid android:color="#fe6060"/>
+    <solid android:color="@color/secondaryLightColor" />
 
 </shape>

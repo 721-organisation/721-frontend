@@ -35,13 +35,12 @@
     <color name="primaryColor">#d84315</color>
     <color name="primaryLightColor">#ff7543</color>
     <color name="primaryDarkColor">#9f0000</color>
-    <color name="secondaryColor">#dd2c00</color>
+    <!--        <color name="secondaryColor">#dd2c00</color>-->
     <color name="secondaryLightColor">#ff6434</color>
     <color name="secondaryDarkColor">#a30000</color>
-    <color name="primaryTextColor">#fafafa</color>
+    <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
-
-    <!--    <color name="secondaryColor">#ff6434</color>-->
+    <color name="secondaryColor">#d84315</color>
 
 
 </resources>

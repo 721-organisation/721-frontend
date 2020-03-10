@@ -344,8 +344,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
             if (sharedPreferences.getBoolean("firstcsfvisit", true)) {
                 // sequence example
                 ShowcaseConfig config = new ShowcaseConfig();
-                Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
-                config.setMaskColor(Color.rgb(254, 96, 96));
+                config.setMaskColor(Color.argb(200, 216, 67, 21));
                 config.setDelay(100); // half second between each showcase view
                 Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.open_sans_bold);
                 config.setDismissTextStyle(typeface);
@@ -358,9 +357,9 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                                 .setTarget(getView().findViewById(R.id.card_stack_view))
                                 .setSkipText("Skip")
                                 .setShapePadding(-500)
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText("Swipe right to save to My 721. Swipe left to dismiss")
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build()
                 );
                 positions++;
@@ -368,10 +367,10 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
                                 .setSkipText("Skip")
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setTarget(getView().findViewById(R.id.thumbupButton))
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText("If you don't like swiping, feel free to use the buttons here")
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
 
                                 .build());
                 positions++;
@@ -379,40 +378,40 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
                                 .setSkipText("Skip")
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setTarget(getView().findViewById(R.id.filterButton))
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText("Filter and change curation settings using this button")
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build());
                 positions++;
 
 
                 sequence.addSequenceItem(new MaterialShowcaseView.Builder(getActivity())
                         .setSkipText("Skip")
+                        .setMaskColour(Color.argb(200, 216, 67, 21))
                         .setTarget(getView().findViewById(R.id.shareEventButton))
                         .setDismissText(getString(R.string.click_to_continue))
                         .setContentText("Share experiences on 721 with this button")
-                        .setMaskColour(Color.argb(200, 254, 96, 96))
                         .build());
                 positions++;
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setSkipText("Skip")
                                 .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(2).view)
                                 .setDismissText(getString(R.string.click_to_continue))
                                 .setContentText(getString((R.string.discover_tutorial_hint)))
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build());
                 positions++;
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setSkipText("Skip")
                                 .setTarget(((TabLayout) getActivity().findViewById(R.id.tabLayout)).getTabAt(0).view)
                                 .setDismissText("Got It!")
                                 .setContentText(getString(R.string.my_721_tutorial_hint))
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build());
                 positions++;
 

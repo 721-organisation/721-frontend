@@ -32,7 +32,7 @@
     <style name="SplashTheme" parent="AppBaseTheme">
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowNoTitle">true</item>
-        <!--        <item name="android:windowBackground">@color/secondaryColor</item>-->
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="OpenSansTextViewStyle">

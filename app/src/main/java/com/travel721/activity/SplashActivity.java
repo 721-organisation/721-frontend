@@ -17,11 +17,6 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextSwitcher;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -122,7 +117,7 @@ public abstract class SplashActivity extends Activity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // Location permission was granted, yay!
-                loadingTextView.setText("Thanks! Getting your location now...");
+//                loadingTextView.setText("Thanks! Getting your location now...");
                 Log.v("DOLOAD", "Called from onRPR");
                 doLoad();
             } else {
@@ -155,20 +150,20 @@ public abstract class SplashActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadingTextView = findViewById(R.id.loading_text_view);
+//        loadingTextView = findViewById(R.id.loading_text_view);
 
-        loadingTextView.setFactory(() -> {
-            TextView tv = new TextView(SplashActivity.this);
-            tv.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-            tv.setGravity(Gravity.CENTER);
-            // Add this
-            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-
-            tv.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-            return tv;
-        });
-        loadingTextView.setInAnimation(this, R.anim.fade_in_text_switch);
-        loadingTextView.setOutAnimation(this, R.anim.fade_out_text_switch);
+//        loadingTextView.setFactory(() -> {
+//            TextView tv = new TextView(SplashActivity.this);
+//            tv.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+//            tv.setGravity(Gravity.CENTER);
+//             Add this
+//            tv.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+//
+//            tv.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+//            return tv;
+//        });
+//        loadingTextView.setInAnimation(this, R.anim.fade_in_text_switch);
+//        loadingTextView.setOutAnimation(this, R.anim.fade_out_text_switch);
         // Initialise Firebase
         FirebaseApp.initializeApp(this);
         MobileAds.initialize(this, initializationStatus -> {
@@ -226,10 +221,10 @@ public abstract class SplashActivity extends Activity {
 
     }
 
-    TextSwitcher loadingTextView;
+//    TextSwitcher loadingTextView;
 
     private void doLoad() {
-        loadingTextView.setText("Checking permissions...");
+//        loadingTextView.setText("Checking permissions...");
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.v("PERMS", "FAIL");
             // Ask for permission
@@ -253,7 +248,7 @@ public abstract class SplashActivity extends Activity {
                     if (locationResult == null || locationResult.getLastLocation() == null) {
                         // No possible way to get location
                         // Show the user an error message
-                        loadingTextView.setVisibility(View.GONE);
+//                        loadingTextView.setVisibility(View.GONE);
                         Snackbar.make(findViewById(R.id.loading_spinner_view), getResources().getString(R.string.no_location_error_message), Snackbar.LENGTH_INDEFINITE)
                                 .setAction(android.R.string.ok, view -> finish()).show();
                     } else {
@@ -329,7 +324,7 @@ public abstract class SplashActivity extends Activity {
 
         // Got last known location. In some rare situations this can be null.
         // NB: I've mitigated most of these rare cases.
-        loadingTextView.setText("Loading 721..");
+//        loadingTextView.setText("Loading 721..");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(task -> {
             InputStream uis = getResources().openRawResource(R.raw.gravestones);
             InputStream pis = getResources().openRawResource(R.raw.mouthpiece);
@@ -368,7 +363,7 @@ public abstract class SplashActivity extends Activity {
                                         JSONArray profilesResponse = new JSONArray(response15);
 
                                         if (profilesResponse.isNull(0)) {
-                                            loadingTextView.setText("Registering with 721...");
+//                                            loadingTextView.setText("Registering with 721...");
                                             // User does not exist. This condition definitely needs testing
                                             Log.v("USERS", "User not found, creating...");
                                             StringRequest stringRequest2 = new StringRequest(Request.Method.POST, API_ROOT_URL + "profiles?access_token=" + accessToken, response14 -> Log.v("USERS", "User created"), error -> {
@@ -423,9 +418,9 @@ public abstract class SplashActivity extends Activity {
                                             edit.clear();
                                             edit.putStringSet("set", hs);
                                             edit.apply();
-                                            loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
+//                                            loadingTextView.setText(SplashActivity.this.getString(R.string.geocoded_welcome, city));
                                         } catch (IOException e) {
-                                            loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));
+//                                            loadingTextView.setText(SplashActivity.this.getString(R.string.failed_geocoding_welcome));
                                         }
 
 
@@ -482,7 +477,7 @@ public abstract class SplashActivity extends Activity {
     private void splashErrorHandler(String cause) {
         Crashlytics.logException(new SplashScreenLoadFailure());
         Crashlytics.log(Log.ERROR, "SplashActivityLoadError", cause);
-        loadingTextView.setText("");
+//        loadingTextView.setText("");
         Snackbar sb = Snackbar.make(findViewById(R.id.loading_spinner_view), "An error occurred; we're working hard to fix it", Snackbar.LENGTH_INDEFINITE);
         sb.setAction("Try Again?", view -> {
             Intent i = new Intent(this, InitialLoadSplashActivity.class);

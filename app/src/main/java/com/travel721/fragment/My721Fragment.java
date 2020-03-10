@@ -26,7 +26,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -47,7 +46,6 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
@@ -164,9 +162,10 @@ public class My721Fragment extends Fragment {
                                                 .skipMemoryCache(true) //2
                                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                                 .transition(DrawableTransitionOptions.withCrossFade(300))
-                                                .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(5, 0, RoundedCornersTransformation.CornerType.BOTTOM)))
                                                 .error(Glide.with(imageView).load(R.drawable.ic_broken_img_bmp))
                                                 .into(imageView);
+                                        imageView.setHorizontalFadingEdgeEnabled(true);
+                                        imageView.setFadingEdgeLength(40);
 
                                         TextView tv = card.findViewById(R.id.eventCardName);
                                         tv.setText(eventCardArrayList.get(i).getName());
@@ -229,8 +228,7 @@ public class My721Fragment extends Fragment {
                 Log.v("CSFT", "First Discover Visit");
                 // sequence example
                 ShowcaseConfig config = new ShowcaseConfig();
-                Log.v("COLOR", String.valueOf(Color.argb(255, 254, 96, 96)));
-                config.setMaskColor(Color.rgb(254, 96, 96));
+                config.setMaskColor(ResourcesCompat.getColor(getResources(), R.color.primaryColor, null));
                 config.setDelay(100); // half second between each showcase view
                 Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.open_sans_bold);
                 config.setDismissTextStyle(typeface);
@@ -243,19 +241,21 @@ public class My721Fragment extends Fragment {
                         new MaterialShowcaseView.Builder(getActivity())
                                 .setTarget(root.findViewById(R.id.eventListCardHolder))
                                 .setShapePadding(-75)
+                                .setSkipText("Skip")
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setDismissText(R.string.click_to_continue)
                                 .setContentText("Experiences you save in Near Me or Discover are shown here")
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build()
                 );
                 positions++;
 
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
+                                .setMaskColour(Color.argb(200, 216, 67, 21))
+                                .setSkipText("Skip")
                                 .setTarget(root.findViewById(R.id.settingsButton))
                                 .setDismissText("Got It!")
                                 .setContentText("Contact the 721 Team and see additional information about the app here")
-                                .setMaskColour(Color.argb(200, 254, 96, 96))
                                 .build());
                 positions++;
 

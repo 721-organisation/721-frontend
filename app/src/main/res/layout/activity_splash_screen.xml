@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:id="@+id/loading_spinner_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,46 +8,17 @@
 
     <ImageView
         android:id="@+id/newlogo"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="255dp"
+        android:layout_height="177dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:scaleType="centerInside"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        android:src="@drawable/ic_721new"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_721new" />
-
-    <ImageView
-        android:id="@+id/loading_dots"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loading_text_view"
-        custom:srcCompat="@drawable/ic_loading_2" />
-
-    <TextSwitcher
-        android:id="@+id/loading_text_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
-        android:foregroundGravity="center"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newlogo" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"
-        custom:layout_constraintGuide_begin="401dp" />
+        app:srcCompat="@drawable/avd_anim" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
