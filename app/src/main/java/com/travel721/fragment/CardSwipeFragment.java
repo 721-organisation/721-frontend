@@ -766,7 +766,7 @@ public class CardSwipeFragment extends Fragment implements CardStackListener {
                 cardArrayList = combinedList;
 
 
-                Collections.sort(cardArrayList, new CardComparator<>());
+//                Collections.sort(cardArrayList, new CardComparator<>());
 
                 DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CardDiffCallback(cardStackAdapter.getEvents(), combinedList));
 
