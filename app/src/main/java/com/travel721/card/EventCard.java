@@ -55,7 +55,7 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
     public String description;
     public String sourceTag;
     @Ignore
-    public String dateFormatString = "yyyy-MM-dd";
+    public static final String dateFormatString = "yyyy-MM-dd";
 
     protected EventCard(Parcel in) {
         name = in.readString();
@@ -235,6 +235,10 @@ public class EventCard extends Card implements Parcelable, Serializable, Compara
             e.printStackTrace();
             return formattedDate;
         }
+    }
+
+    public String getOriginalFormatDate() {
+        return formattedDate;
     }
 
     public void setFormattedDate(String formattedDate) {

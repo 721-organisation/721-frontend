@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
@@ -54,6 +58,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.travel721.Constants.API_ROOT_URL;
 import static com.travel721.Constants.eventProfileLikedSearchFilter;
 import static com.travel721.Constants.eventSearchFilter;
+import static com.travel721.card.EventCard.dateFormatString;
 
 public class My721Fragment extends Fragment {
     String api_access_token;
@@ -186,7 +191,30 @@ public class My721Fragment extends Fragment {
                                             deleteEventBottomSheetDialogFragment.show(Objects.requireNonNull(getFragmentManager()),
                                                     "delete_sheet_fragment");
                                         });
+                                        int finalI2 = i;
+                                        card.findViewById(R.id.addCalImgView).setOnClickListener(view -> {
+                                            EventCard eventToSave = eventCardArrayList.get(finalI2);
+                                            Calendar beginTime = Calendar.getInstance();
+                                            try {
+                                                beginTime.setTime(Objects.requireNonNull(new SimpleDateFormat(dateFormatString + " hh:mm").parse(eventToSave.getOriginalFormatDate() + " " + eventToSave.getTime())));
 
+                                                Log.d("TAG", String.valueOf(beginTime.getTime()));
+                                                Intent intent = new Intent(Intent.ACTION_EDIT);
+                                                intent.setType("vnd.android.cursor.item/event");
+                                                intent.putExtra(CalendarContract.Events.TITLE, eventToSave.getName());
+                                                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                                                        beginTime.getTimeInMillis());
+//                                            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+//                                                    endDateMillis);
+                                                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, eventToSave.getVenueName());
+                                                intent.putExtra(CalendarContract.Events.ALL_DAY, false);// periodicity
+                                                intent.putExtra(CalendarContract.Events.DESCRIPTION, eventToSave.getDescription() + "\n" + eventToSave.getEventHyperLink());
+                                                startActivity(intent);
+
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
                                         AnalyticsHelper.logEvent(getContext(), ReleaseAnalyticsEvent.USER_CLICKS_EVENT_IN_LIKED_EVENT_LIST, null);
 
                                         if (requireDateTag || !eventCardArrayList.get(i).getPrettyDate().equals(previousDateTag)) {
