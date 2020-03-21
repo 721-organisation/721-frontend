@@ -2,16 +2,16 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="5dp"
-
-    app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
+
     android:layout_height="wrap_content"
-    app:cardCornerRadius="5dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -42,9 +42,12 @@
                 android:id="@+id/eventCardDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="center|start"
+                android:paddingTop="3dp"
                 app:autoSizeTextType="uniform"
                 tools:text="Event Time" />
 
@@ -52,10 +55,14 @@
                 android:id="@+id/eventCardName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="4"
                 android:gravity="center|start"
+                android:maxLines="2"
+                android:paddingBottom="3dp"
                 android:textStyle="bold"
+                app:autoSizeMaxTextSize="20sp"
                 app:autoSizeTextType="uniform"
                 tools:text="Event Name" />
 
@@ -63,7 +70,9 @@
                 android:id="@+id/eventCardVenue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:gravity="center|start"
                 app:autoSizeTextType="uniform"
@@ -83,24 +92,24 @@
                 android:id="@+id/imageView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:padding="3dp"
                 app:srcCompat="@drawable/ic_info" />
 
             <ImageView
                 android:id="@+id/addCalImgView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:padding="3dp"
                 app:srcCompat="@drawable/ic_today" />
 
             <ImageView
                 android:id="@+id/deleteImgView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:padding="3dp"
                 app:srcCompat="@drawable/ic_delete" />
         </LinearLayout>
 

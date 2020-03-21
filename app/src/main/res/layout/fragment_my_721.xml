@@ -53,8 +53,8 @@
         android:layout_marginBottom="25dp"
         android:clickable="true"
         android:focusable="true"
-        app:backgroundTint="@color/white"
+        app:backgroundTint="@color/secondaryColor"
         app:fabSize="auto"
         app:srcCompat="@drawable/ic_settings"
-        app:tint="@color/secondaryColor" />
+        app:tint="@color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
