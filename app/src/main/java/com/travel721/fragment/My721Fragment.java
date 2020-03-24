@@ -268,7 +268,7 @@ public class My721Fragment extends Fragment {
                 sequence.addSequenceItem(
                         new MaterialShowcaseView.Builder(getActivity())
                                 .setTarget(root.findViewById(R.id.eventListCardHolder))
-                                .setShapePadding(-75)
+                                .setShapePadding(-500)
                                 .setSkipText("Skip")
                                 .setMaskColour(Color.argb(200, 216, 67, 21))
                                 .setDismissText(R.string.click_to_continue)
